@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import plan from '../data/threePlotGeometry.json';
-import { PLOT_STATUSES, usePlotRecords } from '../data/plotStore';
+import { normalizePlotNumber, PLOT_STATUSES, usePlotRecords, usePlotStoreState } from '../data/plotStore';
+import PlotBookingModal from './PlotBookingModal';
 import { getColonyMapConfig, GOOGLE_MAPS_URL, GOOGLE_MAPS_EMBED_URL } from '../data/colonyLocation';
 import './CommunityScene.css';
 
 // Live plot availability from the records the 2D map uses (RESERVED = booked).
-// Unconfirmed plots stay natural lawn; the others carry their status colour.
-const STATUS_COLOURS = { AVAILABLE: '#0b9d58', RESERVED: '#f5c518', SOLD: '#d33a2f', UNKNOWN: '#6aa84f' };
+// Unconfirmed plots keep the soil appearance while live ledger states add colour.
+const STATUS_COLOURS = { AVAILABLE: '#0b9d58', RESERVED: '#f5c518', SOLD: '#d33a2f', UNKNOWN: '#b79a70' };
 const VIEW_LABELS = [['nature', 'Aerial view'], ['plan', 'Plan view'], ['community', 'Interior plaza'], ['connection', 'Entrance']];
 // Start with the colony and nearby surroundings; Reset restores this view.
 const DEFAULT_VIEW = 'nature';
@@ -34,6 +35,10 @@ export default function CommunityScene({ activeFeature = DEFAULT_VIEW, reducedMo
   const [mapUnavailable, setMapUnavailable] = useState(false);
   const [viewName, setViewName] = useState(activeFeature);
   const [tip, setTip] = useState({ text: '', visible: false });
+  const [selectedPlot, setSelectedPlot] = useState(null);
+  const [plotQuery, setPlotQuery] = useState('');
+  const [queryError, setQueryError] = useState('');
+  const store = usePlotStoreState();
   const tipRef = useRef({ timer: 0, shown: {} });
   const showTip = (kind, duration = 2400) => {
     const state = tipRef.current, now = Date.now();
@@ -66,7 +71,7 @@ export default function CommunityScene({ activeFeature = DEFAULT_VIEW, reducedMo
       if (source === 'map') { setMapUnavailable(true); setSource('model'); }
       else setFallback(true);
     };
-    const options = { host, plan, statusColours: STATUS_COLOURS, records: recordsRef.current, view: featureRef.current, reducedMotion: motionRef.current, onDragChange: flag => { if (!cancelled) setDragging(flag); }, onFail: failed, onHint: kind => showTipRef.current(kind) };
+    const options = { host, plan, statusColours: STATUS_COLOURS, records: recordsRef.current, view: featureRef.current, reducedMotion: motionRef.current, onPlotSelect: number => { if (!cancelled) setSelectedPlot(number); }, onDragChange: flag => { if (!cancelled) setDragging(flag); }, onFail: failed, onHint: kind => showTipRef.current(kind) };
     (source === 'map' ? import('../scene/colonyMapScene.js') : import('../scene/colonyScene.js'))
       .then(module => cancelled ? null : source === 'map'
         ? module.createColonyMapScene({ ...options, config: MAP_CONFIG, signal: controller.signal })
@@ -100,12 +105,17 @@ export default function CommunityScene({ activeFeature = DEFAULT_VIEW, reducedMo
         <a href={GOOGLE_MAPS_URL} target="_blank" rel="noreferrer">Directions ↗</a>
       </div>
       {mapUnavailable && <div className="community-scene__map-notice" role="status">The surrounding map is unavailable. You can still explore the colony or open the Google satellite view.</div>}
+      <div className="community-scene__bookingbar">
+        <span role="status">{!store.serverConnected ? 'Live availability is temporarily unavailable.' : !store.statusDisplayEnabled ? 'Contact the team for current plot availability.' : store.bookingConfig?.booking_enabled ? 'Select a plot to view details and request a booking.' : 'Live plot status · Online booking is currently paused.'}</span>
+        <form onSubmit={event => { event.preventDefault(); const plot = records.find(record => normalizePlotNumber(record.number) === normalizePlotNumber(plotQuery)); if (plot) { setQueryError(''); setSelectedPlot(plot.number); } else setQueryError('Enter a plot number from this layout, for example A-1 or S1.'); }}><label htmlFor="scene-plot-number">Find plot</label><input id="scene-plot-number" aria-label="Plot number" placeholder="A-1 or S1" value={plotQuery} onChange={event => setPlotQuery(event.target.value)} maxLength={15} /><button type="submit">View plot</button></form>
+        {queryError && <span role="alert">{queryError}</span>}
+      </div>
       {/* Controls sit in their own bar above the 3D view, never over the map. */}
       {!fallback && source !== 'satellite' && <div className="community-scene__toolbar">
         <div className="community-scene__view-controls" role="group" aria-label="Camera views">
           {VIEW_LABELS.map(([key, label]) => <button key={key} type="button" aria-pressed={viewName === key} onClick={() => choose(key)}>{label}</button>)}
         </div>
-        <div className="community-scene__legend" aria-label="Plot availability">{Object.entries(STATUS_COLOURS).map(([status, colour]) => <span key={status}><i style={{ background: colour }} />{PLOT_STATUSES[status].label}<b>{counts[status] || 0}</b></span>)}</div>
+        {store.statusDisplayEnabled && <div className="community-scene__legend" aria-label="Plot availability">{Object.entries(STATUS_COLOURS).map(([status, colour]) => <span key={status}><i style={{ background: colour }} />{PLOT_STATUSES[status].label}<b>{counts[status] || 0}</b></span>)}</div>}
       </div>}
       <div className="community-scene__viewport">
         {/* Zoom stays pinned on screen while the view scrolls past. */}
@@ -117,6 +127,7 @@ export default function CommunityScene({ activeFeature = DEFAULT_VIEW, reducedMo
         {!fallback && source !== 'satellite' && <span className="community-scene__keyboard-hint">Arrows turn · Shift + arrows pan · + / − zoom · Home resets</span>}
         {!fallback && source !== 'satellite' && <span className={`community-scene__tip${tip.visible ? ' is-visible' : ''}`} aria-live="polite">{tip.text}</span>}
       </div>
+      {selectedPlot && <PlotBookingModal key={selectedPlot} number={selectedPlot} onClose={() => setSelectedPlot(null)} />}
     </div>
   );
 }

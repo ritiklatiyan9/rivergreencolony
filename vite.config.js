@@ -5,8 +5,9 @@ import plotApiPlugin from './server/vite-plugin.mjs';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'PLOT_');
+  const bookingEnv = loadEnv(mode, process.cwd(), 'BOOKING_');
   return {
-    plugins: [react(), tailwindcss(), plotApiPlugin({ password: env.PLOT_ADMIN_PASSWORD, stateDir: env.PLOT_STATE_DIR, appOrigin: env.PLOT_APP_ORIGIN })],
+    plugins: [react(), tailwindcss(), plotApiPlugin({ password: env.PLOT_ADMIN_PASSWORD, stateDir: env.PLOT_STATE_DIR, appOrigin: env.PLOT_APP_ORIGIN, bookingApiUrl: bookingEnv.BOOKING_API_URL })],
     build: {
       rollupOptions: {
         output: {

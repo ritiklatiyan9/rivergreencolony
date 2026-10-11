@@ -25,6 +25,8 @@ test('the page head matches the shared title and description', () => {
   assert.ok(html.includes(`<meta name="description" content="${SITE.description}" />`));
   assert.ok(SITE.title.length <= 60 && SITE.description.length <= 160);
   assert.ok(html.includes('<link rel="canonical" href="__SITE_URL__/" />'));
+  assert.ok(html.includes(`<meta name="geo.position" content="${SITE.geo.latitude};${SITE.geo.longitude}" />`), 'geo.position must match SITE.geo');
+  assert.match(SITE.url, /^https:\/\/[^/\s]+$/, 'the build default origin must be an https origin without a trailing slash');
   assert.equal(withOrigin('<a href="__SITE_URL__/x">', origin), `<a href="${origin}/x">`);
 });
 

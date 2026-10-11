@@ -11,7 +11,8 @@
     "test:server": "node --test server/*.test.mjs",
     "test:scene": "node --test src/data/sceneLandscape.test.js",
     "test:map": "node --test src/data/colonyLocation.test.js src/scene/colonyMapCamera.test.js src/scene/colonyMapPlacement.test.js src/data/colonySiteFit.test.js src/data/colonyFrontage.test.js src/scene/colonyMapFit.test.js src/scene/architecture-map-fit.test.js src/scene/architecture-frontage.test.js src/scene/life-frontage.test.js",
-    "test:seo": "node --test src/data/seo.test.js"
+    "test:seo": "node --test src/data/seo.test.js",
+    "test:booking": "node --test server/booking-proxy.test.mjs src/data/bookingAvailability.test.js src/scene/colonyPlotPicker.test.js"
   },
   "dependencies": {
     "framer-motion": "^12.23.0",

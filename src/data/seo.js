@@ -2,9 +2,13 @@
 // answer engines. One source feeds the page copy (App.jsx), the JSON-LD in the
 // page, llms.txt and the sitemap, so they never disagree. Every fact here must
 // be verifiable: never invent prices, distances, approvals or rankings.
+import { RIVER_GREEN_LOCATION } from './colonyLocation.js';
+
 export const SITE = {
   name: 'River Green Colony',
-  alternateNames: ['River Green Shamli', 'River Green Society Shamli', 'रिवर ग्रीन कॉलोनी शामली'],
+  // Production address: the build writes it into the canonical link, Open Graph, JSON-LD, robots.txt and sitemap.xml unless SITE_URL overrides it.
+  url: 'https://www.rivergreencolony.com',
+  alternateNames: ['River Green', 'Rivergreen Colony', 'River Green Colony Shamli', 'River Green Shamli', 'River Green Society Shamli', 'रिवर ग्रीन कॉलोनी शामली', 'रिवर ग्रीन शामली'],
   developer: 'Defence Garden',
   developerUrl: 'https://defencegarden.com/',
   projectUrl: 'https://defencegarden.com/project/1',
@@ -16,13 +20,14 @@ export const SITE = {
   salesPhone: '+91-99276-69955',
   bookingPhone: '+91-97603-02690',
   email: 'defencegarden009@gmail.com',
-  mapUrl: 'https://www.google.com/maps/search/?api=1&query=River%20Green%20Colony%2C%20Shamli%20Rd%2C%20Mundet%2C%20Shamli%2C%20Uttar%20Pradesh%20247776',
-  // The exact entrance pin once confirmed (Google Maps: right-click the gate, copy the coordinates).
-  geo: null, // e.g. { latitude: 29.0000, longitude: 77.0000 }
+  // The owner's Google Maps place (feature 0x390c29dd81944553:0xe9591f73b3c8db2d, from the directions link they supplied).
+  mapUrl: 'https://www.google.com/maps?cid=16814505265562442541',
+  // The same Google Maps pin, so the page and the Maps listing agree.
+  geo: { latitude: RIVER_GREEN_LOCATION.lat, longitude: RIVER_GREEN_LOCATION.lng },
   plots: 166,
   shops: 34,
-  title: 'River Green Colony Shamli | Residential Plots on Shamli Road',
-  description: 'Residential plots for sale in River Green Colony, Shamli Road, Shamli: a planned Defence Garden colony with 25–40 ft roads, gardens and a fountain plaza.',
+  title: 'River Green Colony | Residential Plots & Property in Shamli',
+  description: 'Residential plots for sale in River Green Colony, Shamli Road, Shamli (UP): a planned Defence Garden colony with 25–40 ft roads, gardens and a fountain plaza.',
   summary: 'River Green Colony is a planned residential plotted colony by Defence Garden on Shamli Road in Mundet, Shamli, Uttar Pradesh 247776, India. The original plan has 166 residential plots and 34 shops, internal roads 25 to 40 feet wide, a palm-lined boulevard from the entrance gate to a central fountain plaza, landscaped gardens and a corner park.',
   hindi: 'रिवर ग्रीन कॉलोनी — शामली रोड, मुंडेट, शामली (उत्तर प्रदेश 247776) में डिफेंस गार्डन की नियोजित आवासीय प्लॉट कॉलोनी।',
 };
@@ -43,6 +48,7 @@ export const FAQS = [
   { q: 'Where is River Green Colony?', a: 'River Green Colony is on Shamli Road, Mundet, Shamli, Uttar Pradesh 247776. Use the location link below for directions and confirm your meeting point with the sales team before visiting.' },
   { q: 'Are residential plots for sale near Shamli?', a: 'Yes. River Green Colony on Shamli Road, Mundet has residential plots in several sizes. The live plot map on this page shows which plots are available, reserved or sold, and the team confirms current availability on +91 99276 69955.' },
   { q: 'Which is a good colony to buy a plot in Shamli?', a: 'If you are comparing colonies in Shamli, River Green on Shamli Road (Mundet) is a planned plotted colony by Defence Garden with 25 to 40 ft internal roads, a central fountain plaza, landscaped gardens and shops at the entrance. Visit the site and compare before deciding; the team can share the current plot list and prices.' },
+  { q: 'Is River Green a real estate project for buying property in Shamli?', a: 'Yes. River Green Colony is a residential real estate project by Defence Garden on Shamli Road, Mundet, Shamli: a planned colony of residential plots with shops at the entrance. Buyers looking for property in Shamli can see live plot availability on this page and get current prices from the team on +91 99276 69955.' },
   { q: 'What plot sizes are available in River Green Colony?', a: 'Plots come in varied sizes, for example 30 × 50 ft (1,500 sq ft) and 30 × 60 ft (1,800 sq ft). Select a plot on the map to see its size where listed, or ask the team for the full list.' },
   { q: 'How wide are the roads in River Green?', a: 'Internal roads are 25 to 40 feet wide on the original plan, with a palm-lined boulevard from the entrance gate to the central fountain plaza.' },
   { q: 'What is the current project status?', a: 'Defence Garden lists River Green Society, Shamli as an ongoing project. Contact the team for the latest development progress and available plots.' },
@@ -51,6 +57,7 @@ export const FAQS = [
   { q: 'Can I visit the project before deciding?', a: 'Yes. Use “Plan a visit” to prepare a visit request on WhatsApp. Share your preferred date with the team; your visit is confirmed when they reply.' },
   { q: 'Who is developing River Green?', a: 'River Green is a Defence Garden project. Defence Garden develops plotted residential communities in Western Uttar Pradesh and is led by Mr. Kuldeep Tomar.' },
   { q: 'शामली में प्लॉट कहाँ खरीदें?', a: 'रिवर ग्रीन कॉलोनी, शामली रोड, मुंडेट, शामली (उत्तर प्रदेश 247776) — डिफेंस गार्डन की नियोजित आवासीय प्लॉट कॉलोनी, 25 से 40 फ़ीट चौड़ी सड़कों, फव्वारा प्लाज़ा और बगीचों के साथ। जानकारी के लिए +91 99276 69955 पर कॉल करें।' },
+  { q: 'शामली में अच्छी कॉलोनी कौन सी है?', a: 'अगर आप शामली में कॉलोनी या प्रॉपर्टी देख रहे हैं, तो शामली रोड, मुंडेट पर रिवर ग्रीन कॉलोनी देखें — डिफेंस गार्डन की नियोजित कॉलोनी, 25 से 40 फ़ीट चौड़ी सड़कें, फव्वारा प्लाज़ा, बगीचे और प्रवेश द्वार पर दुकानें। फ़ैसले से पहले साइट विज़िट करें; उपलब्ध प्लॉट और दाम के लिए +91 99276 69955 पर कॉल करें।' },
 ];
 
 const address = { '@type': 'PostalAddress', streetAddress: SITE.street, addressLocality: SITE.locality, addressRegion: SITE.region, postalCode: SITE.postalCode, addressCountry: SITE.country };
@@ -59,13 +66,13 @@ const address = { '@type': 'PostalAddress', streetAddress: SITE.street, addressL
 export function structuredData(origin, images = []) {
   const geo = SITE.geo && { '@type': 'GeoCoordinates', latitude: SITE.geo.latitude, longitude: SITE.geo.longitude };
   const photos = [`${origin}/og-image.jpg`, ...images.map((src) => `${origin}${src}`)];
-  const place = { address, ...(geo ? { geo } : {}), hasMap: SITE.mapUrl, telephone: SITE.salesPhone, image: photos };
+  const place = { address, ...(geo ? { geo } : {}), hasMap: SITE.mapUrl, sameAs: [SITE.mapUrl, SITE.projectUrl], telephone: SITE.salesPhone, image: photos };
   return {
     '@context': 'https://schema.org',
     '@graph': [
       { '@type': 'Organization', '@id': `${origin}/#developer`, name: SITE.developer, url: SITE.developerUrl, logo: `${origin}/images/defence-garden-logo.png`,
         contactPoint: { '@type': 'ContactPoint', telephone: SITE.salesPhone, contactType: 'sales', areaServed: 'IN', availableLanguage: ['en', 'hi'] } },
-      { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: 'River Green Colony, Shamli', alternateName: SITE.alternateNames, inLanguage: 'en-IN', publisher: { '@id': `${origin}/#developer` } },
+      { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: SITE.name, alternateName: SITE.alternateNames, inLanguage: 'en-IN', publisher: { '@id': `${origin}/#developer` } },
       { '@type': 'Residence', '@id': `${origin}/#colony`, name: SITE.name, alternateName: SITE.alternateNames, description: SITE.summary, url: `${origin}/`, ...place,
         containedInPlace: { '@type': 'City', name: 'Shamli', containedInPlace: { '@type': 'State', name: SITE.region } },
         amenityFeature: ['Central fountain plaza', 'Landscaped gardens', 'Corner park', 'Palm-lined boulevard', 'Internal roads 25 to 40 ft wide', 'Shops at the entrance', 'Entrance gate']

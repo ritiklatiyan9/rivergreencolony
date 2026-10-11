@@ -4,6 +4,7 @@
 import * as THREE from 'three';
 import { createKit, HEIGHTS, M, SCALE } from './kit.js';
 import { buildLandscape } from '../data/sceneLandscape.js';
+import { createPlotClickGesture, createPlotSurfaces, pickPlotRay } from './colonyPlotPicker.js';
 
 // Build order matters: sky sets the lights and fog the others are lit by.
 const MODULES = [
@@ -58,7 +59,7 @@ function detectQuality() {
   };
 }
 
-export async function createColonyScene({ host, plan, statusColours, records = [], view = 'community', reducedMotion = false, onDragChange = () => {}, onFail = () => {}, onHint = () => {} }) {
+export async function createColonyScene({ host, plan, statusColours, records = [], view = 'community', reducedMotion = false, onDragChange = () => {}, onFail = () => {}, onHint = () => {}, onPlotSelect = () => {} }) {
   const quality = detectQuality();
   const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'default', stencil: false });
   renderer.setPixelRatio(quality.pixelRatio);
@@ -148,6 +149,17 @@ export async function createColonyScene({ host, plan, statusColours, records = [
   const preset = (name) => { Object.assign(target, resolve(name)); requestRender(); };
 
   const canvas = renderer.domElement;
+  const plotSurfaces = createPlotSurfaces(plan, { groundHeight: HEIGHTS.lawn, shopHeight: HEIGHTS.shopRoof });
+  const plotClick = createPlotClickGesture(), pickRay = new THREE.Raycaster(), pickPointer = new THREE.Vector2();
+  const pickPlot = event => {
+    if (disposed || failed) return null;
+    const bounds = canvas.getBoundingClientRect();
+    if (!bounds.width || !bounds.height || event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) return null;
+    pickPointer.set((event.clientX - bounds.left) / bounds.width * 2 - 1, 1 - (event.clientY - bounds.top) / bounds.height * 2);
+    // Use the rendered camera, not the easing target used by wheel controls.
+    camera.updateMatrixWorld(); pickRay.setFromCamera(pickPointer, camera);
+    return pickPlotRay(pickRay.ray.origin.toArray(), pickRay.ray.direction.toArray(), plotSurfaces);
+  };
   const clampPan = (value) => THREE.MathUtils.clamp(value, -PAN_LIMIT, PAN_LIMIT);
   // Pan by screen pixels: the map follows the pointer across the ground plane.
   const panBy = (dx, dy) => {
@@ -195,10 +207,12 @@ export async function createColonyScene({ host, plan, statusColours, records = [
   };
   const pointerDown = (event) => {
     if (event.pointerType === 'mouse' && event.button > 2) return;
+    plotClick.begin(event);
     pointers.set(event.pointerId, { x: event.clientX, y: event.clientY, touch: event.pointerType === 'touch', pan: event.button === 1 || event.button === 2 || event.shiftKey });
     startGesture(); requestRender();
   };
   const pointerMove = (event) => {
+    plotClick.move(event);
     const p = pointers.get(event.pointerId); if (!p || !gesture) return;
     p.x = event.clientX; p.y = event.clientY;
     if (gesture.mode === 'pinch') {
@@ -220,9 +234,11 @@ export async function createColonyScene({ host, plan, statusColours, records = [
   };
   let lastTap = null;
   const pointerUp = (event) => {
+    const selected = plotClick.end(event) ? pickPlot(event) : null;
+    if (selected) onPlotSelect(selected);
     // A second quick tap in the same place flies there (touch has no dblclick).
     const p = pointers.get(event.pointerId);
-    if (p?.touch && event.type === 'pointerup' && pointers.size === 1 && gesture && !gesture.locked) {
+    if (!selected && p?.touch && event.type === 'pointerup' && pointers.size === 1 && gesture && !gesture.locked) {
       const now = performance.now();
       if (lastTap && now - lastTap.t < 320 && Math.hypot(p.x - lastTap.x, p.y - lastTap.y) < 30) { flyTo(p.x, p.y); lastTap = null; } else lastTap = { t: now, x: p.x, y: p.y };
     }
@@ -236,7 +252,7 @@ export async function createColonyScene({ host, plan, statusColours, records = [
     if (!(event.ctrlKey || event.metaKey)) { onHint('wheel'); return; }
     event.preventDefault(); zoomAt(Math.exp(-event.deltaY * .0025), event.clientX, event.clientY);
   };
-  const doubleClick = (event) => { if (performance.now() - lastFly > 500) flyTo(event.clientX, event.clientY); }; // a double-tap may also fire dblclick
+  const doubleClick = (event) => { if (!pickPlot(event) && performance.now() - lastFly > 500) flyTo(event.clientX, event.clientY); }; // a double-tap may also fire dblclick
   const noMenu = (event) => event.preventDefault();
   const lost = event => { event.preventDefault(); fail(); };
   const visibilityChange = () => { if (document.hidden) { cancelAnimationFrame(frame); frame = 0; } else { lastTime = 0; requestRender(); } };
@@ -264,6 +280,7 @@ export async function createColonyScene({ host, plan, statusColours, records = [
     setReducedMotion: (flag) => { motionOff = flag; requestRender(); },
     dispose: () => {
       disposed = true; cancelAnimationFrame(frame); resizeObserver.disconnect(); intersectionObserver.disconnect();
+      plotClick.reset();
       listeners.forEach(([type, handler]) => canvas.removeEventListener(type, handler)); canvas.removeEventListener('wheel', wheel);
       window.removeEventListener('pointerup', pointerUp); document.removeEventListener('visibilitychange', visibilityChange);
       Object.values(parts).forEach(part => { try { part.dispose?.(); } catch { /* Keep disposing the rest. */ } });

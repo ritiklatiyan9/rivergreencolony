@@ -1,31 +1,30 @@
 import { useSyncExternalStore } from 'react';
 import manifest from './plotIds.json';
 import planGeometry from './threePlotGeometry.json';
-import sourceSnapshot from './plotAvailability.json';
+import { bookingAvailabilityRecord } from './bookingAvailability';
 
 export const PLOT_STATUSES = {
-  AVAILABLE: { label: 'Available', color: '#2ca45f' },
-  RESERVED: { label: 'Reserved', color: '#d97706' },
-  SOLD: { label: 'Sold', color: '#7f1d1d' },
+  AVAILABLE: { label: 'Company', color: '#0b9d58' },
+  RESERVED: { label: 'Booked', color: '#f5c518' },
+  SOLD: { label: 'Registry', color: '#d33a2f' },
   UNKNOWN: { label: 'Confirm availability', color: '#788f77' },
 };
 export const PLOT_FIELDS = ['status', 'dimensions', 'area_sqft', 'area_sqm', 'facing', 'block', 'plot_type', 'total_price', 'price_per_sqft', 'notes'];
 export const normalizePlotNumber = (value = '') => String(value).replace(/[()\s.\-]/g, '').toUpperCase();
 const numbers = new Map(manifest.plotIds.map((number) => [normalizePlotNumber(number), number]));
-const publicFields = PLOT_FIELDS.filter((field) => field !== 'notes');
+const publicFields = [...PLOT_FIELDS.filter((field) => field !== 'notes'), 'bookable', 'held', 'accounting_status', 'area_sqyd'];
 const numericFields = ['area_sqft', 'area_sqm', 'total_price', 'price_per_sqft'];
 const fieldLimits = { dimensions: 120, facing: 80, block: 40, plot_type: 80, notes: 1000 };
 const listeners = new Set();
 const saves = new Map();
-let source = sourceSnapshot.plots;
+let source = [];
 let overrides = {};
 let pending = {};
 let records = [];
 let loadPromise;
 let refreshTimer;
-let sourceLoaded = false;
 let broadcast;
-let state = { revision: 0, source: 'snapshot', serverConnected: false, updatedAt: null, pendingCount: 0, saving: false, error: '' };
+let state = { revision: 0, source: 'booking', serverConnected: false, updatedAt: null, pendingCount: 0, saving: false, error: '', bookingConfig: null, statusDisplayEnabled: false };
 
 const safeSourceRecord = (plot) => Object.fromEntries(['plot_number', ...publicFields].filter((key) => plot[key] != null).map((key) => [key, plot[key]]));
 const canonicalNumber = (value) => numbers.get(normalizePlotNumber(value));
@@ -65,7 +64,7 @@ function rebuild(changes = {}) {
   const publicIndex = Object.fromEntries(source.filter((plot) => canonicalNumber(plot.plot_number)).map((plot) => [canonicalNumber(plot.plot_number), safeSourceRecord(plot)]));
   records = PLOT_METADATA.map((metadata) => {
     const number = metadata.number;
-    const record = { ...metadata, plot_number: number, status: 'UNKNOWN', dimensions: '', area_sqft: '', area_sqm: '', facing: '', block: '', plot_type: number.startsWith('S') ? 'COMMERCIAL' : 'RESIDENTIAL', total_price: '', price_per_sqft: '', notes: '', ...publicIndex[number], ...overrides[number], ...pending[number] };
+    const record = { ...metadata, plot_number: number, status: 'UNKNOWN', bookable: false, held: false, dimensions: '', area_sqft: '', area_sqm: '', facing: '', block: '', plot_type: number.startsWith('S') ? 'COMMERCIAL' : 'RESIDENTIAL', total_price: '', price_per_sqft: '', notes: '', ...publicIndex[number] };
     if (!PLOT_STATUSES[record.status]) record.status = 'UNKNOWN';
     return { ...record, id: number, number, hasOverride: Boolean(overrides[number]), isPending: Boolean(pending[number]) };
   });
@@ -74,7 +73,7 @@ function rebuild(changes = {}) {
 }
 
 async function api(path, options = {}) {
-  const response = await fetch(path, { credentials: 'same-origin', ...options, headers: { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers } });
+  const response = await fetch(path, { credentials: 'same-origin', cache: 'no-store', signal: AbortSignal.timeout(22000), ...options, headers: { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers } });
   const data = await response.json().catch(() => ({}));
   if (!response.ok || data.success === false) {
     const error = new Error(data.message || data.error || 'The project server is unavailable.');
@@ -94,23 +93,16 @@ function announceSave() {
 export async function refreshPlotRecords({ refreshSource = false } = {}) {
   if (loadPromise) return loadPromise;
   loadPromise = (async () => {
-    const jobs = [api('/api/plots').then((data) => {
-      if (!Array.isArray(data.overrides)) throw new Error('The project server is unavailable.');
-      // A refresh started before a save can arrive afterward. Keep the newer
-      // committed version instead of briefly restoring an older map status.
-      if (state.updatedAt && (!data.updatedAt || new Date(data.updatedAt).getTime() < new Date(state.updatedAt).getTime())) { rebuild({ serverConnected: true, error: '' }); return; }
-      overrides = indexOverrides(data.overrides);
-      rebuild({ serverConnected: true, updatedAt: data.updatedAt || null, error: '' });
-    }).catch((error) => { rebuild({ serverConnected: false, error: error.message || 'The project server is unavailable.' }); })];
-    if (!sourceLoaded || refreshSource) {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 12000);
-      jobs.push(fetch(sourceSnapshot.source, { signal: controller.signal, credentials: 'omit' })
-        .then((response) => { if (!response.ok) throw new Error('Public source unavailable'); return response.json(); })
-        .then((data) => { if (data.success && Array.isArray(data.plots)) { source = data.plots.filter((plot) => plot?.plot_number).map(safeSourceRecord); sourceLoaded = true; rebuild({ source: 'public' }); } })
-        .finally(() => clearTimeout(timeout)));
+    try {
+      const [config, data] = await Promise.all([api('/api/booking/config'), api('/api/booking/plots')]);
+      if (!Array.isArray(data.plots)) throw new Error('Plot availability could not be loaded.');
+      source = data.plots.map(plot => safeSourceRecord(bookingAvailabilityRecord(plot, Boolean(config.status_display_enabled && data.status_display_enabled))));
+      overrides = {}; pending = {};
+      rebuild({ serverConnected: true, updatedAt: data.updated_at || new Date().toISOString(), bookingConfig: config, statusDisplayEnabled: Boolean(config.status_display_enabled), error: '' });
+    } catch (error) {
+      source = []; overrides = {}; pending = {};
+      rebuild({ serverConnected: false, bookingConfig: null, statusDisplayEnabled: false, error: error.message || 'The booking service is unavailable.' });
     }
-    await Promise.allSettled(jobs);
     return records;
   })().finally(() => { loadPromise = null; });
   return loadPromise;
@@ -119,7 +111,7 @@ export async function refreshPlotRecords({ refreshSource = false } = {}) {
 function startRefresh() {
   if (typeof window === 'undefined') return;
   refreshPlotRecords();
-  if (!refreshTimer) refreshTimer = setInterval(() => { if (!document.hidden) refreshPlotRecords(); }, 30000);
+  if (!refreshTimer) refreshTimer = setInterval(() => { if (!document.hidden) refreshPlotRecords(); }, 5000);
   if (!broadcast && 'BroadcastChannel' in window) {
     broadcast = new BroadcastChannel('river-green-plot-records');
     broadcast.onmessage = () => refreshPlotRecords();

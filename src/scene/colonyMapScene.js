@@ -9,13 +9,15 @@ import { updateMapCamera } from './colonyMapCamera.js';
 import { createColonyMapTransform } from './colonyMapPlacement.js';
 import { applyColonyMapFit } from './colonyMapFit.js';
 import { prepareMapPlan } from '../data/colonySiteFit.js';
+import { HEIGHTS } from './kit.js';
+import { createPlotClickGesture, createPlotSurfaces, pickPlotRay } from './colonyPlotPicker.js';
 
 setWorkerUrl(workerUrl);
 export const preloadColonyMapScene = preloadColonyModules;
 
 // Satellite tiles supply real surroundings. The Three.js
 // colony uses the map's WebGL context and camera, so both move together.
-export function createColonyMapScene({ host, plan, config, statusColours, records = [], view = 'nature', reducedMotion = false, signal, onFail = () => {}, onDragChange = () => {} }) {
+export function createColonyMapScene({ host, plan, config, statusColours, records = [], view = 'nature', reducedMotion = false, signal, onFail = () => {}, onDragChange = () => {}, onPlotSelect = () => {} }) {
   if (signal?.aborted) return Promise.resolve(null);
   // The model builder awaits this same promise and handles any load failure.
   preloadColonyModules().catch(() => {});
@@ -54,6 +56,28 @@ export function createColonyMapScene({ host, plan, config, statusColours, record
   // Mercator is X east / Y south / Z up; the model is X east / Y up / Z south.
   // Apply this in the camera matrix, preserving procedural model coordinates.
   const transform = createColonyMapTransform(plan, config, anchor, anchor.meterInMercatorCoordinateUnits());
+  const plotSurfaces = createPlotSurfaces(modelPlan, { siteFit, shopRows: frontage?.shopRows, groundHeight: HEIGHTS.lawn, shopHeight: HEIGHTS.shopRoof });
+  const canvas = map.getCanvas(), clickGesture = createPlotClickGesture();
+  const ray = new THREE.Raycaster(), pointer = new THREE.Vector2();
+  const pickPlot = event => {
+    if (!ready || !model || disposed || failed) return null;
+    const bounds = canvas.getBoundingClientRect();
+    if (!bounds.width || !bounds.height || event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) return null;
+    pointer.set((event.clientX - bounds.left) / bounds.width * 2 - 1, 1 - (event.clientY - bounds.top) / bounds.height * 2);
+    ray.setFromCamera(pointer, model.camera);
+    return pickPlotRay(ray.ray.origin.toArray(), ray.ray.direction.toArray(), plotSurfaces);
+  };
+  const pointerDown = event => clickGesture.begin(event);
+  const pointerMove = event => clickGesture.move(event);
+  const pointerUp = event => {
+    if (!clickGesture.end(event)) return;
+    const number = pickPlot(event);
+    if (number) onPlotSelect(number);
+  };
+  const pointerCancel = event => { clickGesture.cancel(); clickGesture.end(event); };
+  const pickListeners = [['pointerdown', pointerDown], ['pointermove', pointerMove], ['pointerup', pointerUp], ['pointercancel', pointerCancel], ['lostpointercapture', pointerCancel]];
+  pickListeners.forEach(([name, handler]) => canvas.addEventListener(name, handler));
+  window.addEventListener('pointerup', pointerUp);
   let renderer, model, disposed = false, failed = false, visible = true, frame = 0, generation = 0;
   let motionOff = reducedMotion, latestRecords = records, lastDraw = 0, lastTick = 0, ready = false, timeout;
   let resolveReady, rejectReady;
@@ -78,6 +102,8 @@ export function createColonyMapScene({ host, plan, config, statusColours, record
     observer.disconnect(); resize.disconnect();
     document.removeEventListener('visibilitychange', visibilityChange);
     signal?.removeEventListener('abort', abort);
+    pickListeners.forEach(([name, handler]) => canvas.removeEventListener(name, handler));
+    window.removeEventListener('pointerup', pointerUp); clickGesture.reset();
     map.remove(); releaseModel();
   };
   const fail = error => {
@@ -165,7 +191,8 @@ export function createColonyMapScene({ host, plan, config, statusColours, record
   // Temporary missing tiles do not discard an already usable map. A failure
   // to load the style itself does prevent the colony layer from being added.
   map.on('error', event => { if (!ready && event.error?.status && !map.getStyle()) fail(event.error); });
-  map.on('dragstart', () => onDragChange(true)); map.on('dragend', () => onDragChange(false));
+  map.on('dragstart', () => { clickGesture.cancel(); onDragChange(true); }); map.on('dragend', () => onDragChange(false));
+  map.on('rotatestart', () => clickGesture.cancel()); map.on('zoomstart', () => clickGesture.cancel());
   map.on('webglcontextlost', () => fail(new Error('The live map lost its graphics context.')));
   return completion;
 }
