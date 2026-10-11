@@ -1,0 +1,725 @@
+{
+  "mode": "built-in image_gen",
+  "createdAt": "2026-10-07T07:35:59.591343+00:00",
+  "purpose": "Realistic AI visualisations of completed buildings and cleared construction materials, based on the existing project images.",
+  "resolutionNote": "The built-in ImageGen tool returned native images below Full HD despite requested higher dimensions. Full HD delivery files are Lanczos-resampled exports of those AI-restored images, not native 4K or new detail produced by scaling. Native outputs are retained under source/.",
+  "encoding": "Lossless WebP full-size files and transparent layers; opaque 640/960/1280px responsive variants use WebP quality 96.",
+  "assets": [
+    {
+      "id": "hd-02",
+      "file": "rivergreen-02.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: finish the unfinished two-storey house on the left with realistic cream plaster, finished windows and doors and a completed terrace edge. Preserve its footprint and height. Output a genuinely detailed 3072 x 2304 pixel 4:3 image; not a stretched low-resolution bitmap.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-02.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-9fa381c2-db64-433c-a040-82d8ff9053f7.png",
+      "filename": "rivergreen-02.webp",
+      "transparent": false,
+      "inputSha256": "50efa0591b115185aacf360d79cb3c7d2bcc793d00b01c6048b99146bfdca31f",
+      "nativeDimensions": [
+        1448,
+        1086
+      ],
+      "nativeOutput": "public/images/hd/source/hd-02.png",
+      "nativeSha256": "844be172abb7d6f59af9d7e01b8bece5ca5a278bd109d651e69398347e2613c0",
+      "output": "/images/hd/rivergreen-02.webp",
+      "outputDimensions": [
+        1920,
+        1440
+      ],
+      "resampled": true,
+      "sha256": "50fd3caf596975b12ad3c6cf356a3ab5067c90a258e18681403cf6d88a228a55",
+      "bytes": 3138132,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-02-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-02-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-02-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-02.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-aerial",
+      "file": "rivergreen-aerial.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: finish the unfinished houses at lower left, upper left and upper right within their present footprints and heights. Clear all loose bricks and concrete debris in the open plots, foreground and beside the road; remove the construction tractor and its trailer at bottom right, replacing them with clean existing-ground texture. Keep vacant plots vacant and the road grid, fountain and distant agricultural fields unchanged. Output a genuinely detailed 3840 x 2160 pixel 16:9 image, not a stretched bitmap.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-aerial.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-8d676af2-a2dc-4479-863e-43907428ab7c.png",
+      "filename": "rivergreen-aerial.webp",
+      "transparent": false,
+      "inputSha256": "42030c3f53192928f0d5cb2f82a7ef5e63abdcd871647224f3209fe0abaaafab",
+      "nativeDimensions": [
+        1672,
+        941
+      ],
+      "nativeOutput": "public/images/hd/source/hd-aerial.png",
+      "nativeSha256": "4dfc654ff989cfe3d507e567dbd4d53e703f5b2aa8a11db99742d3993e16b4cb",
+      "output": "/images/hd/rivergreen-aerial.webp",
+      "outputDimensions": [
+        1920,
+        1080
+      ],
+      "resampled": true,
+      "sha256": "2716272b7e3b031e0f0c4ab59a881ab34eca6d9bb702ec3bf69ad28c4878d2a3",
+      "bytes": 2755188,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-aerial-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-aerial-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-aerial-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-aerial.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-01",
+      "file": "rivergreen-01.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: clear any visible materials and finish incomplete buildings visible down the avenue. Preserve the gate and exact lettering. Deliver crisp 4:3 photographic detail.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-01.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-afbfc450-e43e-4264-8147-cb077f342fd2.png",
+      "filename": "rivergreen-01.webp",
+      "transparent": false,
+      "inputSha256": "6bee212c4cc36c5635d8b3bac83a7e2430caa7a8afcff1e1d73199e571dc1d66",
+      "nativeDimensions": [
+        1448,
+        1086
+      ],
+      "nativeOutput": "public/images/hd/source/hd-01.png",
+      "nativeSha256": "9cc9ef35a56c03d0033fa4f6da3e8a5c09ca12f51607e24aba3b1b640712d877",
+      "output": "/images/hd/rivergreen-01.webp",
+      "outputDimensions": [
+        1920,
+        1440
+      ],
+      "resampled": true,
+      "sha256": "134c4658709ce6fb670e62b2ef187e4e3643aa79e2e270358202d661c5e8adcc",
+      "bytes": 2643496,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-01-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-01-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-01-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-01.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-03",
+      "file": "rivergreen-03.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: complete the unfinished grey two-storey house in the right background, preserving its footprint and height. Clear any rubble by the paths. Keep the fountain running. Deliver crisp 4:3 photographic detail.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-03.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-006ab7db-2b8a-4bd1-baad-76c9bffc9d73.png",
+      "filename": "rivergreen-03.webp",
+      "transparent": false,
+      "inputSha256": "ae5a0b1e0ace9cc797c03bb20cbe9e9acb3b1f6d204836eea25621d9accba34c",
+      "nativeDimensions": [
+        1448,
+        1086
+      ],
+      "nativeOutput": "public/images/hd/source/hd-03.png",
+      "nativeSha256": "537eb872163b52a4697415264eead232874569da3839ca2187d2906d94aecdfe",
+      "output": "/images/hd/rivergreen-03.webp",
+      "outputDimensions": [
+        1920,
+        1440
+      ],
+      "resampled": true,
+      "sha256": "980ead6d8fddcdf027a72f4c689a8cb7f0b7188ab40cbbc30da6be37662055a0",
+      "bytes": 2982356,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-03-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-03-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-03-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-03.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-04",
+      "file": "rivergreen-04.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: complete the unfinished house in the right background, including plaster, doors, windows and roof edges. Clear any construction materials. Keep the fountain off and dry as in the edit target. Deliver crisp 4:3 photographic detail.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-04.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-311348f8-dcfc-4125-adcb-87272958f9c3.png",
+      "filename": "rivergreen-04.webp",
+      "transparent": false,
+      "inputSha256": "bd7f9af16588b08e783a3e133d92b69e6985548c18a32945d9acb27ad0c9a350",
+      "nativeDimensions": [
+        1448,
+        1086
+      ],
+      "nativeOutput": "public/images/hd/source/hd-04.png",
+      "nativeSha256": "524e9c0c14c957d0650b55af12121d234da00ee334231a47b167098a42f2eb3f",
+      "output": "/images/hd/rivergreen-04.webp",
+      "outputDimensions": [
+        1920,
+        1440
+      ],
+      "resampled": true,
+      "sha256": "8cf3625c5ca62efa4b1c9aa4119cc85ccc9e412978974ec2447d07502b16911d",
+      "bytes": 2752646,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-04-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-04-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-04-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-04.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-05",
+      "file": "rivergreen-05.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: complete the unfinished background house and roof details, preserving footprint and height. Clear any construction materials. Preserve the dry fountain, gate, palms, pedestrian and 3:4 portrait framing. Deliver crisp photographic detail.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-05.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-45e710a6-c53c-4255-bc5e-ebefb09edf4d.png",
+      "filename": "rivergreen-05.webp",
+      "transparent": false,
+      "inputSha256": "0de395f81657becc57c0cb3536bdbdb68f8ac755cbca2695395f93685236462c",
+      "nativeDimensions": [
+        1087,
+        1446
+      ],
+      "nativeOutput": "public/images/hd/source/hd-05.png",
+      "nativeSha256": "25232096a93385923f60579548d3708c89e424f4de8fbba0e5a6b78f813650df",
+      "output": "/images/hd/rivergreen-05.webp",
+      "outputDimensions": [
+        1443,
+        1920
+      ],
+      "resampled": true,
+      "sha256": "267eb431cde8f8f7095dd78adb786230f7007b9971e08df7335e616f2f8cac27",
+      "bytes": 3026298,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-05-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-05-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-05-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-05.webp",
+          "width": 1443
+        }
+      ]
+    },
+    {
+      "id": "hd-06",
+      "file": "rivergreen-06.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: complete the exposed red-brick house on the left with cream plaster, finished doors, windows and roof edges. Remove the stacked bricks beside it and all construction debris. Preserve the active water jets, existing car, poles and wires.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-06.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-c65769be-34da-4744-9a15-18710188daa1.png",
+      "filename": "rivergreen-06.webp",
+      "transparent": false,
+      "inputSha256": "32f56281ab4b38f5237afe42dd6d53a4dd74360dd8b1b46f6b1ea21c4767e728",
+      "nativeDimensions": [
+        1448,
+        1086
+      ],
+      "nativeOutput": "public/images/hd/source/hd-06.png",
+      "nativeSha256": "50595bf5544c9104f33c5c62eadb63a2ef06a3ad8d2e48303670bcbac1f2a776",
+      "output": "/images/hd/rivergreen-06.webp",
+      "outputDimensions": [
+        1920,
+        1440
+      ],
+      "resampled": true,
+      "sha256": "32099b4d4f7fb448e59eda3c21b97c2f1260328fb865ee06c3b8599d34e0a5e9",
+      "bytes": 2838654,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-06-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-06-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-06-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-06.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-07",
+      "file": "rivergreen-07.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: preserve this garden view, palms, bench, railings and distant electricity pylon. Keep any materials out of the scene and reconstruct natural, fine leaf and paving detail.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-07.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-c97d056c-5fba-4d9a-98a6-d7acfcda4d1e.png",
+      "filename": "rivergreen-07.webp",
+      "transparent": false,
+      "inputSha256": "50e77bd2cee018d6fe72005445ed0a3568d15986013b332a8e95e913c2f9119f",
+      "nativeDimensions": [
+        1448,
+        1086
+      ],
+      "nativeOutput": "public/images/hd/source/hd-07.png",
+      "nativeSha256": "d3e8203624bc356098ccd0251c33cc3f2f82e7fd8f0978df60947282307a8f2a",
+      "output": "/images/hd/rivergreen-07.webp",
+      "outputDimensions": [
+        1920,
+        1440
+      ],
+      "resampled": true,
+      "sha256": "4cd51bd9689558df766b02c50bdbb73633170c069a0683625856924339110b22",
+      "bytes": 3013096,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-07-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-07-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-07-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-07.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-08",
+      "file": "rivergreen-08.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: fully complete the unfinished grey two-storey house in the upper right with cream plaster, windows in the open bays, finished roof edging and subtle rails. Keep original footprint, height and position. Preserve the foreground palm, decorative lamppost and benches.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-08.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-495d0117-f0c8-40dc-bc83-362791c00484.png",
+      "filename": "rivergreen-08.webp",
+      "transparent": false,
+      "inputSha256": "f3356172b8c88173ea557e5447ddfa7060e4485fed97201f8ecf56189513517c",
+      "nativeDimensions": [
+        1448,
+        1086
+      ],
+      "nativeOutput": "public/images/hd/source/hd-08.png",
+      "nativeSha256": "257405baced6d81b71d0dbb903b951447fb26e6036b28a083aa541e9d8c82720",
+      "output": "/images/hd/rivergreen-08.webp",
+      "outputDimensions": [
+        1920,
+        1440
+      ],
+      "resampled": true,
+      "sha256": "63ba3963f4b6c82294a1ba97678380abf4d033f950cfcbdb884aa59d0586e9c7",
+      "bytes": 3184220,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-08-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-08-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-08-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-08.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-09",
+      "file": "rivergreen-09.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: preserve this clean lawn and garden, trees, palm, hedge and bench arrangement. Reconstruct clean natural foliage and fine paving detail without adding houses or objects.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-09.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-8d34b076-2202-43e2-8d15-a8fc8658c1f0.png",
+      "filename": "rivergreen-09.webp",
+      "transparent": false,
+      "inputSha256": "639f8c26ae5f583173d7477ffe794e39e2efbb782f7c97eb241a6a401c6f314d",
+      "nativeDimensions": [
+        1448,
+        1086
+      ],
+      "nativeOutput": "public/images/hd/source/hd-09.png",
+      "nativeSha256": "4c8723139e102da264f70720490fa343f66f0c47bdc8f82b1d8be665225b5b39",
+      "output": "/images/hd/rivergreen-09.webp",
+      "outputDimensions": [
+        1920,
+        1440
+      ],
+      "resampled": true,
+      "sha256": "deedbf645056f5de0a5cb73ec3e446eaa141de4183131ce0011fa04567686fb5",
+      "bytes": 3469276,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-09-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-09-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-09-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-09.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-10",
+      "file": "rivergreen-10.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: finish exposed-brick building surfaces glimpsed behind the foliage with matching cream plaster, keeping their silhouette and footprint. Preserve palm trunks, fronds, benches and all garden geometry.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-10.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-b059817e-bc92-4e63-bdb2-0adf04f6a5b0.png",
+      "filename": "rivergreen-10.webp",
+      "transparent": false,
+      "inputSha256": "40f47dc7f68ef174bf2e4c64bb83ca56fc20880231a886fede3765ec8b157891",
+      "nativeDimensions": [
+        1448,
+        1086
+      ],
+      "nativeOutput": "public/images/hd/source/hd-10.png",
+      "nativeSha256": "b0e6f9ccd10d28112a6a7e0c99db3401bd063339f9d26a0dd5f9f079bd441e00",
+      "output": "/images/hd/rivergreen-10.webp",
+      "outputDimensions": [
+        1920,
+        1440
+      ],
+      "resampled": true,
+      "sha256": "8cf1fff14ec209e90dd0a2a060f48fb328099d0afcdc7bf88e442ba91d65e43d",
+      "bytes": 3194152,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-10-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-10-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-10-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-10.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-11",
+      "file": "rivergreen-11.webp",
+      "prompt": "Use case: precise-object-edit. Edit the supplied realistic River Green fountain photograph. Keep it looking like a natural DSLR photograph, with the same fountain, active water jets, foliage, paving, wires, camera and framing. Make two specific changes: finish the red-brick house at the far left in realistic off-white plaster with fitted windows, doors and completed roof edges, and clear all nearby brick stacks/rubble. Also remove the small YELLOW wheeled utility/construction machine at the far right behind the hedge and palm, near the white boundary wall (approximately 92% across the image and 59% down). Replace that machine with matching clean paved path and ordinary green planting. There should be no construction materials or equipment anywhere in the photograph. Keep the existing building footprint and height. Preserve subtle photographic texture; do not sharpen or stylize the stone, water or foliage. No painted, glossy, smooth plastic or CGI surfaces. Return the full 4:3 photograph.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-11.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-e20830cf-7fcc-46d2-8301-ba6aa1094928.png",
+      "filename": "rivergreen-11.webp",
+      "transparent": false,
+      "inputSha256": "a0ed3d8fd229e9cd4e5cfc184e98fb48c89a1e478bb8ca9198165bd33e192fc4",
+      "nativeDimensions": [
+        1448,
+        1086
+      ],
+      "nativeOutput": "public/images/hd/source/hd-11.png",
+      "nativeSha256": "dc7338657cfc35b3e7a96574a2d2c2e89faa6f356ea927020bdc3224fe7628ed",
+      "output": "/images/hd/rivergreen-11.webp",
+      "outputDimensions": [
+        1920,
+        1440
+      ],
+      "resampled": true,
+      "sha256": "ca2496d4c39c8318c56f07805bae4f73924b098b9606820975303f2c080108ea",
+      "bytes": 2790818,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-11-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-11-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-11-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-11.webp",
+          "width": 1920
+        }
+      ],
+      "notes": "Selected this edit directly from the prior lighting enhancement to retain natural stone, water and foliage textures. Earlier cleanup iterations were discarded after visual review."
+    },
+    {
+      "id": "hd-aerial-gate",
+      "file": "rivergreen-aerial-gate.webp",
+      "prompt": "Use case: precise-object-edit. Asset type: high-resolution realistic residential colony website photograph. Edit target: the attached River Green image. Create a meticulous photographic restoration with genuinely resolved fine detail, smooth clean edges, natural sharpness and rich realistic daylight. Remove all visible construction clutter: loose or stacked bricks, rubble, broken concrete, cement bags, sand or aggregate piles, scrap, construction tools and unfinished debris. Restore the cleared surfaces with matching paving, soil or existing lawn as appropriate. Finish every existing incomplete house/building within its exact original footprint and height, with understated off-white plastered walls, finished roof edges, realistic windows, doors and simple railings matching this low-rise neighbourhood. Do not create houses in empty plots. Preserve the camera, full framing, road and plot layout, entrance gate, exact 'River Green' lettering, fountain shape and water on/off state, existing gardens, palms, benches, lampposts, people and ordinary vehicles. Keep utilities unless directly part of construction debris. Reconstruct credible fine stone grain, individual leaf detail, water droplets, paving seams and straight architectural edges. Preserve believable surface texture rather than smoothing surfaces into plastic. Avoid blurry pixels, compression blocks, ringing, jagged edges, smeared foliage, duplicate objects, halos, fake HDR, illustration and cartoon/CGI appearance. No logos, text overlays, frames or watermarks. Scene-specific request: complete the unfinished exposed-brick and concrete houses behind the gate, within their original footprints and heights. Clear any visible rubble or stacked bricks in the open plots. Preserve the red and yellow ceremonial ribbons, shops, all ordinary vehicles and people, exact 'River Green' and 'SALES OFFICE' lettering, overhead cables and framing.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/enhanced/rivergreen-aerial-gate.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-bc907d01-d106-4501-8c75-778db2df7b12.png",
+      "filename": "rivergreen-aerial-gate.webp",
+      "transparent": false,
+      "inputSha256": "c773b31c37e14b187a84d68ac0c9af564a0774cecc4aa397fcf6ce1701036239",
+      "nativeDimensions": [
+        1672,
+        941
+      ],
+      "nativeOutput": "public/images/hd/source/hd-aerial-gate.png",
+      "nativeSha256": "ac81dd4561477b457c414e23a2ea4d0f0e94ee87109b046e2917d6bfa5c0e047",
+      "output": "/images/hd/rivergreen-aerial-gate.webp",
+      "outputDimensions": [
+        1920,
+        1080
+      ],
+      "resampled": true,
+      "sha256": "a3922e8f3883c301fc01b641d491de36bf2dab2b8870729e7a32322d0f0de47e",
+      "bytes": 2278398,
+      "sources": [
+        {
+          "src": "/images/hd/rivergreen-aerial-gate-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/rivergreen-aerial-gate-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/rivergreen-aerial-gate-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/rivergreen-aerial-gate.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-clouds",
+      "file": "hero-family/clouds-hd.webp",
+      "prompt": "Use case: background-extraction. Asset type: transparent realistic parallax cloud layer, widescreen 16:9 full canvas. Edit target: the supplied cloud overlay. Rebuild only a few soft white daylight clouds across the upper third of the same canvas, matching a blue-sky residential entrance photograph. Keep cloud placement and empty areas, but remove ALL rectangular blocks, white fills, colored fringes, stripe artifacts and hard boundaries. Preserve physically soft, smooth alpha edges. The entire sky and lower two-thirds must be genuinely transparent. Only clouds, no colored sky, no buildings, no text, no border, no checkered pattern. Photographic airy cloud detail, neutral white with subtle warm sunlight. True clean alpha background.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/hero-family/clouds-hd.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-8a22880d-420a-4fa5-9df2-29e209a6b36b.png",
+      "filename": "clouds.webp",
+      "transparent": true,
+      "inputSha256": "36e03cb7c556c3fa3f661c611a0c55891ab87aa9b2aeaf5441fecf0dc1e64d0b",
+      "nativeDimensions": [
+        1672,
+        941
+      ],
+      "nativeOutput": "public/images/hd/source/hd-clouds.png",
+      "nativeSha256": "f18da35591cb8d303d3f73f1cd265e55c6b13c00ad849d0afb85e08c6abb6c83",
+      "output": "/images/hd/clouds.webp",
+      "outputDimensions": [
+        1920,
+        1080
+      ],
+      "resampled": true,
+      "sha256": "28dbb0778f5b2940a7a23658043adb9e5ebcdcb346ef212ed6b076b1cd80faeb",
+      "bytes": 555690,
+      "sources": [
+        {
+          "src": "/images/hd/clouds-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/clouds-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/clouds-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/clouds.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-trees",
+      "file": "hero-family/trees-hd.webp",
+      "prompt": "Use case: background-extraction. Asset type: transparent realistic parallax tree canopy layer on a 16:9 widescreen canvas. Edit target: supplied tree overlay. Rebuild the natural green leaves and fine branches hanging from the upper-right corner and the small palms entering at the far-left edge. Preserve their placement, scale and empty centre for the entrance sign. Use crisp photorealistic leaf veins, fine twigs and smooth natural alpha edges. Remove all rectangular fills, color fringes, yellow/red blocks, white/grey bands and jagged pixel artifacts. Everywhere beyond the actual leaves and branches must be genuinely transparent. No ground, sky, buildings, people, clouds, text, opaque background or checkerboard. Match warm daylight with restrained realistic greens.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/hero-family/trees-hd.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-8deb2851-8d35-4dbe-9934-ef119ab818ed.png",
+      "filename": "trees.webp",
+      "transparent": true,
+      "inputSha256": "55b7f2d0f719b7667554472d8b679097ace2c1fe1bc703bc0ec158009d64d944",
+      "nativeDimensions": [
+        1672,
+        941
+      ],
+      "nativeOutput": "public/images/hd/source/hd-trees.png",
+      "nativeSha256": "bb24f5b8a943da1f44629568f8e17f693a498e333e987d05e834556e416bcceb",
+      "output": "/images/hd/trees.webp",
+      "outputDimensions": [
+        1920,
+        1080
+      ],
+      "resampled": true,
+      "sha256": "a03bff78fd71a1a1bdd8fd9c77f7411545ce973f2f5b96c964e38f3e9c87a858",
+      "bytes": 396942,
+      "sources": [
+        {
+          "src": "/images/hd/trees-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/trees-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/trees-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/trees.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "hd-greenery",
+      "file": "hero-family/greenery-right-hd.webp",
+      "prompt": "Use case: background-extraction. Asset type: transparent realistic parallax foreground greenery on a full 16:9 widescreen canvas. Edit target: supplied bottom-right foliage overlay. Restore a small cluster of fresh natural green frangipani leaves and subtle white flowers ONLY in the bottom-right corner, matching current placement and scale. Preserve the completely empty centre, left and upper canvas. Crisp photorealistic leaf detail and smooth clean alpha edges; remove colored fringes, pixel blocks, red/yellow outlines and jagged boundaries. True transparent background everywhere beyond leaves/flowers. No sky, buildings, ground, text, border or checkerboard.",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/hero-family/greenery-right-hd.webp",
+      "generated": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-4fcec246-baef-4baa-8af3-94e59fc4734d.png",
+      "filename": "greenery.webp",
+      "transparent": true,
+      "inputSha256": "416f5db1119cf1197cc027fc84f1bb2b580e209f2d3b5a573e19a6b14c54642a",
+      "nativeDimensions": [
+        1672,
+        941
+      ],
+      "nativeOutput": "public/images/hd/source/hd-greenery.png",
+      "nativeSha256": "a3f1f0142b2aaeb74fa114beeff77709a5f3f7885ad7e0f5b262e047471842a8",
+      "output": "/images/hd/greenery.webp",
+      "outputDimensions": [
+        1920,
+        1080
+      ],
+      "resampled": true,
+      "sha256": "8440695b4dae0b5e8a54bd4a0fae3bd36dc38e11472a5e719978fb278b69ba11",
+      "bytes": 253182,
+      "sources": [
+        {
+          "src": "/images/hd/greenery-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/greenery-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/greenery-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/greenery.webp",
+          "width": 1920
+        }
+      ]
+    },
+    {
+      "id": "preserved-family-hero",
+      "file": "hero-family/entrance-family-hd.webp",
+      "input": "/Users/ritiklatiyan/A-Project/Defence Garden Accounts/Rivergreen Website/public/images/hero-family/entrance-family-hd.webp",
+      "generated": null,
+      "filename": "entrance-family.webp",
+      "transparent": false,
+      "prompt": null,
+      "notes": "Preserved the current family entrance composition added in the shared workspace; already a 1920 \u00d7 1080 delivery asset. Re-encoded without pixel changes for the common responsive image pipeline.",
+      "inputSha256": "8c072445f580fa4f4c0d2e11595f3d32549ad2d9127af57c9733430b630278d7",
+      "nativeDimensions": [
+        1920,
+        1080
+      ],
+      "nativeOutput": "public/images/hd/source/preserved-family-hero.webp",
+      "nativeSha256": "8c072445f580fa4f4c0d2e11595f3d32549ad2d9127af57c9733430b630278d7",
+      "output": "/images/hd/entrance-family.webp",
+      "outputDimensions": [
+        1920,
+        1080
+      ],
+      "resampled": false,
+      "sha256": "f412b506e43883cebc3bae9159fdf046becee4c392c9772ea5863f1958c0193f",
+      "bytes": 1907120,
+      "sources": [
+        {
+          "src": "/images/hd/entrance-family-640.webp",
+          "width": 640
+        },
+        {
+          "src": "/images/hd/entrance-family-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/images/hd/entrance-family-1280.webp",
+          "width": 1280
+        },
+        {
+          "src": "/images/hd/entrance-family.webp",
+          "width": 1920
+        }
+      ]
+    }
+  ]
+}

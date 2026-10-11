@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-07",
+  "mode": "built-in image_gen",
+  "useCase": "photorealistic-natural",
+  "intent": "Replace the daytime fountain image in the Built around daily life amenity panel with families sitting on benches around River Green's fountain in the evening.",
+  "prompt": "Use case: photorealistic-natural.\nAsset type: high-resolution portrait lifestyle photograph for River Green Colony's fountain amenity panel.\nPrimary request: replace the empty daytime fountain photo with an AI-generated evening scene of happy Indian families sitting on benches around this same fountain, talking and enjoying the colony.\nInput image: Image 1 is a reference for the actual River Green fountain design, stone, mosaic, paving, tree planting and low-rise neighbourhood. Use the local reference image, not browser chrome or website text.\nScene: the landscaped fountain plaza INSIDE River Green Colony, Shamli. Preserve the recognisable low circular basin with its black stone outer rim, blue-and-white mosaic inner ring, broad dark stacked-slate conical centre, central water spray and small perimeter jets. Pull the camera back enough to include a comfortable paved seating area around it. Keep the modest low-rise colony, leafy trees, palms and decorative black street lamps behind it.\nSubject: two happy Indian families, each with a husband, wife and two children, seated naturally on wooden benches with dark metal frames arranged around the fountain. One family at the near left side, another at the near right, with parents and children chatting, smiling and looking at the fountain. All people comfortably seated on actual benches, normal human scale, convincing anatomy, natural hands and feet, varied everyday clothing, relaxed candid moments rather than everyone posing at the camera.\nComposition: portrait 4:5, ideally 1536 x 1920 or higher supported native resolution. Eye-level environmental photograph, a balanced view of the central fountain and both groups. Keep both benches and all family members in the central 80% of the frame so a small responsive crop does not cut them off. Fountain approximately half the image width, not a giant close-up. Foreground pavers, people and bench legs clearly grounded, open view of the water. No heading space needed.\nLighting: early evening just after sunset; soft peach dusk near the horizon, quiet blue sky, warm street lamps switched on, subtle warm fountain lighting catching the water, believable skin tones and gentle reflections. Bright enough to clearly see families and architectural detail. An inviting, lived-in neighbourhood evening.\nStyle: premium natural editorial architectural/lifestyle photography, sharp stone and paving texture, detailed foliage, realistic water droplets and faces, restrained photographic colour.\nConstraints: keep the fountain inside the colony and preserve its original design; no entrance gate or fountain outside the colony. Benches on paved ground with comfortable circulation. No people sitting on the fountain rim.\nAvoid: browser or webpage UI, text, labels, watermarks, lawn covering the paved seating area, extra fountains, giant fountain, construction clutter, cars blocking the seating, high-rise city, resort or palace setting, neon lighting, overdone lens flare, artificial HDR, plastic CGI, duplicated people, fused bodies, extra limbs, warped benches.",
+  "reference": {
+    "path": "/images/hd/rivergreen-06.webp",
+    "role": "Reference for the actual fountain design, paving and colony setting."
+  },
+  "generatedSource": "/images/fountain-evening/fountain-families-source.png",
+  "nativeDimensions": [
+    1122,
+    1402
+  ],
+  "exports": [
+    {
+      "path": "/images/fountain-evening/fountain-families.webp",
+      "width": 1536,
+      "height": 1920,
+      "bytes": 2827988,
+      "sha256": "4c98b53d2250e1a1c79fe4749ce6a5513226d67c6ff77563d5dca991c54e3182"
+    },
+    {
+      "path": "/images/fountain-evening/fountain-families-640.webp",
+      "width": 640,
+      "height": 800,
+      "bytes": 205504,
+      "sha256": "5e447ef59eaf094f041ea73f627772b0a4478cc598804b3c3416d2d555502c46"
+    },
+    {
+      "path": "/images/fountain-evening/fountain-families-960.webp",
+      "width": 960,
+      "height": 1200,
+      "bytes": 383822,
+      "sha256": "ce6e10d6ad6ef190d3459b2d004548052fc2e538603009ec4143718f265ca97c"
+    },
+    {
+      "path": "/images/fountain-evening/fountain-families-1280.webp",
+      "width": 1280,
+      "height": 1600,
+      "bytes": 583324,
+      "sha256": "2f5a28ee8c073fcf5bcfd8f3c888f50223fdcb4d2bff56cf9a04cb7c42221223"
+    }
+  ],
+  "delivery": {
+    "note": "The built-in tool returned 1122 × 1402. The full-size 1536 × 1920 WebP is a resampled export, not a native-resolution generation. Smaller responsive variants use WebP quality 96; full-size export uses lossless WebP.",
+    "encoding": "cwebp resize",
+    "crop": "4:5 panel shared by all accordion photos, keeping both families in frame at all breakpoints.",
+    "implementation": "Only the first amenity photo is replaced; original project photos and gallery assets are preserved. Native source and complete prompt retained here.",
+    "caption": "EVENINGS AT RIVER GREEN · AI VISUALISATION"
+  }
+}

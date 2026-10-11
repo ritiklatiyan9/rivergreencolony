@@ -1,0 +1,9 @@
+{
+  "tool": "Built-in image_gen imagegen",
+  "useCase": "background-extraction",
+  "source": "User-supplied entrance gate photograph",
+  "output": "/branding/river-green-wordmark.png",
+  "prompt": "Use case: background-extraction. Asset type: transparent website logo cutout. Input image: the user supplied photograph of the River Green entrance gate is the edit target. Extract ONLY the dark green-black physical wordmark sitting on top of the gate, which reads exactly \"River Green\", including the little leaf-shaped detail rising near the G. Preserve the original bold serif letterforms, letter spacing, capital R and G, mixed case, leaf placement and proportions. Straighten the slight perspective so the wordmark becomes a clean front-facing horizontal identity. Remove the entire gate, sky, people, cars, trees and all photographic background; the output must have a genuinely transparent alpha background. Render the preserved lettering uniformly in very dark forest green #162b20. Do not add any symbol, initials, slogan, border or registration mark. Keep it crisp and high resolution with a close horizontal crop and a modest clear margin. This is faithful extraction/cleanup of the existing sign, not a redesign of the logo.",
+  "date": "2026-10-07",
+  "note": "Cleaned raster reproduction of the physical gate sign. The photograph remains the authoritative lettering reference."
+}

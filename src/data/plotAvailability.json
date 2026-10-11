@@ -1,0 +1,78 @@
+{
+  "source": "https://rivergreenbackend.onrender.com/api/colony-maps/public/site-plots/1",
+  "plots": [
+    {
+      "plot_number": "A-1",
+      "status": "RESERVED",
+      "dimensions": "30*60",
+      "plot_type": "RESIDENTIAL"
+    },
+    {
+      "plot_number": "A-2",
+      "status": "AVAILABLE",
+      "dimensions": "30*60",
+      "area_sqft": "1800.00",
+      "area_sqm": "167.23",
+      "facing": "East",
+      "plot_type": "RESIDENTIAL"
+    },
+    {
+      "plot_number": "A-3",
+      "status": "AVAILABLE",
+      "dimensions": "30*50",
+      "area_sqft": "1500.00",
+      "area_sqm": "139.35",
+      "plot_type": "RESIDENTIAL"
+    },
+    {
+      "plot_number": "C-19",
+      "status": "RESERVED",
+      "plot_type": "RESIDENTIAL"
+    },
+    {
+      "plot_number": "B-3",
+      "status": "SOLD",
+      "plot_type": "RESIDENTIAL"
+    },
+    {
+      "plot_number": "D-3",
+      "status": "AVAILABLE",
+      "dimensions": "30*20",
+      "area_sqft": "600.00",
+      "area_sqm": "55.74",
+      "plot_type": "RESIDENTIAL"
+    },
+    {
+      "plot_number": "B-138",
+      "status": "AVAILABLE",
+      "dimensions": "30*10",
+      "area_sqft": "300.00",
+      "area_sqm": "27.87",
+      "plot_type": "RESIDENTIAL"
+    },
+    {
+      "plot_number": "B-159",
+      "status": "AVAILABLE",
+      "dimensions": "30*50",
+      "area_sqft": "1500.00",
+      "area_sqm": "139.35",
+      "plot_type": "RESIDENTIAL"
+    },
+    {
+      "plot_number": "B-139",
+      "status": "AVAILABLE",
+      "plot_type": "RESIDENTIAL"
+    },
+    {
+      "plot_number": "B-29B",
+      "status": "AVAILABLE",
+      "plot_type": "RESIDENTIAL"
+    },
+    {
+      "plot_number": "C-1",
+      "status": "RESERVED",
+      "plot_type": "RESIDENTIAL"
+    }
+  ],
+  "retrievedOn": "2026-10-07"
+}

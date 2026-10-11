@@ -1,0 +1,204 @@
+# River Green Colony, Shamli
+
+A dedicated River Green website built with React, Vite, Tailwind CSS, GSAP ScrollTrigger, Framer Motion, Locomotive Scroll v5, and Three.js. A persistent Node API shares saved plot updates with every visitor.
+
+## Run locally
+
+```sh
+npm install
+npm run dev
+```
+
+Open the URL printed by Vite, normally http://127.0.0.1:5173. Development and preview both include the plot API through the Vite plugin.
+
+```sh
+npm run build
+npm run preview
+```
+
+For the production Node server:
+
+```sh
+npm run build
+npm start
+```
+
+`npm start` serves `dist/` and the API together, defaulting to http://127.0.0.1:5173. `HOST` and `PORT` can change the listener. `npm run build` also prerenders the whole page into `dist/index.html` (`scripts/prerender.mjs`), so search engines and AI crawlers that do not run JavaScript read the full content; the browser then replaces it with the live app. If prerendering ever fails, the build continues and the site renders in the browser as before. Shared editing requires this Node server and writable persistent storage; deploying only the static `dist/` files does not share or persist administrator edits for visitors.
+
+This implementation has not been published or connected to the existing Defence Garden website and does not claim official endorsement.
+
+## The experience
+
+- An editorial layout inspired by ERA Residence's premium look: plum, sky-blue, navy and cream chapters; tall Instrument Serif capitals for headlines, each with its accent words written in Mrs Saint Delafield script across the bottom of the capitals; and wide Mona Sans for labels, buttons and body copy. These are open-licensed stand-ins for the reference's commercial faces. A short plum intro writes “River Green / Shamli” and lifts away once per visit (about 2.7 seconds; skipped when reduced motion is requested, and a tap skips it). A compact 78px desktop / 72px phone header aligns the original wordmark and Defence Garden motto. It hides on downward scrolling and returns on upward scrolling; open navigation, dialogs and keyboard focus keep it accessible. Desktop uses smooth scrolling; mobile retains native touch scrolling. Section links (header, mobile menu, footer and page buttons) glide to their section on every device, landing just below the header, and the visitor's own touch, wheel or key input stops the glide.
+- A full-screen architectural entrance hero with white serif capitals and a script accent over open blue sky, restrained planting and visible shop wings. The photograph sits in a plum frame with an arched top that opens to full width as the page scrolls. Separate desktop and phone compositions use responsive super-resolution exports up to 3840px and 1440px wide. A single photographic layer and limited parallax preserve clarity. A centred community introduction leads into everyday-life imagery, 3D, gallery and location. The plot map is the final section immediately before the River Green Colony footer.
+- Reveals: headline words rise out of masks while the script accent writes itself on; photographs open from a frame and settle in scale on every device; restrained desktop parallax. Reduced-motion support, static rendering in hidden tabs and a bounded completion guard keep content readable if animation frames pause.
+- All 11 project-gallery photographs with realistic AI lighting and color enhancements, in source order, category filters, and a keyboard-accessible lightbox. Original files remain available in `public/images/`. The actual project film remains available through an optional film dialog.
+- The original 2D project plan with all 200 plot and shop cells, labels, dimensions, roads, boundary, roundabout, landscaping, and decorative vehicle routes. Visitors can pan, pinch, zoom, reset, search, expand the map, and inspect a selected space. Selecting a space opens a booking form in the sidebar (name, mobile, optional message) that prepares a WhatsApp booking request to +91 97603 02690; nothing is stored on the site. The section heading is “Book Your Plot Now!”.
+- A full-width interactive 3D colony using all 200 original polygons and 15 exact road shapes, rendered as a realistic drone view: a perspective camera, a sky with drifting clouds and horizon haze, sun shadows, ambient occlusion on capable desktops, procedurally shaded lawns, light concrete roads with terracotta brick edge bands, and open farmland with sugarcane, crop fields and only a few tree lines outside the colony. The town of Shamli spreads to the west and north-west on the horizon (left in the default view; dense low-rise houses, a sugar mill, water towers, mobile towers, a temple and a mosque) with farms to the east, and Shamli Road runs into town past a green "← शामली / SHAMLI" sign west of the entrance. It opens on the Interior plaza view, zoomed in on the fountain; the toolbar above the view switches between Aerial view, Plan view (the whole colony on any screen), Interior plaza and Entrance, and the page's chapter copy follows the selection. The view can be explored freely from every angle: drag to orbit all the way round, from just above the ground to straight down; right-drag, Shift-drag or two fingers pan anywhere on the map; pinch or Ctrl/⌘ + scroll zooms toward the point under the fingers or cursor, which stays put, so any corner can be reached and then orbited; a two-finger twist turns around the point between the fingers; double-click or double-tap flies to a spot; and zoom has no limits in or out. A short tip explains the gestures the first time the view appears in a visit, and again when a plain scroll or a one-finger swipe moves the page instead of the map. Zoom in, zoom out, view-from-higher, view-from-lower and Reset sit in a control pad pinned to the right edge of the view that stays on screen while the page scrolls past it; Reset returns to the Interior plaza. Arrow keys orbit, Shift + arrows pan, + / − zoom and Home resets; a plain mouse wheel and a single-finger vertical swipe keep scrolling the page.
+- The plaza follows the official printed plan: the fountain is centered at original plan coordinates `[670, 612.5]` in the middle of a circular roundabout (its diameter is the plan's roundabout width, 180). The circle cuts a concave arc from each of the four corner gardens, which have clipped hedges along their straight edges and lamp posts, a paved walk and benches along the arc. The fountain is modelled on River Green's real fountain in the defencegarden.com photographs: a low round pool wall in polished black granite tiles (with red-brown granite panels where the red paver stripes meet it), a blue-and-white mosaic pool, a broad dome of stacked dark slate with a misty central plume, and a ring of 22 foaming jets round the dome's foot. The roundabout plaza is paved in grey interlocking pavers with red paver stripes on the boulevard axis, and steel pipe railings line the garden arcs. Coconut palms with coconut clusters line both sides of the boulevard just off each kerb (not on the median, at the client's request), clear of every crossing, street lamp, villa wall and the plaza; the boulevard keeps its white dashed centre line. At the north end the boulevard runs straight onto the Chakroad along the colony's north edge, with a row of alternating mango and neem trees on its far side; there is no wall or gate on that side. At the south, the entrance arch spans the boulevard flush with the fronts of the two shops that flank it (S17 and S18, about `[670, 1200]`), so it joins both shop wings; the white compound wall runs along the west, east and south sides and leaves the entrance road open at `[670, 1270]`, with Shamli Road outside.
+- Villas stand on the plots from the client's site survey: A-15, A-47, B-58, B-38, B-24, A-55, B-44, B-1, B-14, A-34 and C-9, plus one villa across B-61 and B-62 and one across A-41 and A-42 (`VILLA_SITES` in `src/scene/sitePlots.js`); every other plot stays an open lawn. Each villa site has a compound wall with an open sliding gate, a paved forecourt where one to three cars (BMW, Range Rover, Mahindra Scorpio) park nose to the house, front-garden shrubs and trees, and its plot numbers on the villa roof. Plots and shop roofs show live availability from the same records as the 2D map as a coloured outline and light wash: green Available, yellow Reserved (booked), red Sold; plots to confirm stay natural lawn. A counted legend sits in the toolbar. The view has no plot selection, search, booking cards, or enquiry controls. Light traffic (six cars, five motorcycles with riders), pedestrians, people on benches, swaying trees, drifting clouds and the fountain's water animate unless reduced motion is requested. Canopy trees clear all road polygons and the roundabout; the roadside coconut palms stand just off the boulevard's kerbs, their high fronds arching over it above the traffic; young fruit trees line plot edges and the corner park is planted. Rendering adapts to the device (resolution, shadow detail, ambient occlusion and planting density) and steps down automatically when frames run slow. Architecture and landscaping are visual interpretations based on the project photographs, a reference rendering and the printed plan; the plot geometry comes from the original plan.
+- Shared availability, dimensions, areas, facing, prices, and public notes in the separate 2D plot map. Explicit matching source records or saved administrator updates determine status. Missing matches and unrecognized statuses display **Confirm availability**. No unavailable details or prices are invented.
+- A location card, opt-in Google Maps view, FAQs, and an accessible visit-request dialog. The dialog prepares a WhatsApp message for the visitor to send; it does not store enquiries or confirm a visit automatically.
+- Responsive layouts, visible focus states, modal focus management, reduced-motion support, and a 3D fallback when WebGL is unavailable.
+
+## Colony and free map surroundings
+
+“Explore the Colony” opens the existing Three.js colony over Esri World Imagery
+satellite tiles rendered with MapLibre. The default view rotates 90° clockwise.
+It opens in Aerial view with the colony and nearby area visible; Reset restores
+this view. River Green imagery is available through tile level 18. The source
+stops requesting new tiles there and reuses them at closer camera zooms, so
+the provider's unavailable level-19 tiles cannot cover the surroundings.
+The model and surroundings share one camera
+and graphics context, so they stay together during pan, zoom, tilt and rotation.
+The generated countryside, outside town and roadside tree rows are omitted in
+this view. Plot colours still use the shared availability records.
+
+No API key, registration or billing account is needed for the default map.
+Provider attribution stays visible. “Colony only” opens the existing standalone
+visualisation; “Google satellite” opens a separate live satellite map of the
+same place. The satellite iframe has its own camera and does not contain the
+custom 3D model. Directions use the Google Maps URL supplied for River Green.
+If the free map fails to load, the explorer returns to the standalone colony.
+
+The supplied Google directions pin remains unchanged. Four visible paved
+perimeter corners from Esri imagery are recorded in `RIVER_GREEN_SITE_BOUNDARY`,
+excluding the outside forecourt. A single projective registration maps the
+layout plane onto all four corners, preserving straight road edges. Drawing
+strokes extending outside the source boundary are clipped in a map-only copy;
+all 200 plot IDs and 15 roads are retained, and the original plan is unchanged.
+
+Complete houses, shop units, fountain and moving rigs use one local rotation
+and uniform scale per assembly, keeping circles circular and preventing windows,
+roofs or limbs from separating. The end shop's complete assembly is translated
+inward to stay within the perimeter, including its roof label. Site surfaces
+and parapets use the same boundary clip for visible geometry and shadows.
+Material patterns use the original drawing coordinates. Camera bearing remains
+independent of this fit. The source drawing's interior landmarks differ from the
+imagery by around 8–9m; registration prioritizes the perimeter and preserves
+the original interior layout. Satellite corners are visual measurements,
+not surveyed parcel boundaries.
+
+The four fountain gardens retain their registered outer edges; their inner
+recesses, walks, railings, lamps and benches are calculated around the fountain's
+protected circular frame. Inverse registration returns those paths to the
+surface shader's coordinate system, avoiding elliptical paths around a round
+pool. Benches keep their full proportions and face the fountain.
+
+3D modules preload as the section approaches, alongside map initialization.
+The custom layer starts at `style.load`, without waiting for all satellite tiles.
+Map lighting uses a small daylight panorama and 64px environment faces instead
+of rendering a 256px cloud sky into six faces. The standalone sky is retained;
+unchanged plot statuses do not trigger another shadow-map render.
+
+`VITE_COLONY_MAP_FIT_TO_SITE` defaults to `true`. Set it to `false` to use the
+manual anchor, heading and single scale in `.env.example`. Legacy independent
+width/length overrides are ignored. `VITE_COLONY_MAP_STYLE_URL` can replace the
+satellite style while preserving provider attribution.
+
+Implementation: `src/scene/colonyMapScene.js` owns the MapLibre custom layer,
+`src/data/colonySiteFit.js` calculates registration and containment,
+`src/scene/colonyMapFit.js` applies surface and protected assembly placement,
+and `src/scene/colonyMapPlacement.js` supplies the base georeference frame.
+Run `npm run test:map` for corner, containment, geometry, shader and camera checks.
+
+Sources: [Esri World Imagery](https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer),
+[Esri attribution guidance](https://support.esri.com/en-us/knowledge-base/what-is-the-correct-way-to-cite-an-arcgis-online-basema-000012040), and
+[MapLibre custom-layer camera input](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/CustomRenderMethodInput/).
+
+## Internal plot management
+
+Open `/plot-manager` directly. This route is unlisted and is not linked from the public navigation. Authentication is required before editing.
+
+On the local machine, the first visit can create an administrator password of 12–256 characters when no password has been configured. Alternatively, configure `PLOT_ADMIN_PASSWORD` as a server-only environment secret before starting the server. Passwords are hashed; authenticated sessions protect mutations. There is no preset administrator password.
+
+The manager lists all 200 spaces and supports search, status filters, editing availability and details, optional prices, and public notes. Auto-save is enabled by default; manual save, JSON export/import, discarding unsaved changes, and reverting a plot to its source record are also available. Saved updates apply to the public 2D plot map and recolour the plots in the 3D view, without changing the geometry. The 3D view shows status colours only, never booking details.
+
+The Node server uses built-in modules and atomic JSON writes in `server-state/` by default. Configure these server environment values for hosting:
+
+| Variable | Purpose |
+| --- | --- |
+| `PLOT_ADMIN_PASSWORD` | Administrator password supplied through the host's secret configuration. |
+| `PLOT_STATE_DIR` | Writable durable host volume for plot records and local password configuration. |
+| `PLOT_APP_ORIGIN` | The site's HTTPS origin, such as `https://your-domain.example`, for authenticated requests. |
+| `SITE_URL` | The public site address, such as `https://your-domain.example`, used in the canonical link, Open Graph tags, structured data, `robots.txt`, `sitemap.xml` and `llms.txt`. Falls back to `PLOT_APP_ORIGIN`, then the request's host. Set it when building for static hosting so those files are written into `dist/`. |
+| `HOST` / `PORT` | Network listener settings required by the hosting environment. |
+
+The public `GET /api/plots` response contains validated project details and saved public notes, with no buyer, booking, password, or session information. Administrator writes use authenticated API routes. Public views refresh shared records every 30 seconds while visible and when focus or visibility returns; BroadcastChannel and a browser storage notification synchronize other tabs after a save. The external public source is checked on initial load or an explicit source refresh, with the dated local snapshot retained when it is unreachable. Saved server updates take precedence over source records.
+
+## Edit content
+
+| Content or behavior | Editing path |
+| --- | --- |
+| Project copy, sections, contacts and enquiries | `src/App.jsx` |
+| SEO facts, “At a glance” facts, FAQs (English and Hindi) and schema.org structured data | `src/data/seo.js` (`npm run test:seo`) |
+| Search-engine files (`robots.txt`, `sitemap.xml` with images, `llms.txt`) and the site origin | `server/seo.mjs` |
+| Page title, description, canonical, Open Graph and share image | `index.html` and `public/og-image.jpg` (title and description must match `src/data/seo.js`) |
+| Active theme and responsive styling | `src/premium.css` (palette, typography and reveal styles, loaded last) over `src/residence.css`, `src/modern.css`, and `src/styles.css`; the intro curtain is in `index.html`; earlier `daylight.css`, `luxury.css` and `professional.css` themes are inactive |
+| Current lightly planted desktop/phone heroes and exact prompts | `public/images/editorial-hero/open-provenance.json`, `open-landscape-prompt.txt` and `open-portrait-prompt.txt` |
+| Full HD views, responsive variants, native AI outputs and complete prompt set | `public/images/hd/` and its `provenance.json`; delivery metadata in `src/data/imageAssets.json` |
+| Family entrance hero, Full HD layers, mobile portrait and prompts | `public/images/hero-family/` and its `provenance.json` |
+| Earlier hero layers and generation provenance | `public/images/hero-layers/` and its `provenance.json` |
+| Scrolling, hero parallax, entrance animation, and section reveals | `src/hooks/useSiteMotion.js` |
+| Gallery captions, categories, and source order | `src/data/gallery.js` |
+| Original 2D layout and decorative vehicles | `src/data/plotLayout.jsx` and `src/data/plotVehicles.jsx` |
+| 3D polygons, roads, and canonical plot IDs | `src/data/threePlotGeometry.json` and `src/data/plotIds.json` |
+| Shared client records, refresh, and save behavior | `src/data/plotStore.js` |
+| Public source fallback | `src/data/plotAvailability.json` |
+| 2D map interaction and styling | `src/components/PlotMap.jsx` and `src/components/PlotMap.css` |
+| 3D view shell, toolbar, legend and zoom pad | `src/components/CommunityScene.jsx` and `src/components/CommunityScene.css` |
+| 3D scene: camera, controls, quality tiers and module loading | `src/scene/colonyScene.js` and `src/scene/kit.js` |
+| 3D sky, lighting and post-processing | `src/scene/sky.js` and `src/scene/post.js` |
+| 3D roads, lawns, availability colours and plot numbers | `src/scene/ground.js` |
+| 3D plaza from the printed plan (roundabout, gardens, fountain, median palms) | `src/scene/plazaLayout.js`, `src/scene/plaza.js`, `src/scene/plaza-fountain.js` and `src/scene/plaza-palms.js` |
+| 3D Chakroad and its tree row | `src/scene/chakroad.js` |
+| 3D wall, arch, shops, villas, parked cars and street lamps | `src/scene/architecture*.js` |
+| Villa plots, forecourts, parked cars and villa gardens (layout) | `src/scene/sitePlots.js` (`node --test src/scene/sitePlots.test.js`) |
+| 3D town of Shamli and the road sign | `src/scene/city*.js` |
+| 3D trees, palms and hedges | `src/scene/vegetation*.js` (`node --test src/scene/vegetation-layout.test.js`) |
+| 3D farmland, sugarcane, tree belts and Shamli Road | `src/scene/countryside*.js` |
+| 3D traffic and people | `src/scene/life.js` |
+| Authenticated manager | `src/components/PlotManager.jsx` and `src/components/PlotManager.css` |
+| Persistent records and authentication API | `server/plot-store.mjs` and `server/plot-api.mjs` |
+| Production server and development/preview API integration | `server/index.mjs`, `server/vite-plugin.mjs`, and `vite.config.js` |
+| Local variable fonts, licenses, and provenance | `public/fonts/fonts.css` and `public/fonts/font-sources.json` |
+| Road-clear planting and entrance opening | `src/data/sceneLandscape.js` (`npm run test:scene`) |
+
+## Search and AI visibility
+
+The page targets searches such as residential plots in Shamli, colonies in Shamli and property on Shamli Road, without inventing prices, distances, approvals or rankings.
+
+- Title “River Green Colony Shamli | Residential Plots on Shamli Road”, a 153-character description, `en-IN` language, a canonical link, Open Graph and Twitter cards with a 1200 × 630 share image (`public/og-image.jpg`, used by WhatsApp and Facebook previews) and `IN-UP` / Shamli geo tags.
+- schema.org JSON-LD built from `src/data/seo.js`: the developer (Organization), the website, the colony (Residence, with address, map link, photographs and amenities), its sales office (RealEstateAgent) and an FAQPage. Coordinates are added only when `SITE.geo` holds the confirmed entrance pin.
+- An “At a glance” section (between location and FAQs) states the key facts, including a Hindi line. FAQ answers stay in the page while collapsed, so search engines read them; they include questions searchers ask, such as plots near Shamli and choosing a colony in Shamli, plus one in Hindi.
+- `robots.txt` (blocking `/plot-manager` and `/api/`), `sitemap.xml` with all project images and `llms.txt` (a plain summary for AI answer engines) are generated for the site's origin. `/plot-manager` also sends `noindex`.
+
+Steps that only the owners can take, and which matter most for “near me” searches: create and verify a Google Business Profile for River Green Colony at the entrance (category: real estate developer or housing development, the same name, address and phone as this site, photographs, and this website); add the site to Google Search Console and Bing Webmaster Tools and submit `sitemap.xml`; collect genuine buyer reviews; list the project with the same details on property portals and local directories; and link to the site from defencegarden.com.
+
+## Sources and assets
+
+Public project information was inspected on 7 October 2026 using https://defencegarden.com/, https://defencegarden.com/project/1, and their public project bundles. Project-specific details include River Green Society, project 1, Shamli, ongoing status, a 2024 flagship township, landscaped fountain plaza, wide internal roads, and a live plot-booking map.
+
+Sales: **+91 99276 69955**. Email: **defencegarden009@gmail.com**. Directions: **River Green Colony, Shamli Road, Mundet, Shamli, Uttar Pradesh 247776**. The sales team can confirm current availability, measurements, prices, and payment terms. Regulatory numbers and shared-template project measurements are not independently asserted.
+
+`public/images/gallery-manifest.json` records all 11 original gallery URLs, ordering, dimensions, file sizes, and hashes. The originals, project film and prior lighting edits in `public/images/enhanced/` are preserved. The active gallery, features, overview aerial and fountain inset, location aerial, film banner and video poster now use realistic AI visualisations under `public/images/hd/`. Existing unfinished houses are shown completed within their footprints, with construction materials and debris removed. These images illustrate a finished appearance; they do not document current construction progress. Gallery and aerial captions identify them as visualisations.
+
+Full-size landscape delivery assets are 1920 × 1440 (gallery) or 1920 × 1080 (aerials and hero layers); the portrait fountain retains its aspect ratio at 1920 pixels tall. Full-size assets and transparent layers use lossless WebP. The browser selects 640/960/1280px variants through `srcSet` and crop-aware `sizes`; opaque smaller versions use quality 96. The built-in ImageGen tool returned smaller native outputs despite higher-resolution requests. The Full HD files are carefully Lanczos-resampled exports of the AI-restored scenes, not native 4K generations. Scaling does not add genuine source detail. `public/images/hd/source/` retains the selected native outputs; `provenance.json` records every prompt, source, native and delivered dimensions, resampling and file hashes.
+
+The active desktop hero uses `public/images/editorial-hero/open-landscape-3840.webp` with 1280/1920/2560 variants; the phone source uses `open-portrait-1440.webp` with 720/1080 variants. Built-in ImageGen reframed the existing visual with open sky and replaced dense tree canopies with spaced young trees, low hedges and open plots. Real-ESRGAN super-resolution followed by quality-92 WebP exports improves high-density delivery. These are upscaled AI visualisations, not native 4K photographs. Exact prompts, native sources, dimensions, hashes and processing are saved beside them. Previous images and transparent layers are preserved but inactive in the hero. Original photographs and the plot plan remain authoritative.
+
+The fountain amenity panel uses `public/images/fountain-evening/fountain-families.webp`, an evening AI visualisation with two families seated on benches around the actual fountain design. Its 4:5 frame keeps both groups visible on desktop and mobile. Native output, responsive exports and the full built-in ImageGen prompt are preserved in that folder and its `provenance.json`; the 1536 × 1920 export is resampled from the 1122 × 1402 generated source. The original daytime fountain and other amenity photos remain preserved.
+
+`public/branding/river-green-wordmark.png` is a transparent raster reproduction of the physical gate lettering, extracted and cleaned with built-in ImageGen. `public/branding/logo-provenance.json` records its source and generation details. Official Defence Garden logo files remain in `public/images/`.
+
+`public/docs/map-sources.json` records the original plan component, public availability endpoint, retrieval date, and coordinate space. The sparse fallback snapshot was retrieved on 7 October 2026; it does not establish availability for every cell on the layout.
+
+Active typography uses self-hosted Instrument Serif for uppercase headlines, Mrs Saint Delafield for the script accents, and Mona Sans (variable weight and width) for labels, controls and body copy. Cormorant Garamond and DM Sans remain as inactive assets. Official SIL Open Font Licenses and provenance are in `public/fonts/`. The physical gate wordmark remains the logo. Fonts, imagery, video, geometry and 3D load locally. Live external availability, Google Maps, external project links and sending WhatsApp messages require internet access.
+
+## Validation
+
+```sh
+npm run test:server
+```
+
+`npm run test:seo` checks the structured data, page head, search-engine files and origin handling. Eight backend test cases passed. Separate DOM validation passed 12 public interaction groups and five manager interaction groups with mocked fetch responses. These checks did not configure a real administrator password, alter actual plot records, or send enquiries. DOM interaction checks do not establish WebGL visual quality; graphics are reviewed separately. The 3D colony was reviewed in GPU screenshots of all four views at desktop and phone sizes and at the low quality tier, with no console errors; `npm run test:scene`, `node --test src/scene/vegetation-layout.test.js` and `node --test src/scene/sitePlots.test.js` (parked cars stay on the paving, clear of the houses, steps, plants and each other) pass. The current redesign passes 16 public interaction groups, including scroll-direction header visibility, mobile navigation, dialogs, plot search and booking validation, map placement immediately before the footer, and full River Green Colony branding. The existing four road-clearance tests also passed. The production build passes. The reduced-tree entrance hero, clearer typography, sage gradients and map-to-footer layout were visually reviewed at desktop and narrow widths; hero imagery and text remain visible during the introductory animation.

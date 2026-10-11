@@ -1,0 +1,105 @@
+{
+  "created": "2026-10-07",
+  "purpose": "Reduced-density landscaping and more natural photographic detail, as requested by the user.",
+  "generationMode": "built-in image_gen.imagegen edits",
+  "note": "Architectural visualisations, not documentary photographs. The native outputs were1672\u00d7941 landscape and941\u00d71672 portrait; larger files are super-resolution delivery assets.",
+  "postProcessing": {
+    "engine": "Real-ESRGAN ncnn Vulkan v0.2.0",
+    "engineSource": "https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/releases/tag/v0.2.0",
+    "model": "RealESRGAN_General_x4_v3",
+    "modelSource": "https://github.com/upscayl/custom-models/tree/main/models",
+    "modelAliasForCli": "realesrgan-x4plus",
+    "scale": 4,
+    "tileSize": 256,
+    "delivery": "cwebp -q 92 -m 6 -resize WIDTH 0; aspect ratio preserved"
+  },
+  "images": {
+    "landscape": {
+      "source": "source/open-landscape.png",
+      "nativeDimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "sourceBytes": 2098190,
+      "sourceSha256": "3da538669373d75e6268df5e7085f5c0cda2addd7c602790fdf4a1908def2354",
+      "promptFile": "open-landscape-prompt.txt",
+      "promptSha256": "44434bb674523c380edd328cc3fe2fe3709e587bd3538323a85c9c1e81c475d0",
+      "editTarget": "source/arrival-landscape.png",
+      "supportingReference": null,
+      "superResolutionDimensions": {
+        "width": 6688,
+        "height": 3764
+      },
+      "variants": [
+        {
+          "src": "/images/editorial-hero/open-landscape-1280.webp",
+          "width": 1280,
+          "height": 721,
+          "bytes": 175240,
+          "sha256": "8cbce3d8a39ac1e1f82cdf6631e5ebb2c62f5efb21ea825c53b2ae014d5452b9"
+        },
+        {
+          "src": "/images/editorial-hero/open-landscape-1920.webp",
+          "width": 1920,
+          "height": 1081,
+          "bytes": 322096,
+          "sha256": "71f8da47a3adba3217e4567e652788cffb1d5885fa9deb34b51df287bdc50506"
+        },
+        {
+          "src": "/images/editorial-hero/open-landscape-2560.webp",
+          "width": 2560,
+          "height": 1441,
+          "bytes": 472404,
+          "sha256": "05e99f93f041cb4d936e90528cc46e5d2ff5b8b91882c6c165b5352c24a060db"
+        },
+        {
+          "src": "/images/editorial-hero/open-landscape-3840.webp",
+          "width": 3840,
+          "height": 2162,
+          "bytes": 787142,
+          "sha256": "689e3aca26cfe8b3d17d1cc413366710c305f6770fbd4fb44ad84706c6875450"
+        }
+      ]
+    },
+    "portrait": {
+      "source": "source/open-portrait.png",
+      "nativeDimensions": {
+        "width": 941,
+        "height": 1672
+      },
+      "sourceBytes": 2035280,
+      "sourceSha256": "0ec82ba7df4fa9c41d21ddd297fd9d9064ed0b91bee368d77b5259477336859f",
+      "promptFile": "open-portrait-prompt.txt",
+      "promptSha256": "9d65056a9d6004dda8905bdf4cda496605e34231b2f30e3d9d20bd25ac20dfcb",
+      "editTarget": "source/arrival-portrait.png",
+      "supportingReference": "source/open-landscape.png",
+      "superResolutionDimensions": {
+        "width": 3764,
+        "height": 6688
+      },
+      "variants": [
+        {
+          "src": "/images/editorial-hero/open-portrait-720.webp",
+          "width": 720,
+          "height": 1280,
+          "bytes": 156408,
+          "sha256": "caa4b6537581b97beb069073308cedf45bb6a9024b974a600c9db481490ad774"
+        },
+        {
+          "src": "/images/editorial-hero/open-portrait-1080.webp",
+          "width": 1080,
+          "height": 1919,
+          "bytes": 284790,
+          "sha256": "06b4ffaaace1e59d32d231ead4c72d0e72d478a6782618106dfc5ee2ff8e2c07"
+        },
+        {
+          "src": "/images/editorial-hero/open-portrait-1440.webp",
+          "width": 1440,
+          "height": 2559,
+          "bytes": 417644,
+          "sha256": "4e707f2c0a418e8a5ec3e173867106e88ad6ae720dfe639072a3ff9ca56fcf26"
+        }
+      ]
+    }
+  }
+}

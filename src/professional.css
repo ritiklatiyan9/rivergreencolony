@@ -1,0 +1,111 @@
+/* Readable, confident typography with a calm residential identity. */
+:root { --green: #183b2d; --cream: #f7f8f2; --ink: #192d25; --muted: #66746a; --line: #dce3d8; --gold: #bb965e; font-family: 'HW Cigars', Georgia, serif; font-synthesis: weight; background: var(--cream); color: var(--ink); }
+body, button, input, select, textarea { font-family: 'HW Cigars', Georgia, serif; font-weight: 500; }
+h1,h2,h3,h1 em,h2 em,.overview-copy .lead-copy,.display-preline,.hero-preline,.hero-facts strong,.marquee-track,.project-details strong,.chapter-number,.gallery-caption h3,.visit-modal h2,.lightbox-bottom h3 { font-family: 'HW Cigars', Georgia, serif; }
+h2,.overview-copy h2,.features-section h2,.location-copy h2,.faq-intro h2,.experience-heading h2,.gallery-heading h2,.visit-content h2,.plot-map-heading h2 { font-size: clamp(38px,4.5vw,65px); font-weight: 500; line-height: 1.13; letter-spacing: -1.3px; }
+h1 em,h2 em { font-weight: inherit; font-style: normal; color: #52804e; }
+p { line-height: 1.8; }
+.eyebrow { font-size: 11px; font-weight: 750; letter-spacing: 1.5px; color: #556a5a; }
+.eyebrow > span { background: #70925f; width: 5px; height: 5px; }
+.eyebrow-light { color: #d4dfce; }.eyebrow-light > span { background: #adc499; }
+.section-side-note { font-size: 12px; color: #748071; }
+.text-link { font-size: 13px; font-weight: 650; letter-spacing: 0; border-color: #7a9470; }
+.button { border-radius: 7px; min-height: 54px; font-size: 13px; font-weight: 750; letter-spacing: 0; }
+.button-green { background: #204735; border: 1px solid #204735; color: #fff; }.button-green:hover { background: #2f5e42; }
+.button-gold { background: #dbc393; border-color: #dbc393; }
+.button-cream { background: #f0f3e7; color: #213d2e; }
+.scroll-progress { background: #658758; }
+.site-header { top: 20px; width: calc(100% - 48px); max-width: 1560px; background: #fcfcf2f2; border: 1px solid #d7dfd1; border-radius: 12px; box-shadow: 0 7px 35px #20372912; }
+.header-inner { height: 84px; gap: 25px; padding: 0 30px; }
+.desktop-nav { gap: 23px; }.desktop-nav a { font-size: 13px; font-weight: 700; color: #314a39; text-transform: none; letter-spacing: 0; }
+.header-visit { font-size: 13px; font-weight: 700; color: #fff; background: #234b36; border-color: #234b36; border-radius: 6px; padding: 12px 15px; text-transform: none; letter-spacing: 0; }.header-visit:hover { background: #376245; }
+.brand small { font-size: 7px; font-weight: 650; letter-spacing: 2px; color: #65755a; padding-top: 4px; }
+.hero { height: 100svh; min-height: 850px; max-height: 1150px; color: #183a2a; background: #e8eee0; }
+.hero-image { object-position: 64% center; }.hero-media { top: -5%; height: 110%; }
+.hero-depth-layer { position: absolute; inset: 0; will-change: transform; pointer-events: none; }
+.hero-depth-layer img { width: 100%; height: 100%; object-fit: cover; object-position: 64% center; }
+.hero-layer-architecture { z-index: 0; }.hero-layer-clouds { z-index: 1; opacity: .12; mask-image: linear-gradient(#000 0%,#000 15%,transparent 43%); }.hero-layer-trees { z-index: 2; }
+/* Keep the foliage's cut bottom edge below the hero, including at its maximum
+   -22.4% parallax translation. The hero wrapper clips the extra image area. */
+.hero-layer-greenery { z-index: 3; bottom: -30%; }
+.hero-cloud-drift { position: absolute; inset: -2% -8%; animation: river-cloud-drift 55s ease-in-out infinite alternate; animation-play-state: paused; }
+.hero-image-wrap.is-in-view .hero-cloud-drift { animation-play-state: running; }
+@keyframes river-cloud-drift { from { transform: translate3d(-3%,0,0); } to { transform: translate3d(3%,-1%,0); } }
+/* Concentrate the light scrim behind the copy, leaving the gate and sky clear. */
+.hero-shade { background: linear-gradient(90deg,#f7f8f2ed 0%,#f7f8f2d9 19%,#f7f8f2ad 34%,#f7f8f240 49%,transparent 64%),linear-gradient(0deg,#f3f5ec66 0%,transparent 18%); }
+.hero-frame { display: none; }
+.hero-topline { top: 175px; left: 6.3vw; right: auto; justify-content: flex-start; }.hero-topline .eyebrow { color: #466845; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; }
+.hero-content { text-align: left; left: 6.3vw; right: auto; top: 45%; width: 61%; max-width: 870px; padding: 0; }
+.hero-preline { font-size: 19px; font-weight: 600; font-style: normal; line-height: 1.5; letter-spacing: -.25px; color: #4a6550; padding: 0; margin-bottom: 14px; }
+.hero h1 { font-family: 'HW Cigars', Georgia, serif; font-size: clamp(64px,6.6vw,98px); font-weight: 500; line-height: 1.1; letter-spacing: -2px; margin: 0; padding: 0; color: #173c29; }
+.hero .hero-topline { position: static; justify-content: flex-start; margin-bottom: 24px; }
+.hero h1 em { font-family: 'HW Cigars', Georgia, serif; background: none; color: #58834a; font-weight: 500; }
+.hero-subline { font-size: 15px; line-height: 1.8; letter-spacing: 0; color: #4e6554; margin-top: 25px; max-width: 465px; font-weight: 550; }
+.hero-description { justify-content: flex-start; margin-top: 30px; gap: 12px; }
+.hero-description .button { min-width: 183px; padding: 16px 22px; font-size: 13px; min-height: 55px; text-transform: none; letter-spacing: 0; }
+.hero .button-outline { background: #fafbf4a6; border: 1px solid #7d967080; color: #244b32; }.hero .button-outline:hover { background: #f8faf0; border-color: #6f8860; }
+.hero-facts { bottom: 94px; left: 6.3vw; width: min(800px,75%); transform: none; grid-template-columns: repeat(3,1fr); border: 1px solid #cbd8be; background: #f7f9f0db; backdrop-filter: blur(12px); padding: 24px 22px; border-radius: 9px; box-shadow: 0 8px 30px #3355240b; }
+.hero-facts > div { text-align: left; border-color: #b5c6a66e; padding-left: 23px; }.hero-facts > div:first-child { padding-left: 0; }
+.hero-facts strong { font-size: 18px; line-height: 1.2; font-weight: 750; color: #234530; }.hero-facts span { font-size: 8px; line-height: 1.4; font-weight: 700; color: #66795c; letter-spacing: .7px; margin-top: 9px; }
+.hero-bottom { bottom: 30px; justify-content: space-between; gap: 20px; }
+.hero-bottom .scroll-cue { flex-direction: row; font-size: 8px; color: #41613e; font-weight: 750; letter-spacing: 1px; gap: 12px; }.hero-bottom .scroll-cue > span { width: 29px; height: 29px; border-color: #617e5655; }
+.hero-status { position: static; right: auto; display: block; font-size: 10px; font-weight: 550; color: #3a573d; letter-spacing: 0; background: #f9fcf099; padding: 7px 11px; border-radius: 4px; }
+.hero-side-label,.hero-motion-control { display: none; }
+.heritage-marquee { padding: 27px 0 30px; background: #193b29; color: #edf3e8; }
+.marquee-track { font-size: clamp(23px,2.8vw,40px); font-weight: 600; line-height: 1.3; letter-spacing: -1px; }.marquee-track-gold { font-style: normal; color: #abc29a; margin-top: 8px; font-weight: 500; }.marquee-track i { color: #b1c59d; font-size: 9px; }
+.overview,.features-section,.gallery-section,.faq-section,.philosophy-section { background: #f7f8f2; }
+.overview-copy .lead-copy { font-size: 20px; font-weight: 650; line-height: 1.5; color: #47694b; }.overview-copy > p:not(.lead-copy) { font-size: 14px; color: #6a786a; }
+.overview-photo { border-radius: 14px; }.nature-stamp { border: 4px solid #f7f8f2; background: #dfead5; color: #41653c; right: -22px; transform: rotate(5deg); }
+.photo-caption { font-size: 11px; }.photo-caption > span:last-child { font-size: 9px; font-weight: 650; }
+.project-details strong { font-size: 17px; font-weight: 750; }.project-details small { font-size: 9px; font-weight: 750; color: #79886c; }.project-details i { background: #789761; }
+.philosophy-section h2 { font-size: clamp(28px,3.1vw,45px); font-weight: 600; line-height: 1.42; letter-spacing: -1.6px; color: #2c4a32; max-width: 1150px; }
+.philosophy-section .eyebrow { font-size: 10px; color: #778869; }
+.plot-map-section { background: #193b2b; }.plot-map-heading h2 { color: #f4f6ec; }.plot-map-heading h2 em { color: #afc69b; }.plot-map-heading > p { font-size: 13px; color: #c1ceba; max-width: 345px; }.plot-source-link { font-size: 11px; color: #becfb0; }
+.display-preline { font-style: normal; font-size: 15px; font-weight: 650; color: #a6bf91; margin-bottom: 17px; }
+.experience { background: #eaf0e4; padding-left: 0; padding-right: 0; padding-top: 95px; }
+.experience > .section-top,.experience > .experience-heading { margin-left: 6.3vw; margin-right: 6.3vw; }
+.experience-heading p { font-size: 13px; color: #72826b; }.experience-heading h2 em { color: #527447; }
+.experience-grid { display: flex; flex-direction: column; gap: 0; margin-top: 35px; align-items: stretch; }
+.scene-area { height: 780px; width: 100%; margin: 0; border-top: 1px solid #d0dcc8; border-bottom: 1px solid #d0dcc8; }
+.scene-disclaimer { position: static; display: block; padding: 14px 6.3vw 0; font-size: 10px; font-weight: 550; color: #617557; }
+.experience-copy { max-width: none; margin: 32px 6.3vw 0; padding: 0; display: grid; grid-template-columns: 1.05fr 1.3fr auto; gap: 32px; align-items: start; }
+.chapter-tabs { border: 0; padding: 0; gap: 6px; }.chapter-tabs button { font-family: 'HW Cigars', Georgia, serif; font-weight: 700; font-size: 11px; padding: 13px 15px; border: 1px solid #c5d4b8; border-radius: 6px; white-space: nowrap; color: #5f7752; }.chapter-tabs button.active { background: #274c32; border-color: #274c32; color: #fff; }.chapter-tabs button:hover:not(.active) { background: #dce8d2; }
+.chapter-number { display: none; }.chapter-content { padding: 0; min-height: 130px; }.chapter-content h3 { font-size: 25px; font-weight: 700; letter-spacing: -.8px; margin-bottom: 12px; }.chapter-content p { font-size: 13px; max-width: 480px; color: #6f8063; }.experience-copy > .text-link { margin-top: 8px; white-space: nowrap; }.experience-footnote { display: none; }
+.features-intro { font-size: 14px; }.feature-item button { font-size: 15px; font-weight: 700; }.feature-item p { font-size: 13px; color: #687a61; }.feature-icon { color: #719458; }.feature-photo-wrap { border-radius: 13px; }.feature-photo-label { font-size: 9px; font-weight: 700; }
+.film-banner-content h2 { font-size: clamp(55px,6vw,80px); font-weight: 700; letter-spacing: -3px; }.film-banner-content h2 em { color: #d9e7c9; }
+.film-banner-shade { background: radial-gradient(ellipse at 50% 50%,#1024188c 0%,#10241838 75%),linear-gradient(0deg,#10241866,transparent 50%); }
+.gallery-heading > p { font-size: 14px; color: #728169; }.gallery-filters button { font-size: 12px; font-weight: 700; border-radius: 6px; padding: 11px 17px; }.gallery-filters button.active { background: #dce8d1; border-color: #bbcfaa; color: #33512c; }
+.gallery-image { border-radius: 10px; }.gallery-tag { background: #f8faf0e8; color: #46623d; font-size: 10px; font-weight: 700; }.gallery-caption h3 { font-size: 20px; font-weight: 700; line-height: 1.3; letter-spacing: -.5px; }.gallery-caption p { font-size: 12px; color: #7e8a73; margin-top: 5px; }
+.location-section { background: #193b2c; }.location-copy h2 em { color: #bbd2a5; }.location-copy > p { font-size: 14px; color: #c1ceba; }.location-address { color: #e1eacb; }.location-coordinates { font-size: 10px; color: #a9c397; }.location-visit-link { font-size: 12px; }.location-map { border-radius: 12px; }
+.faq-intro p,.faq-item p { font-size: 14px; }.faq-item button { font-size: 14px; font-weight: 700; }
+.visit-section { background: #e3ecd6; }.visit-content p { font-size: 15px; color: #738364; }.visit-content .eyebrow { color: #6b8057; }.visit-bottom-note { font-size: 9px; font-weight: 700; color: #78886a; }
+.site-footer { background: #f0f4e9; }.footer-brand p { font-size: 12px; }.footer-nav a,.footer-contact a,.footer-contact > span { font-size: 12px; color: #627456; }.footer-contact small,.footer-nav small { font-size: 10px; font-weight: 750; color: #849671; }.footer-developer { font-size: 8px; font-weight: 700; }.footer-bottom { font-size: 10px; color: #819373; }
+.visit-modal h2 { font-size: 43px; font-weight: 750; letter-spacing: -1.8px; }.visit-modal label { font-family: 'HW Cigars', Georgia, serif; font-size: 12px; font-weight: 700; }.visit-modal input,.visit-modal select { font-size: 14px; }.visit-modal .eyebrow { font-size: 9px; }.selected-plot-note { font-size: 13px; background: #e3ecd7; color: #46633b; border-radius: 6px; }
+.lightbox-bottom h3 { font-size: 23px; font-weight: 700; letter-spacing: -.5px; }.film-modal h2 { font-size: 35px; font-weight: 700; letter-spacing: -1px; }
+.manager-loading { min-height: 100svh; display: grid; place-items: center; color: #335739; background: #f3f6ef; font-weight: 650; }
+@media(min-width:1600px) { .hero-content { left: max(6.3vw,calc((100vw - 1600px)/2)); }.hero-topline,.hero-facts { left: max(6.3vw,calc((100vw - 1600px)/2)); } }
+@media(max-width:1100px) {
+  .site-header { width: calc(100% - 36px); top: 18px; }.header-inner { padding: 0 21px; gap: 18px; }.desktop-nav { gap: 15px; }.desktop-nav a { font-size: 10px; }.header-visit { font-size: 10px; padding: 11px; }.brand-wordmark { width: 182px; }
+  .hero h1 { font-size: 73px; letter-spacing: -1.5px; }.hero-content { width: 65%; top: 44%; }.hero-topline { top: 165px; }.hero-facts { width: 84%; }.hero-facts strong { font-size: 17px; }
+  .experience-copy { grid-template-columns: 1.2fr 1.5fr; gap: 28px; }.experience-copy > .text-link { grid-column: 1; grid-row: 2; }.chapter-content { grid-column: 2; grid-row: 1 / span 2; }.scene-area { height: 720px; }
+}
+@media(max-width:850px) {
+  .site-header { top: 15px; }.header-inner { height: 73px; }.desktop-nav { display: none; }.brand small { font-size: 6px; }.mobile-visit { background: #2d5538; border: 0; color: #fff; width: 35px; height: 35px; }.menu-toggle { color: #2f5035; }.mobile-nav a { font-size: 14px; font-weight: 700; }
+  .hero { min-height: 880px; }.hero-content { width: 76%; top: 43%; }.hero-topline { top: 154px; }.hero h1 { font-size: 75px; }.hero-shade { background: linear-gradient(90deg,#f7f8f2ed 0%,#f7f8f2c4 35%,#f7f8f259 64%,transparent 90%),linear-gradient(0deg,#f3f5ec55,transparent 22%); }.hero-subline { font-size: 14px; }.hero-facts { width: 87.4%; }.hero-facts span { font-size: 7px; }
+  h2,.overview-copy h2,.features-section h2,.location-copy h2,.faq-intro h2,.experience-heading h2,.gallery-heading h2,.visit-content h2,.plot-map-heading h2 { font-size: 50px; letter-spacing: -2px; }.overview-copy .lead-copy { font-size: 18px; }.project-details strong { font-size: 15px; }.scene-area { height: 660px; }
+}
+@media(max-width:600px) {
+  .site-header { top: 12px; width: calc(100% - 24px); }.header-inner { height: 69px; padding: 0 15px; gap: 13px; }.brand small { font-size: 5px; }.mobile-visit { width: 30px; height: 30px; }.menu-toggle svg { width: 21px; }
+  .hero { height: auto; min-height: 850px; max-height: none; }.hero-topline { top: 130px; left: 7vw; }.hero-topline .eyebrow { font-size: 9px; letter-spacing: .9px; }.hero-content { left: 7vw; right: 7vw; top: 35%; width: auto; padding: 0; }.hero-preline { font-size: 14px; margin-bottom: 15px; }.hero h1 { font-size: clamp(44px,11.7vw,65px); letter-spacing: -1px; line-height: 1.13; }.hero-subline { font-size: 13px; line-height: 1.8; margin-top: 20px; max-width: 330px; }.hero-description { flex-direction: row; margin-top: 23px; gap: 9px; }.hero-description .button { width: auto; min-width: 0; font-size: 11px; padding: 14px 16px; min-height: 49px; gap: 9px; }.hero-description .button svg { width: 15px; }
+  .hero-image { object-position: 72% center; }.hero-shade { background: linear-gradient(180deg,#f7f8f26b 0%,#f7f8f2de 24%,#f7f8f2d1 45%,#f7f8f22e 66%,#f7f8f266 100%); }
+  .hero-depth-layer img { object-position: 72% center; }.hero-layer-clouds { opacity: .18; }
+  .hero-facts { left: 7vw; bottom: 78px; width: 86%; grid-template-columns: 1fr; padding: 19px 21px; row-gap: 13px; background: #f7faf0d9; }.hero-facts > div { padding: 0; border: 0; display: flex; align-items: center; justify-content: space-between; gap: 15px; }.hero-facts strong { font-size: 13px; flex-shrink: 0; }.hero-facts span { font-size: 6px; letter-spacing: .2px; margin: 0; max-width: 140px; text-align: right; line-height: 1.4; }
+  .hero-bottom { bottom: 21px; left: 7vw; right: 7vw; align-items: center; gap: 12px; }.hero-bottom .scroll-cue { font-size: 6px; letter-spacing: .4px; gap: 6px; }.hero-bottom .scroll-cue > span { width: 22px; height: 25px; }.hero-status { font-size: 6px; line-height: 1.5; max-width: 140px; padding: 4px 6px; }
+  h2,.overview-copy h2,.features-section h2,.location-copy h2,.faq-intro h2,.experience-heading h2,.gallery-heading h2,.visit-content h2,.plot-map-heading h2 { font-size: 39px; font-weight: 500; letter-spacing: -.7px; }.eyebrow { font-size: 9px; letter-spacing: 1px; }.section-side-note { font-size: 9px; }.text-link { font-size: 12px; }.overview-copy .lead-copy { font-size: 18px; }.overview-copy > p:not(.lead-copy) { font-size: 13px; }.project-details strong { font-size: 15px; }.project-details small { font-size: 8px; }.nature-stamp { width: 95px; height: 95px; right: -15px; }
+  .heritage-marquee { padding: 24px 0; }.marquee-track { font-size: 27px; letter-spacing: -.6px; }.philosophy-section h2 { font-size: 27px; line-height: 1.4; letter-spacing: -.8px; }.philosophy-section .eyebrow { font-size: 8px; }.plot-map-heading > p { font-size: 12px; }.plot-source-link { font-size: 9px; }.display-preline { font-size: 13px; }
+  .experience { padding-top: 64px; padding-left: 0; padding-right: 0; }.experience-heading p { font-size: 12px; }.experience > .section-top,.experience > .experience-heading { margin-left: 7vw; margin-right: 7vw; }.scene-area { height: 600px; margin: 0; }.scene-disclaimer { font-size: 8px; padding: 12px 22px 0; }.experience-copy { display: flex; flex-direction: column; margin: 24px 7vw 0; gap: 22px; }.chapter-tabs { gap: 5px; width: 100%; }.chapter-tabs button { font-size: 10px; padding: 11px; flex: 1; justify-content: center; }.chapter-content { min-height: 135px; }.chapter-content h3 { font-size: 25px; }.chapter-content p { font-size: 12px; }.experience-copy > .text-link { margin-top: 0; }
+  .gallery-caption h3 { font-size: 19px; }.gallery-caption p { font-size: 11px; }.gallery-heading > p { font-size: 12px; }.gallery-filters button { font-size: 10px; padding: 9px 11px; }.gallery-tag { font-size: 9px; }.film-banner-content h2 { font-size: 49px; letter-spacing: -2px; }.feature-item button { font-size: 13px; }.feature-item p { font-size: 12px; }.faq-item button { font-size: 13px; }.faq-intro p,.faq-item p { font-size: 13px; }.location-copy > p { font-size: 13px; }.location-coordinates { font-size: 8px; }.visit-content p { font-size: 13px; }
+  .footer-contact a,.footer-contact > span,.footer-nav a { font-size: 11px; }.footer-brand p { font-size: 11px; }.footer-bottom { font-size: 9px; }.visit-modal h2 { font-size: 34px; letter-spacing: -1.2px; }.film-modal h2 { font-size: 28px; }.lightbox-bottom h3 { font-size: 19px; }
+}
+@media(max-width:360px) { .hero h1 { font-size: 43px; }.hero-description .button { font-size: 10px; padding: 13px; }.hero-status { max-width: 122px; }.hero-facts { padding: 18px 15px; }.hero-facts strong { font-size: 12px; }.hero-facts span { font-size: 5.5px; }.chapter-tabs button { font-size: 9px; padding: 11px 8px; } }
+@media(prefers-reduced-motion:reduce) { .hero-depth-layer { will-change: auto; }.hero-cloud-drift { animation: none; } }

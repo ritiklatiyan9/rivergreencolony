@@ -1,0 +1,62 @@
+{
+  "created": "2026-10-07",
+  "purpose": "High-density responsive hero delivery for the River Green Colony landing page.",
+  "originalAsset": "/images/hd/entrance-family.webp",
+  "generation": {
+    "tool": "image_gen.imagegen",
+    "operation": "Quality-focused restoration of the existing entrance visual, preserving the gate, family placement, architecture, blue sky and terracotta paving.",
+    "nativeOutput": {
+      "width": 1672,
+      "height": 941
+    },
+    "source": "source/entrance-family-restored.png",
+    "sourceBytes": 2650299,
+    "sourceSha256": "9766968e5c7463b45c3d34e755545b90fedb1f55cbf2c762b3392912cc06c0da",
+    "note": "The native restored image is not 4K. The larger delivery images were produced with the super-resolution workflow recorded below.",
+    "promptFile": "prompt.txt"
+  },
+  "postProcessing": {
+    "engine": "Real-ESRGAN ncnn Vulkan v0.2.0",
+    "engineSource": "https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/releases/tag/v0.2.0",
+    "model": "RealESRGAN_General_x4_v3",
+    "modelSource": "https://github.com/upscayl/custom-models/tree/main/models",
+    "modelAliasForCli": "realesrgan-x4plus",
+    "scale": 4,
+    "tileSize": 256,
+    "superResolutionDimensions": {
+      "width": 6688,
+      "height": 3764
+    },
+    "delivery": "cwebp -q 92 -m 6 -resize WIDTH 0; aspect ratio preserved"
+  },
+  "variants": [
+    {
+      "src": "/images/hero-retina/entrance-family-1280.webp",
+      "width": 1280,
+      "height": 721,
+      "bytes": 297546,
+      "sha256": "4978ecf0a4a9dbb7aca14c8e9d0110c8522eb89139e6e6c1b4b1cb89eb494b11"
+    },
+    {
+      "src": "/images/hero-retina/entrance-family-1920.webp",
+      "width": 1920,
+      "height": 1081,
+      "bytes": 540548,
+      "sha256": "4219a05844691a3dedd9b4c19d59dc6f09fe18d4f80d3d46f3fb78c59adc1b29"
+    },
+    {
+      "src": "/images/hero-retina/entrance-family-2560.webp",
+      "width": 2560,
+      "height": 1441,
+      "bytes": 794172,
+      "sha256": "d1f77fb153d782f9af54557c8da51e7929f72ee2d460b051b7b7b8d4261db73e"
+    },
+    {
+      "src": "/images/hero-retina/entrance-family-3840.webp",
+      "width": 3840,
+      "height": 2162,
+      "bytes": 1343318,
+      "sha256": "21782f3ecf61c7ef99da775c8cbb2da590da6fc0a77316140d7892852b2771ce"
+    }
+  ]
+}

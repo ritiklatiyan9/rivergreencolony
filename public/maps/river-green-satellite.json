@@ -1,0 +1,17 @@
+{
+  "version": 8,
+  "name": "River Green satellite surroundings",
+  "sources": {
+    "world-imagery": {
+      "type": "raster",
+      "tiles": ["https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?blankTile=false"],
+      "tileSize": 256,
+      "maxzoom": 18,
+      "attribution": "Imagery © <a href=\"https://www.esri.com/\" target=\"_blank\">Esri</a>, Vantor, Earthstar Geographics, and the GIS User Community"
+    }
+  },
+  "layers": [
+    { "id": "satellite-background", "type": "background", "paint": { "background-color": "#19271a" } },
+    { "id": "satellite-imagery", "type": "raster", "source": "world-imagery", "paint": { "raster-fade-duration": 200, "raster-resampling": "linear" } }
+  ]
+}

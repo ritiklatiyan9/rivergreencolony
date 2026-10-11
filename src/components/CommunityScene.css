@@ -1,0 +1,87 @@
+.community-scene {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 620px;
+  outline: none;
+  overflow: hidden;
+  overflow: clip;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at 50% 42%, #2c4a37 0%, #1a3024 48%, #0c1912 100%);
+  color: #eef0e6;
+}
+.community-scene:focus-visible { outline: 2px solid #b49a62; outline-offset: -4px; }
+.community-scene button, .community-scene input { font: inherit; }
+.community-scene button { cursor: pointer; }
+.community-scene button:focus-visible, .community-scene input:focus-visible { outline: 2px solid #a38b50; outline-offset: 3px; }
+.community-scene__mapbar { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px max(16px, 5vw); background: #14251c; border-bottom: 1px solid #ffffff18; }
+.community-scene__map-controls { display: flex; flex-wrap: wrap; gap: 4px; }
+.community-scene__map-controls button { border: 1px solid transparent; border-radius: 5px; padding: 8px 12px; background: transparent; color: #c9d2c2; font-size: 11px; }
+.community-scene__map-controls button:hover { background: #ffffff12; }
+.community-scene__map-controls button[aria-pressed="true"] { border-color: #c9d2c245; background: #ffffff12; color: #fff; }
+.community-scene__mapbar a { flex-shrink: 0; color: #e9edde; font-size: 11px; text-decoration: underline; text-underline-offset: 3px; }
+.community-scene__map-notice { padding: 9px max(16px, 5vw); color: #e1dcc9; background: #343a28; font-size: 11px; line-height: 1.5; }
+.community-scene__satellite { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+/* Keep provider copyright and links clear of the custom controls and tips. */
+.community-scene.has-live-map .community-scene__tip { bottom: 54px; }
+.community-scene.has-live-map .community-scene__keyboard-hint { bottom: 54px; }
+.community-scene .maplibregl-ctrl-attrib { color: #222; }
+.community-scene .maplibregl-ctrl-attrib a { color: #222; }
+
+/* Controls live in their own bar above the 3D view, never on top of the map. */
+.community-scene__toolbar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; padding: 12px max(16px, 5vw); background: #0d1511; border-bottom: 1px solid rgba(255,255,255,.08); }
+.community-scene__view-controls { display: flex; gap: 2px; padding: 3px; border: 1px solid rgba(255,255,255,.1); border-radius: 6px; background: rgba(255,255,255,.03); }
+.community-scene__view-controls button { border: 0; border-radius: 4px; padding: 8px 14px; background: transparent; color: #b4bcaa; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.community-scene__view-controls button:hover { color: #fff; background: rgba(255,255,255,.07); }
+.community-scene__view-controls button[aria-pressed="true"] { background: #eef0e6; color: #14201a; }
+.community-scene__legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; color: #c9d2c2; font-size: 11px; }
+.community-scene__legend span { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.community-scene__legend i { width: 10px; height: 10px; border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.25); }
+.community-scene__legend b { color: #7f8c7b; font-weight: 600; font-variant-numeric: tabular-nums; }
+/* Zoom pad pinned to the right of the view; sticky so it stays on screen while the page scrolls past the canvas. */
+.community-scene__zoom { position: sticky; top: 96px; z-index: 3; display: flex; flex-direction: column; width: 48px; margin: 16px 16px 0 auto; border-radius: 10px; overflow: hidden; background: rgba(13,21,17,.82); box-shadow: 0 6px 20px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.12); backdrop-filter: blur(8px); }
+.community-scene__zoom > button { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 46px; border: 0; border-bottom: 1px solid rgba(255,255,255,.12); color: #eef0e6; background: transparent; font-size: 24px; line-height: 1; touch-action: manipulation; }
+.community-scene__zoom > button:hover { background: rgba(255,255,255,.1); }
+.community-scene__zoom > button:active { background: rgba(255,255,255,.18); }
+.community-scene__zoom .community-scene__tilt { height: 38px; font-size: 16px; color: #cfd6c8; }
+.community-scene__zoom .community-scene__reset { height: 38px; border-bottom: 0; font-size: 10px; font-weight: 600; letter-spacing: .02em; }
+/* overflow: clip (not hidden) keeps the sticky zoom pad working inside the section. */
+.experience { overflow: clip; }
+
+.community-scene__viewport { position: relative; flex: 1; min-height: 0; }
+/* MapLibre adds position: relative to this host. Keep the viewport filled even
+   when its lazy-loaded provider stylesheet is injected after this file. */
+.community-scene .community-scene__canvas { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; }
+.community-scene__canvas canvas { display: block; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
+.community-scene.is-dragging canvas { cursor: grabbing !important; }
+.community-scene.has-fallback .community-scene__canvas { visibility: hidden; }
+.community-scene__keyboard-hint { position: absolute; z-index: 3; bottom: 20px; left: 50%; padding: 9px 13px; border-radius: 3px; color: #f6f5e9; background: #20372a; font-size: 10px; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateX(-50%); }
+.community-scene:focus-visible .community-scene__keyboard-hint { opacity: 1; }
+.community-scene__tip { position: absolute; z-index: 3; bottom: 24px; left: 50%; max-width: calc(100% - 120px); padding: 10px 16px; border-radius: 999px; color: #f6f5ee; background: rgba(16, 24, 20, .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-size: 12px; line-height: 1.35; text-align: center; opacity: 0; pointer-events: none; transform: translate(-50%, 8px); transition: opacity .3s, transform .3s; }
+.community-scene__tip.is-visible { opacity: 1; transform: translate(-50%, 0); }
+.community-scene__tip:empty { padding: 0; }
+.community-scene__loading { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; gap: 9px; color: #a3ad98; font-size: 12px; letter-spacing: .025em; }
+.community-scene__loading span { width: 7px; height: 7px; border-radius: 50%; background: #ad9b68; }
+.community-scene__fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 18px; padding: 40px; text-align: center; }
+.community-scene__fallback strong { font-size: 25px; font-weight: 500; }
+.community-scene__fallback p { max-width: 330px; margin: 0; color: #a3ad98; font-size: 12px; line-height: 1.7; }
+.community-scene__fallback a { color: #cfe3c4; font-size: 11px; text-decoration: underline; text-underline-offset: 4px; }
+.community-scene__fallback button { padding: 10px 18px; border: 1px solid #cfe3c450; border-radius: 5px; color: #eef0e6; background: #ffffff0a; font-size: 12px; }
+
+@media (max-width: 960px) {
+  .community-scene__toolbar { flex-wrap: wrap; padding: 10px 16px; }
+  .community-scene__view-controls { order: 1; width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .community-scene__view-controls button { flex: 1; padding: 8px 10px; }
+  .community-scene__legend { order: 2; flex: 1; justify-content: flex-start; gap: 5px 12px; font-size: 10px; }
+}
+@media (max-width: 700px) {
+  .community-scene__mapbar { padding: 8px 12px; gap: 4px; flex-wrap: wrap; }
+  .community-scene__map-controls button { padding: 8px; font-size: 10px; }
+  .community-scene { min-height: 570px; }
+  .community-scene__zoom { top: 76px; margin: 12px 12px 0 auto; width: 44px; }
+  .community-scene__zoom > button { width: 44px; height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { .community-scene * { scroll-behavior: auto; } }

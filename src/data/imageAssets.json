@@ -1,0 +1,500 @@
+{
+  "/images/hd/rivergreen-02.webp": {
+    "width": 1920,
+    "height": 1440,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-02-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-02-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-02-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-02.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/rivergreen-aerial.webp": {
+    "width": 1920,
+    "height": 1080,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-aerial-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-aerial-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-aerial-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-aerial.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/rivergreen-01.webp": {
+    "width": 1920,
+    "height": 1440,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-01-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-01-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-01-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-01.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/rivergreen-03.webp": {
+    "width": 1920,
+    "height": 1440,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-03-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-03-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-03-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-03.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/rivergreen-04.webp": {
+    "width": 1920,
+    "height": 1440,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-04-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-04-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-04-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-04.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/rivergreen-05.webp": {
+    "width": 1443,
+    "height": 1920,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-05-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-05-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-05-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-05.webp",
+        "width": 1443
+      }
+    ]
+  },
+  "/images/hd/rivergreen-06.webp": {
+    "width": 1920,
+    "height": 1440,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-06-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-06-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-06-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-06.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/rivergreen-07.webp": {
+    "width": 1920,
+    "height": 1440,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-07-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-07-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-07-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-07.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/rivergreen-08.webp": {
+    "width": 1920,
+    "height": 1440,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-08-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-08-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-08-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-08.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/rivergreen-09.webp": {
+    "width": 1920,
+    "height": 1440,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-09-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-09-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-09-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-09.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/rivergreen-10.webp": {
+    "width": 1920,
+    "height": 1440,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-10-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-10-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-10-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-10.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/rivergreen-11.webp": {
+    "width": 1920,
+    "height": 1440,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-11-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-11-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-11-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-11.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/rivergreen-aerial-gate.webp": {
+    "width": 1920,
+    "height": 1080,
+    "sources": [
+      {
+        "src": "/images/hd/rivergreen-aerial-gate-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/rivergreen-aerial-gate-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/rivergreen-aerial-gate-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/rivergreen-aerial-gate.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/clouds.webp": {
+    "width": 1920,
+    "height": 1080,
+    "sources": [
+      {
+        "src": "/images/hd/clouds-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/clouds-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/clouds-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/clouds.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/trees.webp": {
+    "width": 1920,
+    "height": 1080,
+    "sources": [
+      {
+        "src": "/images/hd/trees-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/trees-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/trees-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/trees.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/greenery.webp": {
+    "width": 1920,
+    "height": 1080,
+    "sources": [
+      {
+        "src": "/images/hd/greenery-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/greenery-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/greenery-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/greenery.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/hd/entrance-family.webp": {
+    "width": 1920,
+    "height": 1080,
+    "sources": [
+      {
+        "src": "/images/hd/entrance-family-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/hd/entrance-family-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/hd/entrance-family-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hd/entrance-family.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/fountain-evening/fountain-families.webp": {
+    "width": 1536,
+    "height": 1920,
+    "sources": [
+      {
+        "src": "/images/fountain-evening/fountain-families-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/fountain-evening/fountain-families-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/fountain-evening/fountain-families-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/fountain-evening/fountain-families.webp",
+        "width": 1536
+      }
+    ]
+  },
+  "/images/hero-retina/entrance-family-3840.webp": {
+    "width": 3840,
+    "height": 2162,
+    "sources": [
+      {
+        "src": "/images/hero-retina/entrance-family-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/hero-retina/entrance-family-1920.webp",
+        "width": 1920
+      },
+      {
+        "src": "/images/hero-retina/entrance-family-2560.webp",
+        "width": 2560
+      },
+      {
+        "src": "/images/hero-retina/entrance-family-3840.webp",
+        "width": 3840
+      }
+    ]
+  },
+  "/images/editorial-hero/arrival-landscape-3840.webp": {
+    "width": 3840,
+    "height": 2162,
+    "sources": [
+      {
+        "src": "/images/editorial-hero/arrival-landscape-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/editorial-hero/arrival-landscape-1920.webp",
+        "width": 1920
+      },
+      {
+        "src": "/images/editorial-hero/arrival-landscape-2560.webp",
+        "width": 2560
+      },
+      {
+        "src": "/images/editorial-hero/arrival-landscape-3840.webp",
+        "width": 3840
+      }
+    ]
+  },
+  "/images/editorial-hero/arrival-portrait-1440.webp": {
+    "width": 1440,
+    "height": 2559,
+    "sources": [
+      {
+        "src": "/images/editorial-hero/arrival-portrait-720.webp",
+        "width": 720
+      },
+      {
+        "src": "/images/editorial-hero/arrival-portrait-1080.webp",
+        "width": 1080
+      },
+      {
+        "src": "/images/editorial-hero/arrival-portrait-1440.webp",
+        "width": 1440
+      }
+    ]
+  },
+  "/images/editorial-hero/open-landscape-3840.webp": {
+    "width": 3840,
+    "height": 2162,
+    "sources": [
+      {
+        "src": "/images/editorial-hero/open-landscape-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/editorial-hero/open-landscape-1920.webp",
+        "width": 1920
+      },
+      {
+        "src": "/images/editorial-hero/open-landscape-2560.webp",
+        "width": 2560
+      },
+      {
+        "src": "/images/editorial-hero/open-landscape-3840.webp",
+        "width": 3840
+      }
+    ]
+  },
+  "/images/editorial-hero/open-portrait-1440.webp": {
+    "width": 1440,
+    "height": 2559,
+    "sources": [
+      {
+        "src": "/images/editorial-hero/open-portrait-720.webp",
+        "width": 720
+      },
+      {
+        "src": "/images/editorial-hero/open-portrait-1080.webp",
+        "width": 1080
+      },
+      {
+        "src": "/images/editorial-hero/open-portrait-1440.webp",
+        "width": 1440
+      }
+    ]
+  }
+}

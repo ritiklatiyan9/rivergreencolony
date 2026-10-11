@@ -1,0 +1,130 @@
+{
+  "tool": "Built-in image_gen imagegen",
+  "date": "2026-10-07",
+  "intent": "Add a happy family entering River Green, replace the left forecourt lawn with paving, and export coordinated Full HD hero layers.",
+  "prompts": {
+    "entrance": "Use case: compositing and precise-object-edit.\nAsset type: final high-resolution 16:9 website hero background, not a screenshot or webpage mockup.\nEdit target: the attached River Green architectural entrance image.\nPrimary request: create a crisp Full HD or higher version of this exact view. Output a native 3840 x 2160 landscape image if supported, otherwise at least 1920 x 1080. Resolve real fine architectural and paving detail rather than blur or pixelated enlargement.\nChange only these two things:\n1. Completely replace the left foreground lawn and its low surrounding hedge borders with a continuous paved entrance forecourt. Extend the existing light grey interlocking brick floor and restrained terracotta bands across that entire left lawn area, in the correct original ground-plane perspective. There must be no grass or hedge island in the lower-left foreground. Keep the trees and planters near the shop frontage, and all avenue landscaping inside the colony.\n2. Add a happy Indian family of four: a husband, wife, young son and young daughter, walking together from the forecourt towards and into the gate, admiring the colony. Put them in the middle-right foreground on the paved avenue, around 68–78% of image width and 62–83% of image height; leave the left 40% clear for website copy. Show them naturally from behind and in three-quarter view, with relaxed smiles and affectionate interaction, one child holding a parent's hand. Realistic human scale, normal proportions, detailed hands, grounded feet, coherent perspective and matching morning sunlight and contact shadows. Tasteful everyday contemporary clothing in cream, muted blue and warm earthy tones. No extra people.\nPreserve: original wide camera framing, entrance portal on the right, its ivory stone structure and vertical fins, exact readable dark-green gate text \"River Green\", shop wings, roofline, decorative lamps, sky, avenue, existing right-side gardens, and the small fountain deep INSIDE the colony beyond the gate. Keep the family outside / approaching the gate, not beyond the fountain.\nStyle: premium photorealistic architectural/lifestyle photography, sharp stone joints and individual paving blocks, natural foliage and skin texture, clear soft blue sky, warm morning sunlight, believable exposure without an artificial color cast.\nAvoid: UI, browser borders, website headings or buttons, extra typography, watermark, lawn on the left forecourt, flowers or bushes pasted into the left foreground, fountain outside the gate, redesigning the gate, warped signs, extra limbs, identical faces, giant people, cartoon, plastic CGI, heavy haze, HDR halos or oversharpening.",
+    "greenery": "Use case: precise-object-edit / background-extraction.\nAsset type: transparent foreground parallax layer for the River Green entrance hero.\nEdit target: the attached transparent foreground greenery image.\nRemove ALL greenery from the left side and the entire bottom middle. Keep only a small, photorealistic frangipani/leaf cluster touching the extreme bottom-right edge. Confine visible leaves and small white flowers to the rightmost 10% of the canvas and lowest 25% of the canvas. Make it substantially smaller than the existing right cluster, so it does not cover a family walking on the avenue. Leave the full left 90% and all remaining regions genuinely transparent with zero alpha. Retain the original warm morning light, muted realistic green leaves and subtle foreground depth of field. Preserve the 16:9 full canvas registration. No opaque background, no floor, no lawn, no trees, no architecture, no people, no added text. Output a real transparent PNG.",
+    "mobilePortrait": "Use case: compositing / identity-preserve.\nAsset type: portrait mobile website hero, 9:16 aspect ratio, output 1080 x 1920 or higher if supported.\nEdit target: the attached finished River Green entrance and family scene.\nReframe this same architectural lifestyle scene into a vertical photograph. Keep the same Indian husband, wife, son and daughter, with their exact clothing and recognizable faces, happy and walking together away from camera into River Green. Show all four people completely, no cropped heads, arms or children. Place the family at a modest realistic scale in the middle-right of the image: heads around 39% of image height, feet around 58%, group roughly between 35% and 88% of image width. They are approaching the entrance, with the gate visible above and behind them.\nKeep the original ivory gate, vertical fins, exact readable dark green \"River Green\" lettering, shop wings, trees near the frontage, decorative lamps and distant fountain INSIDE the colony. Reframe rather than redesign the architecture. The bottom 38% should be a clean uninterrupted light grey interlocking paved forecourt with terracotta bands, leaving space for mobile website copy. Absolutely no lawn or hedge island in the left foreground. Keep sunlight, realistic shadows, fine paving detail, photographic colors and perspective consistent with the input.\nThis is only a background photograph: no UI, browser chrome, headings, gradients, buttons, watermark, new people or props. Avoid giant people, extra limbs, changed family clothing, lawn outside the gate, soft blur, cartoon or artificial CGI.",
+    "mobileReframing": "Use case: compositing. Edit target: this portrait River Green family scene. Keep the same four family members, exact faces and clothes, same ivory gate and exact \"River Green\" text, shop wings, avenue, greenery and interior fountain. Preserve photorealism and morning light. Change only the portrait composition: the family must be farther from the camera, closer to the gate, about two-thirds their current height, heads at 35–38% of the image height and feet at 51–54%. Keep all four completely visible, walking together into the gate, grouped in the middle-right between 50% and 92% of image width. Shift the entrance and shops upward slightly with the same perspective so the gate lettering is around 18–22% of image height and the gate opening occupies the upper middle, framing the family. Reduce the excess sky. The entire lower 45% must be uninterrupted detailed light grey and terracotta interlocking brick pavement, with no people, grass, bushes, planters or props. This lower paved area is intentionally reserved for mobile webpage typography which will be rendered later, so do not put any text, buttons or gradients into the photograph. Keep a vertical 9:16 camera frame. No extra people, missing children, cropped limbs, new buildings or fountain outside the gate. Output high-resolution 1080x1920 portrait if supported."
+  },
+  "sourceInputs": {
+    "entrance": "/images/enhanced/hero-base.webp",
+    "greenery": "/images/hero-layers/greenery.png",
+    "trees": "/images/hero-layers/trees.png",
+    "clouds": "/images/hero-layers/clouds-v2.png"
+  },
+  "generatedSources": {
+    "entrance": "/images/hero-family/entrance-family-source.png",
+    "greenery": "/images/hero-family/greenery-right-source.png",
+    "mobile": "/images/hero-family/entrance-family-mobile-source.png"
+  },
+  "resolution": {
+    "requestedGeneration": "3840x2160 or at least 1920x1080",
+    "returnedGeneration": [
+      1672,
+      941
+    ],
+    "webExport": [
+      1920,
+      1080
+    ],
+    "note": "Built-in generation returned 1672×941. The production Full HD exports use cwebp's resize to 1920×1080; these are resampled exports, not native 4K generation.",
+    "mobileReturnedGeneration": [
+      941,
+      1672
+    ],
+    "mobileWebExport": [
+      1080,
+      1920
+    ]
+  },
+  "encoding": {
+    "entrance": "WebP quality 96, method 6",
+    "transparentLayers": "lossless WebP, alpha retained",
+    "colorEditingAfterGeneration": false
+  },
+  "assets": [
+    {
+      "path": "/images/hero-family/entrance-family-hd.webp",
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "bytes": 596810,
+      "sha256": "8c072445f580fa4f4c0d2e11595f3d32549ad2d9127af57c9733430b630278d7"
+    },
+    {
+      "path": "/images/hero-family/greenery-right-hd.webp",
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGBA",
+      "bytes": 73004,
+      "sha256": "416f5db1119cf1197cc027fc84f1bb2b580e209f2d3b5a573e19a6b14c54642a",
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "visibleBounds": [
+        1146,
+        340,
+        1920,
+        1080
+      ],
+      "left75PercentAlphaExtrema": [
+        0,
+        1
+      ],
+      "left75PercentNonzeroPixels": 3
+    },
+    {
+      "path": "/images/hero-family/trees-hd.webp",
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGBA",
+      "bytes": 234846,
+      "sha256": "55b7f2d0f719b7667554472d8b679097ace2c1fe1bc703bc0ec158009d64d944",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "visibleBounds": [
+        0,
+        0,
+        1920,
+        1015
+      ]
+    },
+    {
+      "path": "/images/hero-family/clouds-hd.webp",
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGBA",
+      "bytes": 523206,
+      "sha256": "36e03cb7c556c3fa3f661c611a0c55891ab87aa9b2aeaf5441fecf0dc1e64d0b",
+      "alphaExtrema": [
+        0,
+        253
+      ],
+      "visibleBounds": [
+        0,
+        10,
+        1920,
+        1050
+      ]
+    },
+    {
+      "path": "/images/hero-family/entrance-family-mobile-hd.webp",
+      "width": 1080,
+      "height": 1920,
+      "mode": "RGB",
+      "bytes": 544746,
+      "sha256": "4cb2fa699459ed7086f7299e9e0e003c4d826129048f280becb5748df4d31925"
+    }
+  ],
+  "integration": {
+    "desktop": "Full-width 16:9 entrance hero with family in the right foreground and clear paved left side.",
+    "mobile": "Portrait source selected below 600px, with all four people above the heading and clear paved foreground for text.",
+    "foreground": "Right-side greenery only. CSS clips the left 78% of that layer to keep the forecourt clear while scrolling.",
+    "motion": "Existing independent architectural, cloud, tree and foreground depths retained."
+  }
+}

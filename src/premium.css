@@ -1,0 +1,173 @@
+/* River Green premium theme, layered over residence.css: tall condensed serif
+   capitals with a script accent written across them, wide grotesque labels,
+   and forest, sky, navy and cream chapters. Open-licensed fonts are declared in
+   public/fonts/fonts.css; the reveal motion lives in src/hooks/useSiteMotion.js. */
+:root {
+  --forest: #102d20;
+  --forest-deep: #0b2318;
+  --navy: #17233b;
+  --ink: #17233b;
+  --green: #17233b;
+  --cream: #f3f3ec;
+  --sky: #b5cedb;
+  --sky-soft: #dfe9ee;
+  --muted: #4a5870;
+  --line: #17233b24;
+  --accent: #b5cedb;
+  --leaf: #102d20;
+  --sand: #e9e6da;
+  --on-forest: #d7e3d8;
+  --on-forest-soft: #a8c2af;
+  --display: 'Instrument Serif', 'Times New Roman', serif;
+  --script: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
+  --body: 'Mona Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+body { background: var(--cream); color: var(--navy); font-stretch: 108%; }
+::selection { background: var(--sky); color: var(--navy); }
+/* The scroll rail inverts against whatever chapter it sits on. */
+.reading-rail, .is-past-hero .reading-rail { color: #f3f3ec; mix-blend-mode: difference; }
+.button:focus-visible, a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline-color: var(--forest); }
+
+/* Headlines: serif capitals; the accent after the line break is a script word. */
+h1, h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: -.01em; }
+.community-intro h2, .features-section h2, .experience-heading h2, .gallery-heading h2, .location-copy h2, .faq-intro h2, .film-banner-content h2, .visit-content h2, .glance-intro h2 { font-weight: 400; line-height: .9; letter-spacing: -.01em; }
+.community-intro h2 em, .features-section h2 em, .experience-heading h2 em, .gallery-heading h2 em, .location-copy h2 em, .faq-intro h2 em, .film-banner-content h2 em, .visit-content h2 em, .glance-intro h2 em {
+  display: block; width: fit-content; font-family: var(--script); font-style: normal; font-weight: 400; text-transform: none; letter-spacing: 0;
+  font-size: .8em; line-height: 1; color: var(--forest); padding: .14em .35em .34em .25em; margin: -.3em 0 -.18em .45em; transform: rotate(-4deg); transform-origin: 0 60%;
+}
+.community-intro .script-line { overflow: visible; padding: 0; margin: 0; }
+.community-intro h2 em { font-size: .62em; margin: -.3em auto 0; }
+.visit-content h2 em { margin: -.36em auto -.1em; }
+/* Accents that open on a tall script capital need more room under the line above. */
+.location-copy h2 em { margin-top: -.08em; }
+.split-word { display: inline-block; overflow: hidden; vertical-align: top; padding: .08em .03em .1em; margin: -.08em -.03em -.1em; }
+.split-word > span { display: inline-block; }
+.chapter-content h3, .gallery-caption h3, .visit-modal h2, .film-modal h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: 0; }
+.overview-copy .lead-copy { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(34px, 3.4vw, 54px); line-height: 1; letter-spacing: 0; color: var(--navy); }
+.project-details strong { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 26px; }
+.footer-wordmark { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: -.01em; }
+
+/* Labels: small, bold, wide and spaced. */
+.eyebrow, .editorial-kicker, .section-side-note, .project-details small, .photo-caption, .gallery-tag, .gallery-filters button, .visit-bottom-note, .footer-nav small, .footer-contact small, .footer-wordmark span, .feature-photo-label, .reading-rail-caption, .reading-progress-label, .scene-disclaimer, .brand small, .hero-address, .hero-status, .hero-discover {
+  font-family: var(--body); font-stretch: 125%; font-weight: 700; letter-spacing: .13em; text-transform: uppercase;
+}
+.eyebrow, .editorial-kicker { font-size: 10px; }
+.eyebrow > span { background: currentColor; }
+.community-intro-copy, .overview-copy > p:not(.lead-copy), .features-intro, .feature-item p, .experience-heading p, .chapter-content p, .gallery-heading > p, .location-copy > p, .faq-intro p, .faq-item p, .gallery-caption p { color: var(--muted); }
+.editorial-flower { color: var(--forest); }
+
+/* Actions: a wide uppercase button, and underlined serif capitals for links. */
+.button { font-family: var(--body); font-stretch: 125%; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.button-green { background: var(--navy); color: var(--cream); }
+.button-green:hover { background: var(--forest); color: var(--cream); }
+.button-cream { background: var(--cream); color: var(--navy); }
+.text-link { font-family: var(--display); font-size: 21px; font-weight: 400; text-transform: uppercase; letter-spacing: .01em; gap: 18px; padding: 6px 0 4px; border-bottom: 1px solid currentColor; }
+
+/* Header: cream type over the photograph, navy on cream once scrolled. */
+.site-header { color: #fbfaf4; }
+.site-header.is-scrolled, .site-header.menu-is-open { color: var(--navy); background: #f3f3ecf2; box-shadow: 0 1px #17233b14; }
+.site-header.is-scrolled .brand-wordmark img, .site-header.menu-is-open .brand-wordmark img { filter: brightness(0) saturate(100%) invert(11%) sepia(29%) saturate(1712%) hue-rotate(192deg) brightness(93%) contrast(92%); }
+.desktop-nav a { font-family: var(--body); font-stretch: 125%; font-size: 9.5px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+.header-plot { font-family: var(--display); font-size: 22px; font-weight: 400; text-transform: uppercase; letter-spacing: 0; line-height: 1; padding-bottom: 2px; border-bottom: 1px solid currentColor; }
+.header-visit { font-family: var(--body); font-stretch: 125%; font-size: 8.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+.mobile-nav { background: var(--cream); color: var(--navy); }
+
+/* Hero: a forest green frame with an arched top that opens as the page scrolls. */
+.hero { --hero-frame: 0px; --hero-arch: 0px; background: var(--forest); }
+.hero-image-wrap { clip-path: inset(var(--hero-frame) var(--hero-frame) 0 var(--hero-frame) round var(--hero-arch) var(--hero-arch) 0 0); }
+.hero h1 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(96px, 13.5vw, 230px); line-height: .8; letter-spacing: -.015em; }
+.hero-script-wrap { display: block; overflow: visible; margin: -.5em 0 0; padding: 0; }
+.hero h1 em { display: inline-block; font-family: var(--script); font-style: normal; font-weight: 400; text-transform: none; letter-spacing: 0; font-size: .46em; line-height: 1; color: #fbfaf4; padding: .1em .4em .3em; transform: rotate(-6deg); text-shadow: 0 2px 18px #0f1a2d59; }
+.hero-topline .eyebrow { font-family: var(--display); font-size: clamp(13px, 1.1vw, 17px); font-weight: 400; font-stretch: 100%; letter-spacing: .55em; }
+.hero-subline { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(22px, 2.3vw, 38px); letter-spacing: 0; line-height: 1; }
+.hero-address, .hero-status, .hero-discover { font-size: 9px; letter-spacing: .14em; }
+
+/* Chapters alternate cream, sky and forest green. */
+.overview, .gallery-section, .faq-section { background: var(--cream); }
+.features-section, .location-section { background: var(--sky); color: var(--navy); }
+.experience, .visit-section { background: var(--forest); color: var(--cream); }
+.site-footer { background: var(--forest-deep); color: var(--cream); }
+.feature-icon { color: var(--forest); }
+.feature-item button, .feature-item.active button { color: var(--navy); }
+.feature-list, .feature-item, .feature-item button { border-color: #17233b33; }
+.feature-photo-label { background: linear-gradient(transparent, #0b2318bf); }
+.film-banner-shade { background: linear-gradient(90deg, #0b23188c, transparent 75%), linear-gradient(0deg, #0b231880, transparent 70%); }
+.film-banner-content h2 em { color: var(--sky); }
+.gallery-filters button { color: var(--muted); }
+.gallery-filters button.active { color: var(--navy); box-shadow: inset 0 -1px var(--navy); }
+.gallery-filters span { color: var(--navy); background: var(--sky-soft); }
+.gallery-tag { color: var(--navy); background: #f3f3eceb; }
+.location-section .eyebrow-light, .location-copy > p, .location-address span, .location-coordinates, .location-visit-link { color: var(--muted); }
+.location-map { background: var(--sky-soft); }
+.map-preview::after { background: linear-gradient(0deg, #17233b8c, transparent 75%); }
+.map-load { background: var(--navy); }
+.map-load:hover { background: var(--forest); }
+.visit-content h2 { color: var(--cream); }
+.visit-content h2 em, .experience-heading h2 em { color: var(--sky); }
+.visit-content p { color: var(--on-forest); }
+.visit-content .button { background: var(--cream); color: var(--forest); }
+.visit-content .button:hover { background: var(--sky); color: var(--navy); }
+.visit-bottom-note { color: var(--on-forest-soft); }
+.footer-brand p, .footer-nav a, .footer-contact a, .footer-contact > span, .brand-footer small { color: var(--on-forest); }
+.footer-developer, .footer-nav small, .footer-contact small, .footer-bottom { color: var(--on-forest-soft); }
+.footer-top { border-color: var(--on-forest-soft); }
+.modal { background: var(--cream); clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
+.modal-close { color: var(--navy); background: var(--sky-soft); }
+.selected-plot-note { background: var(--sky-soft); }
+.film-modal { background: var(--navy); }
+
+/* At a glance: the colony's key facts, for visitors and search engines alike. */
+.glance-section { background: var(--cream); border-top: 1px solid var(--line); }
+.glance-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 8%; align-items: start; }
+.glance-intro h2 { font-size: clamp(56px, 6.2vw, 96px); margin-top: 28px; }
+.glance-intro p { max-width: 520px; margin-top: 14px; color: var(--muted); font-size: 15px; line-height: 1.75; }
+.glance-intro .glance-lead { margin-top: 40px; font-family: var(--display); font-size: 24px; line-height: 1.1; text-transform: uppercase; color: var(--navy); }
+.glance-intro .glance-hindi { font-family: var(--body), 'Noto Sans Devanagari', 'Kohinoor Devanagari', sans-serif; font-stretch: 100%; }
+.glance-facts { margin: 0; border-top: 1px solid var(--line); }
+.glance-facts > div { display: grid; grid-template-columns: 150px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.glance-facts dt { padding-top: 5px; color: var(--muted); font-stretch: 125%; font-size: 10px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.glance-facts dd { margin: 0; color: var(--navy); font-family: var(--display); font-size: 22px; line-height: 1.15; text-transform: uppercase; }
+@media (max-width: 900px) { .glance-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+/* The 3D chapter sits in forest green; its controls follow. */
+.experience h2, .experience .chapter-content h3 { color: var(--cream); }
+.experience-heading h2 { font-size: clamp(56px, 6vw, 96px); }
+.experience .eyebrow-light, .experience .section-side-note, .experience-heading p, .chapter-content p, .experience .scene-disclaimer { color: var(--on-forest); }
+.experience-copy > .text-link { color: var(--cream); border-color: var(--cream); }
+.experience .scene-area { border-color: #f3f3ec24; }
+.experience .scene-placeholder, .experience .community-scene { color: var(--cream); background: var(--forest-deep); }
+.experience .community-scene__toolbar { color: var(--cream); background: var(--forest-deep); border-color: #f3f3ec1f; }
+.experience .community-scene__view-controls { background: #f3f3ec0f; border-color: #f3f3ec24; }
+.experience .community-scene__view-controls button { color: var(--on-forest); }
+.experience .community-scene__view-controls button:hover { color: var(--cream); background: #f3f3ec1a; }
+.experience .community-scene__view-controls button[aria-pressed="true"] { color: var(--forest); background: var(--cream); }
+.experience .community-scene__legend, .experience .community-scene__legend b { color: var(--on-forest); }
+.experience .community-scene__zoom { background: var(--cream); }
+.experience .community-scene__zoom > button { color: var(--navy); border-color: #17233b24; }
+.experience .community-scene__zoom > button:hover { background: var(--sky-soft); }
+.experience .community-scene__loading, .experience .community-scene__fallback p, .experience .community-scene__fallback a { color: var(--on-forest); }
+.experience .community-scene__loading span { background: var(--sky); }
+
+@media (max-width: 1024px) {
+  .mobile-nav > a { font-family: var(--display); font-size: 32px; font-weight: 400; text-transform: uppercase; letter-spacing: 0; }
+  .mobile-nav .mobile-nav-contact { font-family: var(--body); font-stretch: 112%; font-size: 12px; text-transform: none; }
+  .hero h1 { font-size: 15vw; }
+}
+@media (max-width: 600px) {
+  .header-plot { font-size: 17px; }
+  .header-visit { font-size: 7.5px; }
+  .hero h1 { font-size: clamp(66px, 19vw, 104px); line-height: .82; }
+  .hero h1 em { font-size: .56em; }
+  .hero-topline .eyebrow { font-size: 10px; letter-spacing: .38em; }
+  .hero-subline { font-size: clamp(17px, 5vw, 24px); }
+  .community-intro h2 { font-size: clamp(50px, 14vw, 78px); }
+  .features-section h2, .gallery-heading h2, .location-copy h2, .faq-intro h2 { font-size: clamp(52px, 14.5vw, 80px); }
+  .experience-heading h2 { font-size: clamp(46px, 12.5vw, 66px); }
+  .visit-content h2, .film-banner-content h2 { font-size: clamp(64px, 18vw, 104px); }
+  .overview-copy .lead-copy { font-size: 34px; }
+  .features-section h2 em, .experience-heading h2 em, .gallery-heading h2 em, .location-copy h2 em, .faq-intro h2 em, .film-banner-content h2 em { margin-top: -.1em; }
+  .text-link { font-size: 18px; }
+  .glance-intro h2 { font-size: clamp(52px, 14.5vw, 80px); }
+  .glance-facts > div { grid-template-columns: 1fr; gap: 6px; }
+  .glance-facts dd { font-size: 20px; }
+}

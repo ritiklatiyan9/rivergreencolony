@@ -1,0 +1,33 @@
+{
+  "layoutSource": "https://defencegarden.com/assets/RiverGreenMap-xvA5nAeC.js",
+  "projectSource": "https://defencegarden.com/project/1",
+  "publicAvailabilitySource": "https://rivergreenbackend.onrender.com/api/colony-maps/public/site-plots/1",
+  "retrievedOn": "2026-10-07",
+  "canvasWidth": 1460,
+  "canvasHeight": 1370,
+  "geometry": "Exact original row layout, coordinates, plot labels, dimensions, road labels, clipped boundary, roundabout and landscaping.",
+  "availability": "Explicit project-server overrides take precedence over the original public API and dated source snapshot. Unlisted source records are marked confirm availability.",
+  "sharedPersistence": {
+    "source": "/api/plots",
+    "scope": "All website visitors",
+    "refreshSeconds": 30,
+    "refreshOn": [
+      "window focus",
+      "page visibility",
+      "same-browser update notification"
+    ]
+  },
+  "publicDetailFields": [
+    "status",
+    "dimensions",
+    "area_sqft",
+    "area_sqm",
+    "facing",
+    "block",
+    "plot_type",
+    "total_price",
+    "price_per_sqft",
+    "notes"
+  ],
+  "notes": "Public notes are supplied through project management. No buyer or booking details are copied from the source API."
+}

@@ -1,0 +1,159 @@
+{
+  "tool": "Built-in image_gen imagegen",
+  "date": "2026-10-07",
+  "intent": "Realistic lighting and color improvements, preserving the original project scenes and original source files.",
+  "prompts": {
+    "landscape": "Use case: lighting-weather. Asset type: realistic residential project website photograph. Edit target: the attached original River Green project photo. Primary request: professionally relight and color-grade this exact photograph so it looks bright, inviting and realistic, replacing the dull grey cast with clear natural morning daylight, fresh but believable leaf greens, clean neutral ivory paving and restrained warm terracotta, a lightly blue partly cloudy sky, balanced exposure and gentle depth. Keep the same camera, full framing, all objects, real architecture, plant positions and sizes, unfinished buildings, people, vehicles, utility poles and wires, existing signs and exact lettering unchanged. Preserve small imperfections, real material textures and the fountain's original on/off water state. Change only lighting, sky atmosphere, exposure and color; do not redesign, beautify by adding amenities, remove objects or invent development. Avoid HDR halos, neon greens, orange/teal cinematic grading, plastic surfaces, CGI, oversharpening, illustration and text overlays. Output a single continuous realistic photo in the original 4:3 aspect ratio.",
+    "portrait": "Use case: lighting-weather. Asset type: realistic residential project website photograph. Edit target: the attached original River Green project photo. Primary request: professionally relight and color-grade this exact photograph so it looks bright, inviting and realistic, replacing the dull grey cast with clear natural morning daylight, fresh but believable leaf greens, clean neutral ivory paving and restrained warm terracotta, a lightly blue partly cloudy sky, balanced exposure and gentle depth. Keep the same camera, full framing, all objects, real architecture, plant positions and sizes, unfinished buildings, people, vehicles, utility poles and wires, existing signs and exact lettering unchanged. Preserve small imperfections, real material textures and the fountain's original on/off water state. Change only lighting, sky atmosphere, exposure and color; do not redesign, beautify by adding amenities, remove objects or invent development. Avoid HDR halos, neon greens, orange/teal cinematic grading, plastic surfaces, CGI, oversharpening, illustration and text overlays. Output a single continuous realistic photo in the original portrait 3:4 aspect ratio.",
+    "hero": "Use case: lighting-weather. Asset type: photorealistic 16:9 parallax website hero background. Edit target: the supplied River Green entrance image. Refine only its photographic lighting, color and materials so it feels like realistic professional architectural photography. Preserve the exact composition and camera, gate position on the right, portal geometry and vertical fins, exact dark green 'River Green' gate lettering, shop wings, paving pattern, tree and planter positions, streetlamps, and tiny distant fountain INSIDE the colony beyond the gate. Give the sky a crisp believable pale blue, gently sunlit ivory stone with real subtle surface texture, naturally rich foliage greens with clear tonal variation, restrained warm terracotta paving, soft morning directional light with balanced highlights and shadows. Reduce yellow cast and artificial haze. Keep the left foreground quiet for text. Keep the full original framing, no cropping. No redesign, no new objects, no added foreground branches or foliage at the edges (separate transparent parallax layers supply those), no fountain outside the gate, no people, no cars, no gradients or lettering overlays, no excessive HDR, no plastic CGI surfaces. Photographic realism throughout.",
+    "aerial": "Use case: lighting-weather. Asset type: realistic residential project website photograph. Edit target: the attached original River Green project photo. Primary request: professionally relight and color-grade this exact photograph so it looks bright, inviting and realistic, replacing the dull grey cast with clear natural morning daylight, fresh but believable leaf greens, clean neutral ivory paving and restrained warm terracotta, a lightly blue partly cloudy sky, balanced exposure and gentle depth. Keep the same camera, full framing, all objects, real architecture, plant positions and sizes, unfinished buildings, people, vehicles, utility poles and wires, existing signs and exact lettering unchanged. Preserve small imperfections, real material textures and the fountain's original on/off water state. Change only lighting, sky atmosphere, exposure and color; do not redesign, beautify by adding amenities, remove objects or invent development. Avoid HDR halos, neon greens, orange/teal cinematic grading, plastic surfaces, CGI, oversharpening, illustration and text overlays. Output a single continuous realistic photo in the original 16:9 landscape aspect ratio. Aerial photo constraints: preserve every road, plot boundary, open undeveloped plot, unfinished building, surrounding field, vehicle, banner and utility wire in exactly its original place. Recover the washed-out footage's detail and natural contrast without filling empty land with grass, buildings or amenities. This remains a realistic photograph of a developing colony, not an architectural rendering."
+  },
+  "encoding": {
+    "format": "WebP",
+    "quality": 90,
+    "method": 6,
+    "colorEditingAfterGeneration": false
+  },
+  "assets": [
+    {
+      "input": "/images/rivergreen-01.webp",
+      "output": "/images/enhanced/rivergreen-01.webp",
+      "prompt": "landscape",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-c24bf5a2-a8d5-4288-92bd-433b4ca5b94c.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 309090,
+      "sha256": "6bee212c4cc36c5635d8b3bac83a7e2430caa7a8afcff1e1d73199e571dc1d66"
+    },
+    {
+      "input": "/images/rivergreen-02.webp",
+      "output": "/images/enhanced/rivergreen-02.webp",
+      "prompt": "landscape",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-5199a0f1-b8ec-4b52-9c85-e05da6c13798.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 391974,
+      "sha256": "50efa0591b115185aacf360d79cb3c7d2bcc793d00b01c6048b99146bfdca31f"
+    },
+    {
+      "input": "/images/rivergreen-03.webp",
+      "output": "/images/enhanced/rivergreen-03.webp",
+      "prompt": "landscape",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-ee139cd1-d134-4cc5-9d51-a3279ec67fad.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 383370,
+      "sha256": "ae5a0b1e0ace9cc797c03bb20cbe9e9acb3b1f6d204836eea25621d9accba34c"
+    },
+    {
+      "input": "/images/rivergreen-04.webp",
+      "output": "/images/enhanced/rivergreen-04.webp",
+      "prompt": "landscape",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-7014457a-0b4c-4b94-9e9a-6c90cb9bd56e.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 329058,
+      "sha256": "bd7f9af16588b08e783a3e133d92b69e6985548c18a32945d9acb27ad0c9a350"
+    },
+    {
+      "input": "/images/rivergreen-05.webp",
+      "output": "/images/enhanced/rivergreen-05.webp",
+      "prompt": "portrait",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-87d135c0-437c-4b49-b375-9b56dad00dc9.png",
+      "width": 1087,
+      "height": 1447,
+      "bytes": 371076,
+      "sha256": "0de395f81657becc57c0cb3536bdbdb68f8ac755cbca2695395f93685236462c"
+    },
+    {
+      "input": "/images/rivergreen-06.webp",
+      "output": "/images/enhanced/rivergreen-06.webp",
+      "prompt": "landscape",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-cf918a21-558c-46e7-bfb1-bc4807e8819f.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 372600,
+      "sha256": "32f56281ab4b38f5237afe42dd6d53a4dd74360dd8b1b46f6b1ea21c4767e728"
+    },
+    {
+      "input": "/images/rivergreen-07.webp",
+      "output": "/images/enhanced/rivergreen-07.webp",
+      "prompt": "landscape",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-8a666b96-a51f-41ec-8fe7-0f0c6653285a.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 402404,
+      "sha256": "50e77bd2cee018d6fe72005445ed0a3568d15986013b332a8e95e913c2f9119f"
+    },
+    {
+      "input": "/images/rivergreen-08.webp",
+      "output": "/images/enhanced/rivergreen-08.webp",
+      "prompt": "landscape",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-97f5b1a0-2bce-44e9-90cc-2e720ecb674c.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 469946,
+      "sha256": "f3356172b8c88173ea557e5447ddfa7060e4485fed97201f8ecf56189513517c"
+    },
+    {
+      "input": "/images/rivergreen-09.webp",
+      "output": "/images/enhanced/rivergreen-09.webp",
+      "prompt": "landscape",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-262c6db5-3d1b-4d46-ac95-30edb5140d45.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 527732,
+      "sha256": "639f8c26ae5f583173d7477ffe794e39e2efbb782f7c97eb241a6a401c6f314d"
+    },
+    {
+      "input": "/images/rivergreen-10.webp",
+      "output": "/images/enhanced/rivergreen-10.webp",
+      "prompt": "landscape",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-c2eb3455-6830-4d80-974b-4904ea15a49d.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 444780,
+      "sha256": "40f47dc7f68ef174bf2e4c64bb83ca56fc20880231a886fede3765ec8b157891"
+    },
+    {
+      "input": "/images/rivergreen-11.webp",
+      "output": "/images/enhanced/rivergreen-11.webp",
+      "prompt": "landscape",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-497129af-c5f5-464b-bbd3-d52bbef53e4f.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 390114,
+      "sha256": "a0ed3d8fd229e9cd4e5cfc184e98fb48c89a1e478bb8ca9198165bd33e192fc4"
+    },
+    {
+      "input": "/images/hero-layers/base.png",
+      "output": "/images/enhanced/hero-base.webp",
+      "prompt": "hero",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-130c6c76-9785-41dc-88d1-9ad7fb4358a7.png",
+      "width": 1672,
+      "height": 941,
+      "bytes": 394950,
+      "sha256": "d527f2b0ce3b07ed2bd8e03141278babae6a4d232d298c8b2c799e4fe635c12c"
+    },
+    {
+      "input": "/images/rivergreen-aerial-gate.jpg",
+      "output": "/images/enhanced/rivergreen-aerial-gate.webp",
+      "prompt": "aerial",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-b8e83fd4-36d3-471c-a596-998dc8e0bb9a.png",
+      "width": 1672,
+      "height": 941,
+      "bytes": 352896,
+      "sha256": "c773b31c37e14b187a84d68ac0c9af564a0774cecc4aa397fcf6ce1701036239"
+    },
+    {
+      "input": "/images/rivergreen-aerial.jpg",
+      "output": "/images/enhanced/rivergreen-aerial.webp",
+      "prompt": "aerial",
+      "generatedSource": "/Users/ritiklatiyan/.codex/generated_images/01a1151e-8afa-71f0-bb23-52615763b85e/exec-04778d8a-5bd1-4109-b0e1-28e11dabff00.png",
+      "width": 1672,
+      "height": 941,
+      "bytes": 499670,
+      "sha256": "42030c3f53192928f0d5cb2f82a7ef5e63abdcd871647224f3209fe0abaaafab"
+    }
+  ]
+}

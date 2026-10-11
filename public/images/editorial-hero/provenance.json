@@ -1,0 +1,115 @@
+{
+  "created": "2026-10-07",
+  "purpose": "An editorial landing-page entrance visualization with open sky for the centered River Green title.",
+  "generation": {
+    "tool": "image_gen.imagegen",
+    "operation": "Generated entrance visualization composed to complement the redesigned River Green landing page.",
+    "nativeOutput": {
+      "width": 1672,
+      "height": 941
+    },
+    "source": "source/arrival-landscape.png",
+    "sourceBytes": 2240061,
+    "sourceSha256": "670b5d283a50fbd16eb34deef2dd2a138ee02b6cc0cbb5774f53f3013d674e5d",
+    "promptFile": "prompt.txt",
+    "promptSha256": "3e438204f8014ee84e44f26816bc8042bd88bb36a14a92415cdb94f13c280e9c",
+    "note": "Generated architectural visualization, not a documentary photograph. The native generated image is not 4K. Larger delivery images use the super-resolution workflow below."
+  },
+  "postProcessing": {
+    "engine": "Real-ESRGAN ncnn Vulkan v0.2.0",
+    "engineSource": "https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/releases/tag/v0.2.0",
+    "model": "RealESRGAN_General_x4_v3",
+    "modelSource": "https://github.com/upscayl/custom-models/tree/main/models",
+    "modelAliasForCli": "realesrgan-x4plus",
+    "scale": 4,
+    "tileSize": 256,
+    "superResolutionDimensions": {
+      "width": 6688,
+      "height": 3764
+    },
+    "delivery": "cwebp -q 92 -m 6 -resize WIDTH 0; aspect ratio preserved"
+  },
+  "variants": [
+    {
+      "src": "/images/editorial-hero/arrival-landscape-1280.webp",
+      "width": 1280,
+      "height": 721,
+      "bytes": 202282,
+      "sha256": "acaed5c36ef2eb761bfc6bb6a59eabd0bd528a904fea8bd57ca818ab4cfb7a83"
+    },
+    {
+      "src": "/images/editorial-hero/arrival-landscape-1920.webp",
+      "width": 1920,
+      "height": 1081,
+      "bytes": 382916,
+      "sha256": "fb50f99d83c0284dfb96b2ad6db01c57cc78293100518bcedd7572076294f0a1"
+    },
+    {
+      "src": "/images/editorial-hero/arrival-landscape-2560.webp",
+      "width": 2560,
+      "height": 1441,
+      "bytes": 573802,
+      "sha256": "67dc7c204c73b86336ab8ca406358a7606b88237f09fc074207a0083cb7df97c"
+    },
+    {
+      "src": "/images/editorial-hero/arrival-landscape-3840.webp",
+      "width": 3840,
+      "height": 2162,
+      "bytes": 921046,
+      "sha256": "e4004048186bfc2a8c4ebbb0ec2fd6204ff24171c4291886a87da2fd17abcfc1"
+    }
+  ],
+  "portrait": {
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "operation": "Portrait composition of the River Green entrance visualization, with open sky for mobile title placement.",
+      "nativeOutput": {
+        "width": 941,
+        "height": 1672
+      },
+      "source": "source/arrival-portrait.png",
+      "sourceBytes": 2149495,
+      "sourceSha256": "f3feb63b9d921d6887861db5b8b2ef46cb07f73741fe42cb9308aff759d7a08f",
+      "promptFile": "portrait-prompt.txt",
+      "promptSha256": "19bbc5e8c25849a194a522c920b6f4a3b6b4f4a742a78d128936079ddd5f920a",
+      "note": "Generated architectural visualization, not a documentary photograph. The larger delivery variants use super-resolution."
+    },
+    "postProcessing": {
+      "engine": "Real-ESRGAN ncnn Vulkan v0.2.0",
+      "engineSource": "https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/releases/tag/v0.2.0",
+      "model": "RealESRGAN_General_x4_v3",
+      "modelSource": "https://github.com/upscayl/custom-models/tree/main/models",
+      "modelAliasForCli": "realesrgan-x4plus",
+      "scale": 4,
+      "tileSize": 256,
+      "superResolutionDimensions": {
+        "width": 3764,
+        "height": 6688
+      },
+      "delivery": "cwebp -q 92 -m 6 -resize WIDTH 0; aspect ratio preserved"
+    },
+    "variants": [
+      {
+        "src": "/images/editorial-hero/arrival-portrait-720.webp",
+        "width": 720,
+        "height": 1280,
+        "bytes": 174500,
+        "sha256": "4aab784145c7cd1e3d2d9cc82af52d0a7b0908fe164408cee9f77b21718f715e"
+      },
+      {
+        "src": "/images/editorial-hero/arrival-portrait-1080.webp",
+        "width": 1080,
+        "height": 1919,
+        "bytes": 313158,
+        "sha256": "77afc76de7071f0b784c47b0bf3463456511a88e407799e91b6515d950e27203"
+      },
+      {
+        "src": "/images/editorial-hero/arrival-portrait-1440.webp",
+        "width": 1440,
+        "height": 2559,
+        "bytes": 460218,
+        "sha256": "96d189d946587ba24e0b297908dea4a70288cb5d5a8081a46225e926f0f315ff"
+      }
+    ]
+  }
+}
