@@ -32,3 +32,40 @@ test('concurrent public reads share a short cache; request status stays uncached
   await Promise.all([call(proxy,'/api/booking/plots'),call(proxy,'/api/booking/plots')]);await call(proxy,'/api/booking/plots');assert.equal(calls,1);
   const path='/api/booking/requests/'+'a'.repeat(64);await call(proxy,path);await call(proxy,path);assert.equal(calls,3);
 });
+
+test('a deployment pinned to OM ASSOCIATES rejects other or missing public project identities', async () => {
+  let current = { site_id: 6, site_name: 'Other Site', plots: [] }, calls = 0;
+  const proxy = createBookingProxy({ upstream: 'https://booking.example', expectedSiteId: 5, expectedSiteName: 'OM ASSOCIATES', fetchImpl: async () => { calls++; return { status: 200, json: async () => current }; } });
+  assert.equal((await call(proxy, '/api/booking/config')).code, 503);
+  current = { site_id: 5, site_name: 'Other Site' };
+  assert.equal((await call(proxy, '/api/booking/config')).code, 503);
+  current = { plots: [] };
+  assert.equal((await call(proxy, '/api/booking/plots')).code, 503);
+  current = { site_id: 5, site_name: 'OM ASSOCIATES', booking_enabled: true, plots: [] };
+  assert.equal((await call(proxy, '/api/booking/config')).code, 200);
+  assert.equal(calls, 4, 'failed identity checks must never enter the public cache');
+});
+
+test('production HTTPS checkout uses the configured origin behind a TLS proxy', async () => {
+  let forwarded = false;
+  const proxy = createBookingProxy({ upstream: 'https://booking.example', appOrigin: 'https://www.rivergreencolony.com', fetchImpl: async () => { forwarded = true; return { status: 201, json: async () => ({ order: { id: 'order_test' } }) }; } });
+  const result = await call(proxy, '/api/booking/orders', 'POST', { plot_number: 'B-29' }, 'https://www.rivergreencolony.com');
+  assert.equal(result.code, 201);
+  assert.equal(forwarded, true);
+  assert.equal((await call(proxy, '/api/booking/orders', 'POST', {}, 'https://untrusted.example')).code, 403);
+});
+
+test('direct checkout cannot create an order in a different project', async () => {
+  const calls = [];
+  const proxy = createBookingProxy({ upstream: 'https://booking.example', expectedSiteId: 5, expectedSiteName: 'OM ASSOCIATES', fetchImpl: async (url, options) => { calls.push({ path: url.pathname, method: options.method }); return { status: 200, json: async () => ({ site_id: 6, site_name: 'Other Site' }) }; } });
+  assert.equal((await call(proxy, '/api/booking/orders', 'POST', { plot_number: 'B-29' })).code, 503);
+  assert.deepEqual(calls, [{ path: '/public/website/config', method: 'GET' }]);
+});
+
+test('verified OM identity allows checkout and shares the map configuration cache', async () => {
+  const calls = [];
+  const proxy = createBookingProxy({ upstream: 'https://booking.example', expectedSiteId: 5, expectedSiteName: 'OM ASSOCIATES', fetchImpl: async (url, options) => { calls.push({ path: url.pathname, method: options.method }); return { status: options.method === 'GET' ? 200 : 201, json: async () => options.method === 'GET' ? { site_id: 5, site_name: 'OM ASSOCIATES' } : { order: { id: 'order_test' } } }; } });
+  assert.equal((await call(proxy, '/api/booking/config')).code, 200);
+  assert.equal((await call(proxy, '/api/booking/orders', 'POST', { plot_number: 'B-29' })).code, 201);
+  assert.deepEqual(calls, [{ path: '/public/website/config', method: 'GET' }, { path: '/public/website/orders', method: 'POST' }]);
+});

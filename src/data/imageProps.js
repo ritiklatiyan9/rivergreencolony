@@ -6,6 +6,7 @@ export function imageProps(src, sizes = '100vw') {
   const asset = assets[src];
   return {
     src,
+    loading: 'lazy',
     decoding: 'async',
     ...(asset && {
       width: asset.width,

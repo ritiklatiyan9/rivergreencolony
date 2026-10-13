@@ -5,19 +5,22 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { colonyPointToLatLng, getColonySiteFit, RIVER_GREEN_FRONTAGE } from '../data/colonyLocation.js';
 import { createColonyFrontage, createFrontageShopPlacement, createExpandedInteriorFit } from '../data/colonyFrontage.js';
 import { buildColonyModel, preloadColonyModules } from './colonyModel.js';
-import { updateMapCamera } from './colonyMapCamera.js';
+import { createColonyMapFrame } from './colonyMapFrame.js';
 import { createColonyMapTransform } from './colonyMapPlacement.js';
 import { applyColonyMapFit } from './colonyMapFit.js';
 import { prepareMapPlan } from '../data/colonySiteFit.js';
 import { HEIGHTS } from './kit.js';
 import { createPlotClickGesture, createPlotSurfaces, pickPlotRay } from './colonyPlotPicker.js';
+import { NEARBY_PLACES, nearbyPlacesBounds } from '../data/nearbyPlaces.js';
+import { createNearbyPlaceBanners } from './nearbyPlaceBanners.js';
+import { observePageScroll } from './pageScrollActivity.js';
 
 setWorkerUrl(workerUrl);
 export const preloadColonyMapScene = preloadColonyModules;
 
 // Satellite tiles supply real surroundings. The Three.js
 // colony uses the map's WebGL context and camera, so both move together.
-export function createColonyMapScene({ host, plan, config, statusColours, records = [], view = 'nature', reducedMotion = false, signal, onFail = () => {}, onDragChange = () => {}, onPlotSelect = () => {} }) {
+export function createColonyMapScene({ host, plan, config, statusColours, records = [], view = 'nature', reducedMotion = false, signal, onFail = () => {}, onDragChange = () => {}, onPlotSelect = () => {}, onPlaceSelect = () => {} }) {
   if (signal?.aborted) return Promise.resolve(null);
   // The model builder awaits this same promise and handles any load failure.
   preloadColonyModules().catch(() => {});
@@ -59,46 +62,56 @@ export function createColonyMapScene({ host, plan, config, statusColours, record
   const plotSurfaces = createPlotSurfaces(modelPlan, { siteFit, shopRows: frontage?.shopRows, groundHeight: HEIGHTS.lawn, shopHeight: HEIGHTS.shopRoof });
   const canvas = map.getCanvas(), clickGesture = createPlotClickGesture();
   const ray = new THREE.Raycaster(), pointer = new THREE.Vector2();
-  const pickPlot = event => {
+  const pickSelection = event => {
     if (!ready || !model || disposed || failed) return null;
     const bounds = canvas.getBoundingClientRect();
     if (!bounds.width || !bounds.height || event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) return null;
     pointer.set((event.clientX - bounds.left) / bounds.width * 2 - 1, 1 - (event.clientY - bounds.top) / bounds.height * 2);
     ray.setFromCamera(pointer, model.camera);
-    return pickPlotRay(ray.ray.origin.toArray(), ray.ray.direction.toArray(), plotSurfaces);
+    const place = placeBanners?.pick(ray);
+    if (place) return { place };
+    return { plot: pickPlotRay(ray.ray.origin.toArray(), ray.ray.direction.toArray(), plotSurfaces) };
   };
   const pointerDown = event => clickGesture.begin(event);
   const pointerMove = event => clickGesture.move(event);
   const pointerUp = event => {
     if (!clickGesture.end(event)) return;
-    const number = pickPlot(event);
-    if (number) onPlotSelect(number);
+    const selected = pickSelection(event);
+    if (selected?.place) api.focusPlace(selected.place);
+    else if (selected?.plot) onPlotSelect(selected.plot);
   };
   const pointerCancel = event => { clickGesture.cancel(); clickGesture.end(event); };
   const pickListeners = [['pointerdown', pointerDown], ['pointermove', pointerMove], ['pointerup', pointerUp], ['pointercancel', pointerCancel], ['lostpointercapture', pointerCancel]];
   pickListeners.forEach(([name, handler]) => canvas.addEventListener(name, handler));
   window.addEventListener('pointerup', pointerUp);
-  let renderer, model, disposed = false, failed = false, visible = true, frame = 0, generation = 0;
-  let motionOff = reducedMotion, latestRecords = records, lastDraw = 0, lastTick = 0, ready = false, timeout;
+  let renderer, model, placeBanners, placesVisible = true, selectedPlaceId = '', disposed = false, failed = false, visible = true, frame = 0, generation = 0;
+  let motionOff = reducedMotion, latestRecords = records, lastTick = 0, ready = false, timeout;
+  const drawFrame = createColonyMapFrame(transform);
   let resolveReady, rejectReady;
   const completion = new Promise((resolve, reject) => { resolveReady = resolve; rejectReady = reject; });
   const requestRender = () => { if (!disposed && !failed && (!ready || (visible && !document.hidden))) map.triggerRepaint(); };
   const queueFrame = () => {
-    if (frame || disposed || failed || motionOff || !visible || document.hidden || !model) return;
+    if (frame || disposed || failed || motionOff || !visible || document.hidden || !model || pageScroll.active) return;
     frame = requestAnimationFrame(time => {
       frame = 0;
       if (time - lastTick >= 33) { lastTick = time; requestRender(); }
       queueFrame();
     });
   };
+  const pageScroll = observePageScroll({ isVisible: () => visible && !disposed,
+    pause: () => { cancelAnimationFrame(frame); frame = 0; },
+    resume: () => { requestRender(); queueFrame(); },
+  });
   const releaseModel = () => {
     generation += 1;
+    placeBanners?.dispose(); placeBanners = null;
     model?.dispose(); model = null;
     renderer?.dispose(); renderer = null;
   };
   const dispose = () => {
     if (disposed) return;
     disposed = true; cancelAnimationFrame(frame); clearTimeout(timeout);
+    pageScroll.dispose();
     observer.disconnect(); resize.disconnect();
     document.removeEventListener('visibilitychange', visibilityChange);
     signal?.removeEventListener('abort', abort);
@@ -115,18 +128,35 @@ export function createColonyMapScene({ host, plan, config, statusColours, record
     else rejectReady(error);
   };
   const cameraFor = name => {
+    if (name === 'nearby') {
+      const fit = map.cameraForBounds(nearbyPlacesBounds(), { bearing: 0,
+        padding: { top: 70, bottom: 65, left: host.clientWidth < 700 ? 35 : 80, right: host.clientWidth < 700 ? 35 : 80 } });
+      return { center: fit?.center || point(plan.roundabout.center), zoom: (fit?.zoom || 12) - .3, bearing: 0, pitch: 55, padding: 0 };
+    }
     const corners = (frontage?.cameraBoundary || plan.boundary).map(frontagePoint);
     const xs = corners.map(p => p[0]), ys = corners.map(p => p[1]);
     const bounds = [[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]];
     const fit = map.cameraForBounds(bounds, { padding: Math.min(host.clientWidth, host.clientHeight) * .12, bearing: defaultBearing });
+    if (name === 'booking') return { center: point([plan.roundabout.center[0] - 220, plan.roundabout.center[1] + 150]),
+      bearing: defaultBearing, padding: 0, pitch: 25, zoom: Math.min(20.2, (fit?.zoom || 17) + 2.3) };
     const entranceFocus = frontage ? frontage.gate : [plan.entrance.center[0], 1200];
     const centre = name === 'connection' ? frontagePoint(entranceFocus) : name === 'plan' || name === 'nature' ? fit?.center || point([plan.width / 2, plan.height / 2]) : point(plan.roundabout.center);
-    return { center: centre, bearing: defaultBearing, pitch: name === 'plan' ? 0 : name === 'nature' ? 45 : 60,
+    return { center: centre, bearing: defaultBearing, padding: 0, pitch: name === 'plan' ? 0 : name === 'nature' ? 45 : 60,
       zoom: name === 'plan' ? fit?.zoom || 17 : name === 'nature' ? (fit?.zoom || 17) - .1 : name === 'connection' ? 19.8 : 19.4 };
   };
   const api = {
     requestRender,
-    preset: name => { map.stop(); const camera = cameraFor(name); if (motionOff) map.jumpTo(camera); else map.easeTo({ ...camera, duration: 700 }); },
+    preset: name => { selectedPlaceId = ''; placeBanners?.select(''); map.stop(); const camera = cameraFor(name); if (motionOff) map.jumpTo(camera); else map.easeTo({ ...camera, duration: 700 }); },
+    focusPlace: id => {
+      const place = NEARBY_PLACES.find(value => value.id === id);
+      if (!place) return;
+      selectedPlaceId = id; placesVisible = true; placeBanners?.select(id); placeBanners?.setVisible(true); onPlaceSelect(id);
+      map.stop();
+      const camera = { center: [place.lng, place.lat], zoom: 17.8, bearing: -18, pitch: 62,
+        padding: { top: Math.min(160, host.clientHeight * .3), bottom: 0, left: 0, right: 0 } };
+      if (motionOff) map.jumpTo(camera); else map.flyTo({ ...camera, duration: 1100 });
+    },
+    setPlacesVisible: value => { placesVisible = value; placeBanners?.setVisible(value); requestRender(); },
     paintPlots: list => { latestRecords = list; model?.paintPlots(list); requestRender(); },
     zoom: factor => map.easeTo({ zoom: THREE.MathUtils.clamp(map.getZoom() + Math.log2(factor), 3, 22), duration: motionOff ? 0 : 180 }),
     rotate: (amount, vertical = false) => map.easeTo(vertical
@@ -153,19 +183,16 @@ export function createColonyMapScene({ host, plan, config, statusColours, record
             if (disposed || failed || currentGeneration !== generation) { value.dispose(); return; }
             model = value;
             if (siteFit) applyColonyMapFit(model, siteFit);
+            placeBanners = createNearbyPlaceBanners({ scene: model.scene, transform, anchor, heading: config.heading });
+            placeBanners.setVisible(placesVisible); placeBanners.select(selectedPlaceId);
             model.paintPlots(latestRecords); renderer.resetState(); requestRender(); queueFrame();
           }).catch(fail);
       } catch (error) { fail(error); }
     },
     render: (_, args) => {
-      if (!model || !renderer || disposed || failed) return;
-      const time = performance.now(), delta = Math.min((time - lastDraw) / 1000, .05); lastDraw = time;
+      if (!model || !renderer || disposed || failed || !visible || document.hidden) return;
       try {
-        updateMapCamera(model.camera, args, transform);
-        renderer.resetState();
-        renderer.setViewport(0, 0, map.getCanvas().width, map.getCanvas().height);
-        model.update(motionOff ? 0 : time / 1000, delta);
-        renderer.render(model.scene, model.camera);
+        drawFrame({ model, renderer, args, canvas: map.getCanvas(), time: performance.now(), paused: pageScroll.active, reducedMotion: motionOff });
         if (!ready) { ready = true; clearTimeout(timeout); resolveReady(api); }
       } catch (error) { fail(error); }
       finally { renderer?.resetState(); }

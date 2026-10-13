@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { createKit, HEIGHTS, M, SCALE } from './kit.js';
 import { buildLandscape } from '../data/sceneLandscape.js';
 import { createPlotClickGesture, createPlotSurfaces, pickPlotRay } from './colonyPlotPicker.js';
+import { observePageScroll } from './pageScrollActivity.js';
 
 // Build order matters: sky sets the lights and fog the others are lit by.
 const MODULES = [
@@ -24,6 +25,7 @@ const MODULES = [
 // where 1 fits the whole colony). The default aerial view is a drone shot up
 // the boulevard to the fountain with the horizon in frame.
 const VIEWS = {
+  booking: { azimuth: 0, elevation: 1.25, distance: 5, x: -5.6, z: 1.55, fov: 50 },
   nature: { azimuth: 0, elevation: .45, distance: 12.5, x: -1.2, z: 2.4, fov: 52 },
   plan: { azimuth: 0, elevation: 1.5, fit: 'plan', x: -.3, z: -.3, fov: 26 },
   community: { azimuth: .1, elevation: .4, distance: 6.4, x: -1.2, z: -1.3, fov: 50 },
@@ -73,7 +75,11 @@ export async function createColonyScene({ host, plan, statusColours, records = [
   const camera = new THREE.PerspectiveCamera(38, 1.6, .05, 4000);
   const updates = []; const painters = []; const parts = {};
   let disposed = false, failed = false, frame = 0, visible = true, lastTime = 0, lastRendered = 0, gesture = null, aspect = 1.6, motionOff = reducedMotion, post = null, statuses = new Map();
-  const requestRender = () => { if (!frame && visible && !document.hidden && !failed && !disposed) frame = requestAnimationFrame(render); };
+  const requestRender = () => { if (!frame && visible && !document.hidden && !failed && !disposed && !pageScroll.active) frame = requestAnimationFrame(render); };
+  const pageScroll = observePageScroll({ isVisible: () => visible && !disposed,
+    pause: () => { cancelAnimationFrame(frame); frame = 0; },
+    resume: () => { lastTime = 0; lastRendered = 0; requestRender(); },
+  });
   const ctx = { THREE, renderer, scene, camera, root, plan, kit, world: kit.world, SCALE, M, HEIGHTS, quality, statusColours, landscape: buildLandscape(plan), wind: { value: 0 }, sun: null, requestRender };
 
   const loaded = await Promise.allSettled([...MODULES.map(([, load]) => load()), import('./post.js')]);
@@ -128,7 +134,7 @@ export async function createColonyScene({ host, plan, statusColours, records = [
 
   const fail = () => { if (failed || disposed) return; failed = true; cancelAnimationFrame(frame); frame = 0; onFail(); };
   function render(time = 0) {
-    frame = 0; if (failed || disposed || !visible || document.hidden) return;
+    frame = 0; if (failed || disposed || !visible || document.hidden || pageScroll.active) return;
     const interval = lastTime ? time - lastTime : 16; const delta = Math.min(interval / 1000, .05); lastTime = time;
     const easing = motionOff ? 1 : 1 - Math.exp(-delta * 6); let settling = false;
     for (const key of Object.keys(current)) { current[key] += (target[key] - current[key]) * easing; if (Math.abs(target[key] - current[key]) > .0005 * (key === 'distance' ? current.distance : 1)) settling = true; }
@@ -280,6 +286,7 @@ export async function createColonyScene({ host, plan, statusColours, records = [
     setReducedMotion: (flag) => { motionOff = flag; requestRender(); },
     dispose: () => {
       disposed = true; cancelAnimationFrame(frame); resizeObserver.disconnect(); intersectionObserver.disconnect();
+      pageScroll.dispose();
       plotClick.reset();
       listeners.forEach(([type, handler]) => canvas.removeEventListener(type, handler)); canvas.removeEventListener('wheel', wheel);
       window.removeEventListener('pointerup', pointerUp); document.removeEventListener('visibilitychange', visibilityChange);

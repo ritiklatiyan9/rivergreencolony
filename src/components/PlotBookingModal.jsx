@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, ShieldCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { PLOT_STATUSES, refreshPlotRecords, usePlotRecords, usePlotStoreState } from '../data/plotStore';
-import { bookingApi, bookingMoney, bookingSessionKey, loadRazorpay } from '../data/websiteBooking';
+import { bookingApi, bookingMoney, bookingSessionKey, createBookingCheckout, loadRazorpay } from '../data/websiteBooking';
 import './PlotBookingModal.css';
 
 export default function PlotBookingModal({ number, onClose }) {
@@ -63,18 +63,16 @@ export default function PlotBookingModal({ number, onClose }) {
       if (mounted.current) { acceptRequest(status); setError(''); }
       await refreshPlotRecords();
     } catch (failure) {
-      if (mounted.current) setError(`${failure.message} Your payment reference is saved. Please check its status below before paying again.`);
+      if (mounted.current) setError(`${failure.message} Your booking request is saved. Please check its status below before paying again.`);
     } finally { checkoutRef.current = null; setWorking(false); }
   }
   function openCheckout(Razorpay, created, buyer = {}) {
-    const checkout = new Razorpay({
-      key: created.key_id, order_id: created.order.id, amount: created.order.amount, currency: created.order.currency,
-      name: 'River Green · Defence Garden', description: `Booking request for ${number}`,
-      prefill: { name: buyer.buyer_name, contact: buyer.buyer_phone, email: buyer.buyer_email }, theme: { color: '#183c2b' },
-      handler: result => { void verify(result, created); },
-      modal: { ondismiss: () => { checkoutRef.current = null; setWorking(false); if (mounted.current) setError('Checkout closed. Use Check request status if you paid, or continue your saved payment.'); } },
+    const checkout = createBookingCheckout({
+      Razorpay, created, number, buyer,
+      onVerify: result => verify(result, created),
+      onDismiss: message => { checkoutRef.current = null; setWorking(false); if (mounted.current) setError(message); },
+      onFailure: message => { if (mounted.current) setError(message); },
     });
-    checkout.on('payment.failed', () => { if (mounted.current) setError('Payment did not complete. Retry in checkout or close it to return.'); });
     checkoutRef.current = checkout; checkout.open();
   }
   async function resumePayment() {

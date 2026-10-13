@@ -1,6 +1,6 @@
 // The website only exposes the booking API's public, customer-safe endpoints.
 // Gateway credentials and staff authentication never pass through this proxy.
-export function createBookingProxy({ upstream = process.env.BOOKING_API_URL, appOrigin = process.env.PLOT_APP_ORIGIN, fetchImpl = fetch, cacheMs = 2000 } = {}) {
+export function createBookingProxy({ upstream = process.env.BOOKING_API_URL, appOrigin = process.env.PLOT_APP_ORIGIN, expectedSiteId, expectedSiteName, fetchImpl = fetch, cacheMs = 2000 } = {}) {
   const attempts = new Map();
   const publicCache = new Map(), publicReads = new Map();
   let base;
@@ -8,6 +8,9 @@ export function createBookingProxy({ upstream = process.env.BOOKING_API_URL, app
     base = new URL(upstream);
     if (!['http:', 'https:'].includes(base.protocol) || base.username || base.password || base.search || base.hash) throw new Error('BOOKING_API_URL must be an HTTP(S) server URL without credentials.');
   }
+  const matchesProject = (data, path) => (!expectedSiteId || Number(data.site_id) === Number(expectedSiteId))
+    && (path !== '/config' || !expectedSiteName || String(data.site_name || '').trim().toUpperCase() === expectedSiteName.toUpperCase());
+  const projectUnavailable = { message: 'The booking service is not configured for OM ASSOCIATES. Please contact the River Green team.' };
   const json = (res, code, value) => {
     res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
     res.end(JSON.stringify(value));
@@ -46,12 +49,25 @@ export function createBookingProxy({ upstream = process.env.BOOKING_API_URL, app
       }
       // No visitor-selected upstream, query string, cookies, JWT or private headers.
       const target = new URL(`${base.pathname.replace(/\/$/, '')}/public/website${path}`, base.origin);
+      // An order must use the same project as the map, including direct POSTs.
+      if (req.method === 'POST' && path === '/orders' && expectedSiteId) {
+        const cachedConfig = publicCache.get('/config');
+        if (!cachedConfig || cachedConfig.until <= Date.now()) {
+          const configUrl = new URL(`${base.pathname.replace(/\/$/, '')}/public/website/config`, base.origin);
+          const response = await fetchImpl(configUrl, { method: 'GET', headers: { Accept: 'application/json' }, redirect: 'error', signal: AbortSignal.timeout(20000) });
+          const config = await response.json();
+          if (response.status !== 200) return json(res, response.status, config);
+          if (!matchesProject(config, '/config')) return json(res, 503, projectUnavailable);
+          publicCache.set('/config', { data: config, until: Date.now() + cacheMs });
+        }
+      }
       const publicRead = req.method === 'GET' && ['/config', '/plots'].includes(path);
       const cached = publicRead && publicCache.get(path);
       if (cached && cached.until > Date.now()) return json(res, 200, cached.data);
       const fetchData = async () => {
         const response = await fetchImpl(target, { method: req.method, headers: { Accept: 'application/json', ...(body ? { 'Content-Type': 'application/json' } : {}) }, body, redirect: 'error', signal: AbortSignal.timeout(20000) });
         const data = await response.json();
+        if (publicRead && response.status === 200 && !matchesProject(data, path)) return { status: 503, data: projectUnavailable };
         if (publicRead && response.status === 200) publicCache.set(path, { data, until: Date.now() + cacheMs });
         return { status: response.status, data };
       };

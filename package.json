@@ -8,15 +8,19 @@
     "build": "vite build && node scripts/prerender.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "start": "node server/index.mjs",
+    "check:booking": "node scripts/check-booking.mjs",
+    "check:booking:production": "node scripts/check-booking.mjs --production",
     "test:server": "node --test server/*.test.mjs",
     "test:scene": "node --test src/data/sceneLandscape.test.js",
-    "test:map": "node --test src/data/colonyLocation.test.js src/scene/colonyMapCamera.test.js src/scene/colonyMapPlacement.test.js src/data/colonySiteFit.test.js src/data/colonyFrontage.test.js src/scene/colonyMapFit.test.js src/scene/architecture-map-fit.test.js src/scene/architecture-frontage.test.js src/scene/life-frontage.test.js",
+    "test:motion": "node --test src/hooks/entryBootstrap.test.js src/hooks/layoutRefresh.test.js src/scene/pageScrollActivity.test.js src/scene/colonyMapFrame.test.js",
+    "test:map": "node --test src/data/colonyLocation.test.js src/scene/colonyMapCamera.test.js src/scene/colonyMapPlacement.test.js src/data/colonySiteFit.test.js src/data/colonyFrontage.test.js src/scene/colonyMapFit.test.js src/scene/architecture-map-fit.test.js src/scene/architecture-frontage.test.js src/scene/life-frontage.test.js src/scene/nearbyPlaceBanners.test.js",
     "test:seo": "node --test src/data/seo.test.js",
-    "test:booking": "node --test server/booking-proxy.test.mjs src/data/bookingAvailability.test.js src/scene/colonyPlotPicker.test.js"
+    "test:booking": "node --test server/booking-deployment.test.mjs server/booking-proxy.test.mjs src/data/bookingAvailability.test.js src/data/plotStore.test.js src/data/websiteBooking.test.js src/scene/colonyPlotPicker.test.js"
   },
   "dependencies": {
     "framer-motion": "^12.23.0",
     "gsap": "^3.14.0",
+    "lenis": "1.3.17",
     "locomotive-scroll": "^5.0.1",
     "lucide-react": "^0.468.0",
     "maplibre-gl": "^6.14.0",

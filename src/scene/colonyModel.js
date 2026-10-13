@@ -57,7 +57,7 @@ export async function buildColonyModel({ renderer, plan, statusColours, records 
   };
   try {
     const loaded = await preloadColonyModules();
-    loaded.forEach((module, index) => {
+    for (const [index, module] of loaded.entries()) {
       try {
         const part = module.default(ctx) || {};
         parts.push(part);
@@ -66,7 +66,9 @@ export async function buildColonyModel({ renderer, plan, statusColours, records 
       } catch (error) {
         throw new Error(`Unable to build colony ${MODULES[index][0]}`, { cause: error });
       }
-    });
+      // Let input, scrolling and the page's first paint run between builders.
+      if (index < loaded.length - 1) await new Promise(resolve => setTimeout(resolve, 0));
+    }
     paintPlots(records);
   } catch (error) {
     dispose(); throw error;

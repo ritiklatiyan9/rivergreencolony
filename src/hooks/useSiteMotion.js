@@ -1,10 +1,18 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import LocomotiveScroll from 'locomotive-scroll';
-import 'locomotive-scroll/locomotive-scroll.css';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
+import { createLayoutRefresh } from './layoutRefresh.js';
+import { playPageEntry } from './pageEntry.js';
 
 gsap.registerPlugin(ScrollTrigger);
+// This hook owns layout refreshes. Automatic image/resize refreshes can reset
+// Lenis while the visitor is still scrolling, including phone toolbar resizes.
+if (typeof window !== 'undefined') {
+  ScrollTrigger.config({ autoRefreshEvents: 'none', ignoreMobileResize: true });
+  gsap.ticker.lagSmoothing(0);
+}
 
 const HEADER_OFFSET = 96;
 const scrollEase = (value) => 1 - (1 - value) ** 4;
@@ -31,24 +39,26 @@ function easeWindowTo(getTop, duration = 1100) {
   return stop;
 }
 
-// Wraps each word of a headline's own text (not its <em> accent) in a mask,
-// so the words can rise into place. Idempotent; React leaves the static text alone.
+// Wrap headline/statement words in masks, keeping emphasis and line breaks.
+// Existing masks are retained through media changes and React updates.
 function splitWords(heading) {
-  if (heading.dataset.split) return [...heading.querySelectorAll(':scope > .split-word > span')];
-  const words = [];
-  [...heading.childNodes].forEach((node) => {
-    if (node.nodeType !== Node.TEXT_NODE || !node.textContent.trim()) return;
-    const fragment = document.createDocumentFragment();
-    node.textContent.split(/(\s+)/).forEach((part) => {
-      if (!part) return;
-      if (!part.trim()) { fragment.append(part); return; }
-      const mask = document.createElement('span'), word = document.createElement('span');
-      mask.className = 'split-word'; word.textContent = part; mask.append(word); fragment.append(mask); words.push(word);
+  const wrap = (element) => {
+    [...element.childNodes].forEach((node) => {
+      if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'EM') { wrap(node); return; }
+      if (node.nodeType !== Node.TEXT_NODE || !node.textContent.trim()) return;
+      const fragment = document.createDocumentFragment();
+      node.textContent.split(/(\s+)/).forEach((part) => {
+        if (!part) return;
+        if (!part.trim()) { fragment.append(part); return; }
+        const mask = document.createElement('span'), word = document.createElement('span');
+        mask.className = 'split-word'; word.textContent = part; mask.append(word); fragment.append(mask);
+      });
+      node.replaceWith(fragment);
     });
-    node.replaceWith(fragment);
-  });
+  };
+  wrap(heading);
   heading.dataset.split = '1';
-  return words;
+  return [...heading.querySelectorAll('.split-word > span')];
 }
 
 function getTarget(selector, root) {
@@ -72,20 +82,21 @@ function getTarget(selector, root) {
 
 /**
  * GSAP owns reveal/parallax/hero elements; Framer Motion can own their wrappers.
- * Native document scrolling is retained: Locomotive v5 needs no scrollerProxy.
+ * Lenis and ScrollTrigger share GSAP's clock; touch scrolling stays native.
  */
-export default function useSiteMotion(rootRef, reducedMotion = false) {
-  const stateRef = useRef({ root: null, locomotive: null, reduced: reducedMotion });
+export default function useSiteMotion(rootRef, reducedMotion = false, onStoryStep) {
+  const stateRef = useRef({ root: null, lenis: null, reduced: reducedMotion });
   const heroEnteredRef = useRef(false);
+  const [activeSection, setActiveSection] = useState('#home');
 
-  const scrollTo = useCallback((selector) => {
+  const scrollTo = useCallback((selector, { immediate: forceImmediate = false } = {}) => {
     if (typeof window === 'undefined') return false;
 
     const state = stateRef.current;
     const target = getTarget(selector, state.root);
     if (target === null) return false;
 
-    const immediate = state.reduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.hidden;
+    const immediate = forceImmediate || state.reduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.hidden;
     const headerHeight = state.root?.querySelector('.site-header')?.offsetHeight || HEADER_OFFSET;
     const offset = typeof target === 'number' ? 0 : -(headerHeight + 16);
 
@@ -102,8 +113,12 @@ export default function useSiteMotion(rootRef, reducedMotion = false) {
     }
 
     state.stopEase?.();
-    if (state.locomotive && !immediate) {
-      state.locomotive.scrollTo(target, { offset, duration: 1.2, easing: scrollEase });
+    window.__finishRivergreenEntry?.();
+    if (state.lenis) {
+      // Include newly mounted sections before clamping a navigation target.
+      state.lenis.dimensions.resize();
+      state.lenis.start();
+      state.lenis.scrollTo(target, immediate ? { offset, immediate: true, force: true } : { offset, duration: 1.1, lerp: 0, easing: scrollEase, force: true });
     } else {
       const top = () => (typeof target === 'number'
         ? target
@@ -123,11 +138,11 @@ export default function useSiteMotion(rootRef, reducedMotion = false) {
     let disposed = false;
     let animationContext;
     let smoothScroll;
-    let smoothReady = false;
     let smoothFrame = 0;
-    let refreshFrame = 0;
-    let readyFrame = 0;
-    let layoutTimer = 0;
+    let smoothTick;
+    let entry;
+    let anchorTimer;
+    let lastScroll = 0;
     const revealTimers = new Set();
 
     stateRef.current.root = root;
@@ -156,28 +171,36 @@ export default function useSiteMotion(rootRef, reducedMotion = false) {
 
     const destroySmoothScroll = () => {
       cancelAnimationFrame(smoothFrame);
-      cancelAnimationFrame(readyFrame);
-      stateRef.current.locomotive = null;
-
-      if (!smoothScroll) return;
-      const instance = smoothScroll;
+      if (smoothTick) gsap.ticker.remove(smoothTick);
+      smoothTick = null;
+      stateRef.current.lenis = null;
+      smoothScroll?.destroy();
       smoothScroll = null;
-
-      // v5 initializes its Core on the next frame. Let that frame finish before
-      // destroying a just-created instance, otherwise its own RAF can restart.
-      if (smoothReady) instance.destroy();
-      else requestAnimationFrame(() => instance.destroy());
-      smoothReady = false;
     };
 
-    const refresh = () => {
-      cancelAnimationFrame(refreshFrame);
-      refreshFrame = requestAnimationFrame(() => {
+    const layoutRefresh = createLayoutRefresh({
+      readSize: () => ({ width: root.offsetWidth, height: root.offsetHeight, viewport: window.innerHeight }),
+      isScrolling: () => document.hidden || document.documentElement.classList.contains('is-entering') ||
+        performance.now() - lastScroll < 180 || Boolean(smoothScroll?.isScrolling),
+      refresh: () => {
         if (disposed) return;
-        smoothScroll?.lenisInstance?.resize();
-        smoothScroll?.resize();
+        // Updating dimensions does not reset targetScroll like lenis.resize().
+        smoothScroll?.dimensions.resize();
         ScrollTrigger.refresh();
-      });
+      },
+    });
+    const refresh = () => layoutRefresh.request();
+    const markScroll = () => { lastScroll = performance.now(); window.clearTimeout(anchorTimer); layoutRefresh.touch(); };
+    const finishEntry = (event) => {
+      entry?.finish(event?.detail?.reason || 'complete');
+      smoothScroll?.start();
+      layoutRefresh.request(true);
+      // Show the full entrance even on a section URL, then honour its target.
+      // A visitor who skips with wheel/touch/keyboard keeps control of scrolling.
+      const hash = window.__rivergreenEntryHash;
+      if (event?.detail?.reason === 'complete' && hash && hash !== '#home' && window.location.hash === hash) {
+        anchorTimer = window.setTimeout(() => { if (!disposed) scrollTo(hash); }, 350);
+      }
     };
 
     const setup = () => {
@@ -187,33 +210,32 @@ export default function useSiteMotion(rootRef, reducedMotion = false) {
       if (disposed) return;
 
       const reduced = Boolean(reducedMotion || motionQuery.matches);
-      const hidden = document.hidden;
       const desktop = desktopQuery.matches;
       stateRef.current.reduced = reduced;
 
       // Starting on a cancellable frame avoids creating an instance during
       // React StrictMode's initial setup / cleanup / setup cycle.
-      if (!reduced && !hidden && desktop) {
+      if (!reduced && desktop) {
         smoothFrame = requestAnimationFrame(() => {
-          if (disposed || document.hidden) return;
+          if (disposed) return;
           try {
-            smoothScroll = new LocomotiveScroll({
-              lenisOptions: {
-                lerp: 0.085,
-                smoothWheel: true,
-                syncTouch: false,
-                anchors: false,
-                autoRaf: false,
-                prevent: (element) => Boolean(element.closest('[data-lenis-prevent], [role="dialog"]')),
-              },
-              scrollCallback: ScrollTrigger.update,
+            smoothScroll = new Lenis({
+              lerp: 0.1,
+              smoothWheel: true,
+              syncTouch: false,
+              anchors: false,
+              autoRaf: false,
+              autoResize: false,
+              prevent: (element) => Boolean(element.closest('[data-lenis-prevent], [role="dialog"]')),
             });
-            stateRef.current.locomotive = smoothScroll;
-            readyFrame = requestAnimationFrame(() => {
-              if (!disposed && smoothScroll) smoothReady = true;
-            });
+            stateRef.current.lenis = smoothScroll;
+            smoothScroll.on('scroll', ScrollTrigger.update);
+            smoothTick = (time) => { if (!document.hidden) smoothScroll?.raf(time * 1000); };
+            // Advance scroll before GSAP renders animations in the same tick.
+            gsap.ticker.add(smoothTick, false, true);
+            if (document.hidden || document.documentElement.classList.contains('is-entering')) smoothScroll.stop();
           } catch (error) {
-            stateRef.current.locomotive = null;
+            stateRef.current.lenis = null;
             console.warn('Smooth scrolling is unavailable; native scrolling remains active.', error);
           }
         });
@@ -253,24 +275,40 @@ export default function useSiteMotion(rootRef, reducedMotion = false) {
             );
           }
 
-          if (reduced || hidden) {
+          // Section tracking and story selection also work with reduced motion.
+          // Only the active chapter changes; no React updates on each scroll frame.
+          root.querySelectorAll('main > section[id]').forEach((section) => {
+            const chapterId = ({ everyday: '#overview', 'visit-process': '#at-a-glance' })[section.id] || `#${section.id}`;
+            ScrollTrigger.create({
+              trigger: section,
+              start: 'top 45%',
+              end: 'bottom 45%',
+              onToggle: ({ isActive }) => { if (isActive) setActiveSection(chapterId); },
+              onRefresh: ({ isActive }) => { if (isActive) setActiveSection(chapterId); },
+            });
+          });
+          if (onStoryStep) {
+            root.querySelectorAll('[data-story-step]').forEach((step) => {
+              const selectStep = () => onStoryStep(Number(step.dataset.storyStep));
+              ScrollTrigger.create({
+                trigger: step,
+                start: 'top 52%',
+                end: 'bottom 52%',
+                onEnter: selectStep,
+                onEnterBack: selectStep,
+                onRefresh: ({ isActive }) => { if (isActive) selectStep(); },
+              });
+            });
+          }
+
+          if (reduced) {
             heroEnteredRef.current = true;
+            entry?.finish();
+            window.__finishRivergreenEntry?.();
             return;
           }
 
           const hero = root.querySelector('.hero');
-          // The plum intro curtain (index.html) holds the stage for its first ~2 s.
-          const introDelay = document.documentElement.classList.contains('intro-seen') || !document.querySelector('.intro-curtain') ? 0 : 1.75;
-          // A plum frame with an arched top opens as the hero scrolls away.
-          if (hero) gsap.fromTo(hero, { '--hero-frame': '3.4vw', '--hero-arch': desktop ? '9vw' : '18vw' }, {
-            '--hero-frame': '0vw', '--hero-arch': '0vw', ease: 'none',
-            scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom 30%', scrub: true },
-          });
-          // The script accent writes itself on, left to right.
-          const writeOn = (accent, trigger, delay = 0) => accent && gsap.fromTo(accent,
-            { clipPath: 'inset(-50% 100% -70% -30%)' },
-            { clipPath: 'inset(-50% -30% -70% -30%)', duration: 1.5, delay, ease: 'power2.inOut', clearProps: 'clipPath',
-              immediateRender: false, onStart: guardStartedReveal, scrollTrigger: { trigger, start: 'top 96%', once: true } });
           if (desktop && hero) root.querySelectorAll('[data-hero-depth]').forEach((layer) => {
             const depth = Number(layer.dataset.heroDepth);
             if (!Number.isFinite(depth) || depth === 0) return;
@@ -279,7 +317,7 @@ export default function useSiteMotion(rootRef, reducedMotion = false) {
             const travel = Math.min(Math.abs(depth) * 12, 2.5) * Math.sign(depth);
             gsap.fromTo(layer, { yPercent: travel }, {
               yPercent: -travel, ease: 'none',
-              scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 },
+              scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true },
             });
           });
 
@@ -299,67 +337,91 @@ export default function useSiteMotion(rootRef, reducedMotion = false) {
             });
           });
 
-          const heroLines = root.querySelectorAll('.hero-title-line:not(em)'), heroAccent = root.querySelector('.hero h1 em');
-          // A repeat visit shows the prerendered hero at first paint; animating it in again would flash.
-          if (document.documentElement.classList.contains('intro-seen')) heroEnteredRef.current = true;
+          const heroLines = root.querySelectorAll('.hero-title-line:not(em)');
+          // The first screen is readable at first paint. A short settling motion
+          // gives it an arrival without a curtain or a hidden headline.
+          if (document.documentElement.classList.contains('is-entering')) {
+            heroEnteredRef.current = true;
+          }
           if (heroLines.length && !heroEnteredRef.current) {
             const details = root.querySelectorAll('.hero-topline, .hero-subline, .hero-description, .hero-facts, .hero-frame');
-            const detailTween = gsap.fromTo(details, { autoAlpha: 1, y: 12 }, { autoAlpha: 1, y: 0, duration: 1.25, delay: 0.3 + introDelay, stagger: 0.1, ease: 'power3.out' });
+            const detailTween = gsap.fromTo(details, { autoAlpha: 1, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.05, ease: 'power3.out' });
             const titleTween = gsap.fromTo(heroLines,
-              { yPercent: 105, autoAlpha: 1 },
+              { y: 10, autoAlpha: 1 },
               {
-                yPercent: 0,
+                y: 0,
                 autoAlpha: 1,
-                duration: 1.5,
-                delay: introDelay,
-                stagger: 0.14,
+                duration: 0.85,
+                stagger: 0.08,
                 ease: 'power4.out',
                 onComplete: () => { heroEnteredRef.current = true; },
               },
             );
-            const accentTween = heroAccent && gsap.fromTo(heroAccent, { clipPath: 'inset(-40% 100% -60% -20%)' }, { clipPath: 'inset(-40% -20% -60% -20%)', duration: 1.6, delay: introDelay + 0.55, ease: 'power2.inOut', clearProps: 'clipPath' });
-            const guard = window.setTimeout(() => { revealTimers.delete(guard); finishRevealSoon(titleTween, detailTween, accentTween); }, introDelay * 1000);
-            revealTimers.add(guard);
+            finishRevealSoon(titleTween, detailTween);
           }
 
-          // Headlines: words rise out of masks, then the script accent writes on.
-          root.querySelectorAll('main h2:not([data-line-reveal])').forEach((heading) => {
+          // Serif headings rise word by word, following the reference's rhythm.
+          root.querySelectorAll('main h2:not([data-line-reveal]), [data-heading-reveal]').forEach((heading) => {
             if (heading.getBoundingClientRect().bottom < 0) return;
             const words = splitWords(heading);
-            if (words.length) gsap.fromTo(words, { yPercent: 115 }, { yPercent: 0, duration: 1.15, stagger: 0.06, ease: 'expo.out',
+            if (words.length) gsap.fromTo(words, { yPercent: 115 }, { yPercent: 0, duration: 0.85, stagger: 0.045, ease: 'expo.out',
               immediateRender: false, onStart: guardStartedReveal, scrollTrigger: { trigger: heading, start: 'top 96%', once: true } });
-            writeOn(heading.querySelector('em'), heading, words.length ? 0.35 : 0);
           });
 
           root.querySelectorAll('[data-line-reveal]').forEach((heading) => {
             if (heading.getBoundingClientRect().bottom < 0) return;
-            gsap.fromTo(heading.querySelectorAll('.heading-line-mask > :not(em)'),
+            gsap.fromTo(heading.querySelectorAll('.heading-line-mask > *'),
               { yPercent: 105 },
-              { yPercent: 0, duration: 1.4, stagger: 0.14, ease: 'power4.out',
+              { yPercent: 0, duration: 0.95, stagger: 0.09, ease: 'power4.out',
                 immediateRender: false, onStart: guardStartedReveal,
                 scrollTrigger: { trigger: heading, start: 'top 92%', once: true } },
             );
-            writeOn(heading.querySelector('em'), heading, 0.5);
           });
 
-          // Photographs open from a frame and settle in scale, on every device.
+          root.querySelectorAll('[data-reading-reveal]').forEach((statement) => {
+            if (statement.getBoundingClientRect().bottom < 0) return;
+            const words = splitWords(statement);
+            gsap.fromTo(words, { opacity: 0.55, y: 4 }, {
+              opacity: 1, y: 0, stagger: 0.035, ease: 'none',
+              scrollTrigger: { trigger: statement, start: 'top 85%', end: 'bottom 40%', scrub: true },
+            });
+          });
+
+          // Compositor transforms avoid repainting large clipped photographs.
           root.querySelectorAll('.story-image, .feature-photo-wrap, .gallery-image, .location-map, .overview-inset').forEach((frame) => {
             if (frame.getBoundingClientRect().bottom < 0) return;
             const image = frame.querySelector('img');
-            gsap.fromTo(frame, { clipPath: 'inset(10% 8% 10% 8%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.6, ease: 'expo.out', clearProps: 'clipPath',
+            gsap.fromTo(frame, { y: 18, opacity: 0.75 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out',
               immediateRender: false, onStart: guardStartedReveal, scrollTrigger: { trigger: frame, start: 'top 94%', once: true } });
-            if (image) gsap.fromTo(image, { scale: 1.2 }, { scale: 1, duration: 1.9, ease: 'expo.out', immediateRender: false, scrollTrigger: { trigger: frame, start: 'top 94%', once: true } });
+            if (image && !frame.closest('.feature-story')) gsap.fromTo(image, { scale: 1.08 }, { scale: 1, duration: 1.25, ease: 'expo.out', immediateRender: false, scrollTrigger: { trigger: frame, start: 'top 94%', once: true } });
+          });
+
+          root.querySelectorAll('.project-guide > a, .glance-facts > div, .feature-step').forEach((element, index) => {
+            gsap.fromTo(element, { y: 18, opacity: 0.55 }, {
+              y: 0, opacity: 1, duration: 0.7, ease: 'power3.out',
+              immediateRender: false, onStart: guardStartedReveal,
+              delay: element.matches('.project-guide > a') ? index * 0.07 : 0,
+              scrollTrigger: { trigger: element, start: 'top 92%', once: true },
+            });
+          });
+          root.querySelectorAll('.section-top, .project-details, .story-position').forEach((element) => {
+            element.classList.add('has-reveal-line');
+            gsap.fromTo(element, { '--line-progress': 0 }, {
+              '--line-progress': 1, duration: 0.8, ease: 'power2.inOut',
+              immediateRender: false, onStart: guardStartedReveal,
+              scrollTrigger: { trigger: element, start: 'top 94%', once: true },
+            });
           });
 
           root.querySelectorAll('[data-reveal]').forEach((element) => {
             if (element.getBoundingClientRect().bottom < 0) return;
             const requestedDelay = Number(element.dataset.revealDelay || 0);
             gsap.fromTo(element,
-              { y: 24, autoAlpha: 0 },
+              { y: 12, autoAlpha: 1 },
               {
                 y: 0,
                 autoAlpha: 1,
-                duration: 1.25,
+                duration: 0.8,
                 immediateRender: false,
                 onStart: guardStartedReveal,
                 delay: Number.isFinite(requestedDelay) ? Math.max(0, Math.min(requestedDelay, 0.4)) : 0,
@@ -380,7 +442,7 @@ export default function useSiteMotion(rootRef, reducedMotion = false) {
                     trigger: element.parentElement,
                     start: 'top bottom',
                     end: 'bottom top',
-                    scrub: 1.1,
+                    scrub: true,
                     invalidateOnRefresh: true,
                   },
                 },
@@ -392,7 +454,7 @@ export default function useSiteMotion(rootRef, reducedMotion = false) {
         animationContext.revert();
         console.warn('Scroll effects are unavailable; page content remains visible.', error);
       }
-      refresh();
+      layoutRefresh.request(true);
     };
 
     const handleAnchor = (event) => {
@@ -406,18 +468,29 @@ export default function useSiteMotion(rootRef, reducedMotion = false) {
       scrollTo(url.hash);
     };
 
+    if (document.documentElement.classList.contains('is-entering')) window.scrollTo({ top: 0, behavior: 'instant' });
     setup();
-    // Filters, accordions and lazily mounted content can change document
-    // height without loading a new image. Refresh once their layout settles,
-    // rather than on every frame of a Framer Motion height transition.
-    const layoutObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => {
-      window.clearTimeout(layoutTimer);
-      layoutTimer = window.setTimeout(refresh, 120);
-    });
+    entry = playPageEntry(root, gsap);
+    // Observer notifications and image loads only schedule a measurement if
+    // geometry actually changed. No refresh can interrupt wheel/touch inertia.
+    const layoutObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(refresh);
     layoutObserver?.observe(root);
     motionQuery.addEventListener('change', setup);
     desktopQuery.addEventListener('change', setup);
-    document.addEventListener('visibilitychange', setup);
+    const visibilityChange = () => {
+      if (document.hidden) {
+        entry?.finish('hidden');
+        smoothScroll?.stop();
+      } else {
+        smoothScroll?.start();
+        layoutRefresh.request(true);
+      }
+    };
+    document.addEventListener('visibilitychange', visibilityChange);
+    window.addEventListener('rg:entry-complete', finishEntry);
+    window.addEventListener('scroll', markScroll, { passive: true });
+    window.addEventListener('wheel', markScroll, { passive: true });
+    window.addEventListener('touchmove', markScroll, { passive: true });
     // At document level React's click handlers run first. A link that handles
     // its own click can preventDefault without triggering a duplicate scroll.
     document.addEventListener('click', handleAnchor);
@@ -429,19 +502,25 @@ export default function useSiteMotion(rootRef, reducedMotion = false) {
       disposed = true;
       motionQuery.removeEventListener('change', setup);
       desktopQuery.removeEventListener('change', setup);
-      document.removeEventListener('visibilitychange', setup);
+      document.removeEventListener('visibilitychange', visibilityChange);
+      window.removeEventListener('rg:entry-complete', finishEntry);
+      window.removeEventListener('scroll', markScroll);
+      window.removeEventListener('wheel', markScroll);
+      window.removeEventListener('touchmove', markScroll);
       document.removeEventListener('click', handleAnchor);
       root.removeEventListener('load', refresh, true);
       window.removeEventListener('resize', refresh);
       layoutObserver?.disconnect();
-      window.clearTimeout(layoutTimer);
+      layoutRefresh.dispose();
+      window.clearTimeout(anchorTimer);
+      entry?.cancel();
       clearRevealTimers();
-      cancelAnimationFrame(refreshFrame);
+      stateRef.current.stopEase?.();
       destroySmoothScroll();
       animationContext?.revert();
       stateRef.current.root = null;
     };
-  }, [rootRef, reducedMotion, scrollTo]);
+  }, [rootRef, reducedMotion, scrollTo, onStoryStep]);
 
-  return { scrollTo };
+  return { scrollTo, activeSection };
 }

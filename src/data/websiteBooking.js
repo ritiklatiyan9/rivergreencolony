@@ -24,3 +24,28 @@ export function loadRazorpay() {
 }
 export const bookingMoney = value => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(Number(value || 0));
 export const bookingSessionKey = number => `rivergreen-booking-${number}`;
+
+export function createBookingCheckout({ Razorpay, created, number, buyer = {}, onVerify, onDismiss, onFailure }) {
+  let verifying = false, failed = false;
+  const checkout = new Razorpay({
+    key: created.key_id, order_id: created.order.id, amount: created.order.amount, currency: created.order.currency,
+    name: 'OM ASSOCIATES', description: `River Green token for ${number}`,
+    prefill: { name: buyer.buyer_name, contact: buyer.buyer_phone, email: buyer.buyer_email }, theme: { color: '#183c2b' },
+    handler: result => {
+      if (verifying) return;
+      verifying = true;
+      void onVerify({ razorpay_payment_id: result.razorpay_payment_id, razorpay_order_id: result.razorpay_order_id, razorpay_signature: result.razorpay_signature });
+    },
+    modal: { ondismiss: () => {
+      // Checkout can close after success while the server is still verifying.
+      if (!verifying) onDismiss(failed ? 'Payment did not complete. Check request status before trying again.' : 'Checkout cancelled. Check request status if you paid, or continue your saved payment.');
+    } },
+  });
+  checkout.on('payment.failed', result => {
+    if (verifying) return;
+    failed = true;
+    const message = typeof result?.error?.description === 'string' ? result.error.description.slice(0, 250) : 'Payment did not complete.';
+    onFailure(`${message} Retry in checkout or close it to return.`);
+  });
+  return checkout;
+}

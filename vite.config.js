@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
     build: {
       rollupOptions: {
         output: {
-          manualChunks: { three: ['three'], maplibre: ['maplibre-gl'], motion: ['framer-motion'], animation: ['gsap', 'locomotive-scroll'] },
+          manualChunks: { three: ['three'], maplibre: ['maplibre-gl'], motion: ['framer-motion'], animation: ['gsap', 'lenis'] },
         },
       },
     },

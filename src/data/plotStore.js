@@ -24,11 +24,14 @@ let records = [];
 let loadPromise;
 let refreshTimer;
 let broadcast;
+let lastSuccessfulRefresh = 0;
+const REFRESH_INTERVAL = 5000;
 let state = { revision: 0, source: 'booking', serverConnected: false, updatedAt: null, pendingCount: 0, saving: false, error: '', bookingConfig: null, statusDisplayEnabled: false };
 
 const safeSourceRecord = (plot) => Object.fromEntries(['plot_number', ...publicFields].filter((key) => plot[key] != null).map((key) => [key, plot[key]]));
 const canonicalNumber = (value) => numbers.get(normalizePlotNumber(value));
 const newerTimestamp = (next, previous) => !previous || (next && new Date(next).getTime() >= new Date(previous).getTime()) ? next : previous;
+const sameFields = (next, previous) => Boolean(previous && Object.keys(next).length === Object.keys(previous).length && Object.keys(next).every(key => Object.is(next[key], previous[key])));
 
 function sanitizeDetails(value, requireNumber = false) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Each plot record must be an object.');
@@ -62,13 +65,21 @@ function indexOverrides(items) {
 
 function rebuild(changes = {}) {
   const publicIndex = Object.fromEntries(source.filter((plot) => canonicalNumber(plot.plot_number)).map((plot) => [canonicalNumber(plot.plot_number), safeSourceRecord(plot)]));
-  records = PLOT_METADATA.map((metadata) => {
+  // Keep unchanged plot objects and the array stable. A periodic availability
+  // check should not make React redraw the map or rebuild 200 plot controls.
+  const nextRecords = PLOT_METADATA.map((metadata, index) => {
     const number = metadata.number;
     const record = { ...metadata, plot_number: number, status: 'UNKNOWN', bookable: false, held: false, dimensions: '', area_sqft: '', area_sqm: '', facing: '', block: '', plot_type: number.startsWith('S') ? 'COMMERCIAL' : 'RESIDENTIAL', total_price: '', price_per_sqft: '', notes: '', ...publicIndex[number] };
     if (!PLOT_STATUSES[record.status]) record.status = 'UNKNOWN';
-    return { ...record, id: number, number, hasOverride: Boolean(overrides[number]), isPending: Boolean(pending[number]) };
+    const next = { ...record, id: number, number, hasOverride: Boolean(overrides[number]), isPending: Boolean(pending[number]) };
+    return sameFields(next, records[index]) ? records[index] : next;
   });
-  state = { ...state, ...changes, revision: state.revision + 1, pendingCount: Object.keys(pending).length };
+  const recordsChanged = nextRecords.length !== records.length || nextRecords.some((record, index) => record !== records[index]);
+  const nextState = { ...state, ...changes, pendingCount: Object.keys(pending).length };
+  if (JSON.stringify(nextState.bookingConfig) === JSON.stringify(state.bookingConfig)) nextState.bookingConfig = state.bookingConfig;
+  if (!recordsChanged && sameFields(nextState, state)) return;
+  if (recordsChanged) records = nextRecords;
+  state = { ...nextState, revision: state.revision + 1 };
   listeners.forEach((callback) => callback());
 }
 
@@ -96,10 +107,15 @@ export async function refreshPlotRecords({ refreshSource = false } = {}) {
     try {
       const [config, data] = await Promise.all([api('/api/booking/config'), api('/api/booking/plots')]);
       if (!Array.isArray(data.plots)) throw new Error('Plot availability could not be loaded.');
-      source = data.plots.map(plot => safeSourceRecord(bookingAvailabilityRecord(plot, Boolean(config.status_display_enabled && data.status_display_enabled))));
+      const nextSource = data.plots.map(plot => safeSourceRecord(bookingAvailabilityRecord(plot, Boolean(config.status_display_enabled && data.status_display_enabled))));
+      const sourceChanged = JSON.stringify(nextSource) !== JSON.stringify(source);
+      source = nextSource;
       overrides = {}; pending = {};
-      rebuild({ serverConnected: true, updatedAt: data.updated_at || new Date().toISOString(), bookingConfig: config, statusDisplayEnabled: Boolean(config.status_display_enabled), error: '' });
+      const updatedAt = data.updated_at || (sourceChanged || !state.updatedAt ? new Date().toISOString() : state.updatedAt);
+      lastSuccessfulRefresh = Date.now();
+      rebuild({ serverConnected: true, updatedAt, bookingConfig: config, statusDisplayEnabled: Boolean(config.status_display_enabled), error: '' });
     } catch (error) {
+      lastSuccessfulRefresh = 0;
       source = []; overrides = {}; pending = {};
       rebuild({ serverConnected: false, bookingConfig: null, statusDisplayEnabled: false, error: error.message || 'The booking service is unavailable.' });
     }
@@ -110,8 +126,10 @@ export async function refreshPlotRecords({ refreshSource = false } = {}) {
 
 function startRefresh() {
   if (typeof window === 'undefined') return;
-  refreshPlotRecords();
-  if (!refreshTimer) refreshTimer = setInterval(() => { if (!document.hidden) refreshPlotRecords(); }, 5000);
+  // A second subscriber can use the successful check from a moment ago.
+  // Explicit refreshes (including checkout) always reach the booking service.
+  if (!document.hidden && (!state.serverConnected || Date.now() - lastSuccessfulRefresh >= REFRESH_INTERVAL)) refreshPlotRecords();
+  if (!refreshTimer) refreshTimer = setInterval(() => { if (!document.hidden) refreshPlotRecords(); }, REFRESH_INTERVAL);
   if (!broadcast && 'BroadcastChannel' in window) {
     broadcast = new BroadcastChannel('river-green-plot-records');
     broadcast.onmessage = () => refreshPlotRecords();
@@ -220,7 +238,7 @@ export const loginPlotManager = (password) => api('/api/admin/login', { method: 
 export const logoutPlotManager = () => api('/api/admin/logout', { method: 'POST', body: '{}' });
 
 if (typeof window !== 'undefined') {
-  window.addEventListener('storage', (event) => { if (event.key === 'river-green-plots-updated') refreshPlotRecords(); });
+  window.addEventListener('storage', (event) => { if (event.key === 'river-green-plots-updated' && listeners.size) refreshPlotRecords(); });
   window.addEventListener('focus', () => { if (listeners.size) refreshPlotRecords(); });
   document.addEventListener('visibilitychange', () => { if (!document.hidden && listeners.size) refreshPlotRecords(); });
 }

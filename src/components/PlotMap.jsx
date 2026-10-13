@@ -260,7 +260,7 @@ export default function PlotMap({ onEnquire, onSelectPlot, selectedPlotId, actio
     const { element, ...details } = selected;
     if (expanded) setExpanded(false);
     if (onEnquire) onEnquire({ ...details, number: selected.id });
-    else window.open(`https://wa.me/919927669955?text=${encodeURIComponent(`Hello Defence Garden, I’m interested in ${selected.id.startsWith('S') ? 'shop' : 'plot'} ${selected.id} at River Green Colony, Shamli. Please share its current availability, dimensions and pricing, and arrange a site visit.`)}`, '_blank', 'noopener,noreferrer');
+    else window.open(`https://wa.me/919521018879?text=${encodeURIComponent(`Hello Defence Garden, I’m interested in ${selected.id.startsWith('S') ? 'shop' : 'plot'} ${selected.id} at River Green Colony, Shamli. Please share its current availability, dimensions and pricing, and arrange a site visit.`)}`, '_blank', 'noopener,noreferrer');
   };
 
   useEffect(() => {

@@ -4,11 +4,12 @@ import { access, readFile, realpath, stat } from 'node:fs/promises';
 import { extname, join, resolve, sep } from 'node:path';
 import { createPlotApi, PROJECT_ROOT } from './plot-api.mjs';
 import { createBookingProxy } from './booking-proxy.mjs';
+import { bookingDeploymentOptions } from './booking-deployment.mjs';
 import { SEO_TYPES, seoFiles, siteOrigin, withOrigin } from './seo.mjs';
 
 try { process.loadEnvFile?.(join(PROJECT_ROOT, '.env.local')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
 const api = await createPlotApi();
-const bookingProxy = createBookingProxy();
+const bookingProxy = createBookingProxy(bookingDeploymentOptions(process.env, { production: process.env.NODE_ENV === 'production' }));
 const dist = resolve(PROJECT_ROOT, 'dist');
 await access(join(dist, 'index.html')).catch(() => { throw new Error('Build the website with npm run build before npm start.'); });
 const realDist = await realpath(dist);

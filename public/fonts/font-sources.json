@@ -123,7 +123,7 @@
     "family": "Manrope",
     "license": "Manrope-OFL.txt"
   },
-  "weightRendering": "Cormorant Garamond uses its native 600 face for headings. DM Sans uses native variable weights for body copy and controls.",
+  "weightRendering": "Cormorant Garamond uses native variable weights: 600 for headings and 500 for serif statements. Golos Text uses native variable weights for body copy and controls.",
   "legacyFaces": [
     {
       "family": "HW Cigars",
@@ -151,7 +151,7 @@
   ],
   "currentDesign": {
     "display": "Cormorant Garamond 600",
-    "bodyAndControls": "DM Sans 400–800",
+    "bodyAndControls": "DM Sans 400\u2013800",
     "note": "Readable title-case headings; decorative script faces retained as inactive assets."
   },
   "premiumThemeFaces": {
@@ -218,5 +218,31 @@
         "usedBy": "src/premium.css"
       }
     ]
+  },
+  "editorialUpdate": {
+    "date": "2026-10-14",
+    "reference": "https://www.mejuma-tuscany.com/process",
+    "body": {
+      "family": "Golos Text",
+      "file": "golos-text-latin-variable.woff2",
+      "weight": "400 900",
+      "source": "https://fonts.gstatic.com/s/golostext/v7/q5uCsoe9Lv5t7Meb31EcExN8hK5SAMo.woff2",
+      "license": "Golos-Text-OFL.txt",
+      "bytes": 38084,
+      "sha256": "f8d71091110f0113ba8bd16bee2ac68b51dd6491c5b9404e9fbb82b20ae632f1"
+    },
+    "display": {
+      "family": "Cormorant Garamond",
+      "file": "cormorant-garamond-latin-variable.woff2",
+      "weight": "300 700",
+      "license": "Cormorant-Garamond-OFL.txt",
+      "selection": "User selected free serif alternative to MADE Mirage and Roxale Story.",
+      "variable": true,
+      "headingWeight": 600,
+      "statementWeight": 500,
+      "source": "https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtKky2F7g.woff2",
+      "bytes": 37776,
+      "sha256": "5d618c462b7a5b74f442e1548880086af71764d9cc7d35c16ab45353da934621"
+    }
   }
 }
