@@ -24,3 +24,13 @@ Configure the Razorpay webhook on the Bookings API at `https://sales-backend-pon
 For local development, `.env.local` points to `http://127.0.0.1:8001`. Start the existing Bookings backend before opening the website, and run `npm run check:booking` to verify that local API.
 
 Production checks in this session: the Render API health endpoint responded successfully, but its public website endpoints reported that the website project was not configured. The local API connected to the shared OM ASSOCIATES settings, which already enabled booking with a ₹101 token and live credentials. The Render environment was left unchanged at the user’s request. No real order or payment was created while verifying this setup.
+
+## Search indexing after deployment
+
+The production build includes the River Green G-and-leaf favicon, Apple/web icons, full prerendered page content, canonical and sharing links, JSON-LD, `robots.txt`, `sitemap.xml`, `sitemap.html` and `llms.txt`. These changes become public only after deploying this folder.
+
+Keep `SITE_URL=https://www.rivergreencolony.com` at build time and, when using the Node server, at runtime. If the domain changes, rebuild with the new origin; the server rejects mismatched builds. Run `npm run test:seo` and `npm run build` before deploying.
+
+On the deployed domain, confirm the home canonical points to `https://www.rivergreencolony.com/`, `/favicon-96.png` is accessible, `/robots.txt` advertises `https://www.rivergreencolony.com/sitemap.xml`, and `/plot-manager` returns `X-Robots-Tag: noindex, nofollow`.
+
+Submit `https://www.rivergreencolony.com/sitemap.xml` in the verified Google Search Console property and request indexing of the home page with URL Inspection. Google decides ranking and sitelinks; metadata and sitemaps help discovery but do not guarantee a top position. Keep the Google Business Profile name, address, phone and website consistent, and add a link from the official Defence Garden project page.

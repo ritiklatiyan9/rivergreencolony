@@ -22,12 +22,14 @@ h2 em, .community-intro h2 em, .features-section h2 em, .experience-heading h2 e
   display: inline; font-family: var(--display); font-size: 1em; font-style: normal; font-weight: inherit; line-height: inherit;
   text-transform: none; letter-spacing: inherit; margin: 0; padding: 0; transform: none;
 }
-.hero h1 { font-family: var(--display); font-size: clamp(90px, 12.8vw, 210px); font-weight: 600; text-transform: none; line-height: .98; letter-spacing: -.025em; }
+.hero h1 { font-family: var(--display); font-size: clamp(90px, min(12.8vw, 20svh), 210px); font-weight: 600; text-transform: none; line-height: .98; letter-spacing: -.025em; }
 .hero-script-wrap { margin: 12px 0 0; padding: 0; }
 .hero h1 em { font-family: var(--body); font-size: clamp(16px, 1.5vw, 24px); font-style: normal; font-weight: 500; line-height: 1.5; margin: 0; padding: 0; transform: none; letter-spacing: .02em; }
 .hero-topline .eyebrow { font-family: var(--body); font-size: 11px; font-weight: 400; letter-spacing: .13em; }
 .hero-subline { font-family: var(--body); font-size: clamp(15px, 1.2vw, 20px); line-height: 1.5; text-transform: none; letter-spacing: 0; margin-top: 28px; }
-.hero-content { top: 21%; }
+/* Keep the title and booking action in the sky above the entrance gate. */
+.hero-content { top: max(96px, 12%); }
+.hero-topline { margin-bottom: 18px; }
 .hero-line-mask { padding-top: .13em; padding-bottom: .16em; margin-top: -.13em; margin-bottom: -.16em; }
 .hero-title-letter-mask { padding-top: .12em; padding-bottom: .18em; margin-top: -.12em; margin-bottom: -.18em; }
 .eyebrow, .editorial-kicker, .section-side-note, .project-details small, .photo-caption, .gallery-tag, .gallery-filters button, .visit-bottom-note, .footer-nav small, .footer-wordmark span, .feature-photo-label, .reading-rail-caption, .scene-disclaimer, .brand small, .hero-address, .hero-status, .hero-discover {
@@ -84,10 +86,10 @@ h2 em, .community-intro h2 em, .features-section h2 em, .experience-heading h2 e
   .process-heading { grid-template-columns: 1fr; gap: 35px; margin-bottom: 45px; }
   .process-heading > p { max-width: 600px; }
   .process-step { grid-template-columns: 45px 1fr 1fr; gap: 24px; }
-  .hero h1 { font-size: 13.5vw; }
+  .hero h1 { font-size: min(13.5vw, 20svh); }
 }
 @media (max-width: 600px) {
-  .hero-content { top: 24%; }
+  .hero-content { top: max(100px, 14%); }
   .hero h1 { font-size: clamp(65px, 18vw, 98px); line-height: 1; }
   .hero h1 em { font-size: 17px; }
   .hero-subline { font-size: 14px; gap: 16px; }

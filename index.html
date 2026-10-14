@@ -2,13 +2,18 @@
 <html lang="en-IN">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/png" href="/favicon-96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#102d20" />
     <title>River Green Colony | Residential Plots & Property in Shamli</title>
     <meta name="description" content="Residential plots for sale in River Green Colony, Shamli Road, Shamli (UP): a planned Defence Garden colony with 25–40 ft roads, gardens and a fountain plaza." />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href="__SITE_URL__/" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <meta name="geo.region" content="IN-UP" />
     <meta name="geo.placename" content="Shamli, Uttar Pradesh" />
     <meta name="geo.position" content="29.4697908;77.2956644" />
@@ -27,6 +32,7 @@
     <meta name="twitter:title" content="River Green Colony | Residential Plots & Property in Shamli" />
     <meta name="twitter:description" content="Residential plots for sale in River Green Colony, Shamli Road, Shamli (UP): a planned Defence Garden colony with 25–40 ft roads, gardens and a fountain plaza." />
     <meta name="twitter:image" content="__SITE_URL__/og-image.jpg" />
+    <meta name="twitter:image:alt" content="River Green Colony entrance on Shamli Road, Shamli" />
     <link rel="stylesheet" href="/fonts/fonts.css" />
     <link rel="preload" href="/fonts/cormorant-garamond-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/golos-text-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
@@ -51,7 +57,7 @@
           if (window.__rivergreenScrollRestoration) window.history.scrollRestoration = window.__rivergreenScrollRestoration;
           window.dispatchEvent(new CustomEvent('rg:entry-complete', { detail: { reason } }));
         };
-        if (location.pathname.replace(/\/+$/, '') !== '/plot-manager' && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (!(/^\/plot-manager(?:\/(?:index\.html)?)?$/).test(location.pathname) && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
           window.__rivergreenEntryStarted = performance.now();
           window.__rivergreenEntryHash = location.hash;
           window.__rivergreenScrollRestoration = window.history.scrollRestoration;

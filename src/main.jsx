@@ -8,11 +8,11 @@ import './premium.css';
 import './editorial.css';
 
 const container = document.getElementById('root');
-const isManager = window.location.pathname.replace(/\/+$/, '') === '/plot-manager';
+const isManager = (/^\/plot-manager(?:\/(?:index\.html)?)?$/).test(window.location.pathname);
 const prerendered = container.dataset.prerendered === 'true' && !isManager;
 const app = (
   <React.StrictMode>
-    <App seoOrigin={prerendered ? container.dataset.seoOrigin : undefined} copyrightYear={prerendered ? Number(container.dataset.copyrightYear) : undefined} />
+    <App seoOrigin={prerendered ? container.dataset.seoOrigin : import.meta.env.VITE_SEO_ORIGIN} copyrightYear={prerendered ? Number(container.dataset.copyrightYear) : undefined} />
   </React.StrictMode>
 );
 

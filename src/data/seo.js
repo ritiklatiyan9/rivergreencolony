@@ -6,6 +6,7 @@ import { RIVER_GREEN_LOCATION } from './colonyLocation.js';
 
 export const SITE = {
   name: 'River Green Colony',
+  logo: '/branding/river-green-wordmark.png',
   // Production address: the build writes it into the canonical link, Open Graph, JSON-LD, robots.txt and sitemap.xml unless SITE_URL overrides it.
   url: 'https://www.rivergreencolony.com',
   alternateNames: ['River Green', 'Rivergreen Colony', 'River Green Colony Shamli', 'River Green Shamli', 'River Green Society Shamli'],
@@ -63,22 +64,23 @@ const address = { '@type': 'PostalAddress', streetAddress: SITE.street, addressL
 export function structuredData(origin, images = []) {
   const geo = SITE.geo && { '@type': 'GeoCoordinates', latitude: SITE.geo.latitude, longitude: SITE.geo.longitude };
   const photos = [`${origin}/og-image.jpg`, ...images.map((src) => `${origin}${src}`)];
+  const logo = { '@type': 'ImageObject', url: `${origin}${SITE.logo}`, width: 2172, height: 724, caption: SITE.name };
   const place = { address, ...(geo ? { geo } : {}), hasMap: SITE.mapUrl, sameAs: [SITE.mapUrl, SITE.projectUrl], telephone: SITE.salesPhone, image: photos };
   return {
     '@context': 'https://schema.org',
     '@graph': [
       { '@type': 'Organization', '@id': `${origin}/#developer`, name: SITE.developer, url: SITE.developerUrl, logo: `${origin}/images/defence-garden-logo.png`,
         contactPoint: { '@type': 'ContactPoint', telephone: SITE.salesPhone, contactType: 'sales', areaServed: 'IN', availableLanguage: ['en', 'hi'] } },
-      { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: SITE.name, alternateName: SITE.alternateNames, inLanguage: 'en-IN', publisher: { '@id': `${origin}/#developer` } },
+      { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: SITE.name, alternateName: SITE.alternateNames, inLanguage: 'en-IN', image: logo, publisher: { '@id': `${origin}/#developer` } },
       { '@type': 'Residence', '@id': `${origin}/#colony`, name: SITE.name, alternateName: SITE.alternateNames, description: SITE.summary, url: `${origin}/`, ...place,
         containedInPlace: { '@type': 'City', name: 'Shamli', containedInPlace: { '@type': 'State', name: SITE.region } },
         amenityFeature: ['Central fountain plaza', 'Landscaped gardens', 'Corner park', 'Palm-lined boulevard', 'Internal roads 25 to 40 ft wide', 'Shops at the entrance', 'Entrance gate']
           .map((name) => ({ '@type': 'LocationFeatureSpecification', name, value: true })) },
       { '@type': 'RealEstateAgent', '@id': `${origin}/#sales`, name: SITE.name, description: `Residential plots for sale at ${SITE.name}, Shamli Road, Mundet, Shamli.`, url: `${origin}/`, ...place,
-        email: SITE.email, areaServed: { '@type': 'City', name: 'Shamli' }, parentOrganization: { '@id': `${origin}/#developer` } },
+        email: SITE.email, logo, areaServed: { '@type': 'City', name: 'Shamli' }, parentOrganization: { '@id': `${origin}/#developer` } },
       { '@type': 'WebPage', '@id': `${origin}/#webpage`, url: `${origin}/`, name: SITE.title, description: SITE.description, inLanguage: 'en-IN',
-        isPartOf: { '@id': `${origin}/#website` }, about: { '@id': `${origin}/#colony` }, primaryImageOfPage: `${origin}/og-image.jpg` },
-      { '@type': 'FAQPage', '@id': `${origin}/#faq`, mainEntity: FAQS.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+        isPartOf: { '@id': `${origin}/#website` }, about: { '@id': `${origin}/#colony` }, mainEntity: { '@id': `${origin}/#colony` }, primaryImageOfPage: `${origin}/og-image.jpg` },
+      { '@type': 'FAQPage', '@id': `${origin}/#faq`, isPartOf: { '@id': `${origin}/#webpage` }, mainEntity: FAQS.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
     ],
   };
 }

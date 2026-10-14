@@ -5,21 +5,22 @@
 // The absolute URLs plus robots.txt, sitemap.xml
 // and llms.txt are written into dist/ for SITE_URL, else the production
 // address in src/data/seo.js, so static hosting (Vercel) gets them too.
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 process.env.NODE_ENV = 'production';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = process.env.PRERENDER_DIST || join(root, 'dist'), page = join(dist, 'index.html');
-const { SITE } = await import('../src/data/seo.js');
-const origin = String(process.env.SITE_URL || SITE.url).trim().replace(/\/+$/, '');
+const { createServer, loadEnv } = await import('vite');
+const { managerHtml, seoFiles, siteOrigin, withOrigin } = await import('../server/seo.mjs');
+const origin = siteOrigin(undefined, { ...loadEnv('production', root, ''), ...process.env });
 const copyrightYear = new Date().getFullYear();
 const escapeAttribute = (value) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-const { createServer } = await import('vite');
 const { default: react } = await import('@vitejs/plugin-react');
 const vite = await createServer({ root, cacheDir: join(root, 'node_modules/.vite-prerender'), configFile: false, mode: 'production', logLevel: 'error', server: { middlewareMode: true, hmr: false, ws: false }, optimizeDeps: { noDiscovery: true }, appType: 'custom', plugins: [react()] });
 let html = await readFile(page, 'utf8');
+const manager = managerHtml(html, origin);
 try {
   const React = (await import('react')).default, ReactDOMServer = (await import('react-dom/server')).default;
   const { default: App } = await vite.ssrLoadModule('/src/App.jsx');
@@ -27,14 +28,11 @@ try {
   if (!html.includes('<div id="root"></div>')) throw new Error('dist/index.html has no empty #root');
   html = html.replace('<div id="root"></div>', `<div id="root" data-prerendered="true" data-seo-origin="${escapeAttribute(origin)}" data-copyright-year="${copyrightYear}">${markup}</div>`);
   console.log(`Prerendered ${Math.round(markup.length / 1024)} KB of page HTML.`);
-} catch (error) {
-  // The site still works without it: the browser renders the app as before.
-  console.warn(`Prerender skipped: ${error.message}`);
 } finally {
   await vite.close();
 }
-// Always, even when rendering failed: a page left with __SITE_URL__ has a broken canonical link.
-const { seoFiles, withOrigin } = await import('../server/seo.mjs');
 await writeFile(page, withOrigin(html, origin));
+await mkdir(join(dist, 'plot-manager'), { recursive: true });
+await writeFile(join(dist, 'plot-manager/index.html'), manager);
 for (const [path, body] of Object.entries(seoFiles(origin))) await writeFile(join(dist, path), body);
-console.log(`Absolute URLs, robots.txt, sitemap.xml and llms.txt written for ${origin}.`);
+console.log(`Canonical URLs, manager noindex page, robots.txt, sitemap.xml, sitemap.html and llms.txt written for ${origin}.`);

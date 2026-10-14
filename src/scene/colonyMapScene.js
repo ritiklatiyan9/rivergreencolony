@@ -137,8 +137,9 @@ export function createColonyMapScene({ host, plan, config, statusColours, record
     const xs = corners.map(p => p[0]), ys = corners.map(p => p[1]);
     const bounds = [[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]];
     const fit = map.cameraForBounds(bounds, { padding: Math.min(host.clientWidth, host.clientHeight) * .12, bearing: defaultBearing });
-    if (name === 'booking') return { center: point([plan.roundabout.center[0] - 220, plan.roundabout.center[1] + 150]),
-      bearing: defaultBearing, padding: 0, pitch: 25, zoom: Math.min(20.2, (fit?.zoom || 17) + 2.3) };
+    if (name === 'booking') return { center: point(plan.roundabout.center),
+      bearing: defaultBearing, padding: { top: 0, right: 0, bottom: host.clientHeight * .2, left: host.clientWidth * .05 },
+      pitch: 60, zoom: Math.min(19, (fit?.zoom || 17) + 1.2) };
     const entranceFocus = frontage ? frontage.gate : [plan.entrance.center[0], 1200];
     const centre = name === 'connection' ? frontagePoint(entranceFocus) : name === 'plan' || name === 'nature' ? fit?.center || point([plan.width / 2, plan.height / 2]) : point(plan.roundabout.center);
     return { center: centre, bearing: defaultBearing, padding: 0, pitch: name === 'plan' ? 0 : name === 'nature' ? 45 : 60,

@@ -2,7 +2,25 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { applyColonyMapFit, patchColonyFitShader } from './colonyMapFit.js';
+import { createKit, lawnMaterial, soilMaterial } from './kit.js';
 const fit={matrix:[1.1,.02,1,.03,1.25,-2,.001,.002,1]};
+
+test('grass samples the fitted ground while other surfaces retain their original texture coordinates', () => {
+ const kit = createKit({ capabilities: { getMaxAnisotropy: () => 1 } }, { width: 10, height: 10 });
+ const root = new THREE.Group(), shape = kit.geometry(new THREE.PlaneGeometry(2, 2));
+ const grass = new THREE.Mesh(shape, lawnMaterial(kit)), soil = new THREE.Mesh(shape, soilMaterial(kit));
+ root.add(grass, soil);
+ const compile = mesh => {
+  const shader = { uniforms: {}, vertexShader: THREE.ShaderLib.standard.vertexShader, fragmentShader: THREE.ShaderLib.standard.fragmentShader };
+  mesh.material.onBeforeCompile(shader, {}); return shader;
+ };
+ assert.ok(compile(grass).vertexShader.includes('vWorld = (modelMatrix * rgWorld).xyz;'), 'standalone grass must still render without a map fit');
+ applyColonyMapFit({ root, ctx: { kit } }, fit);
+ assert.ok(compile(grass).vertexShader.includes('vWorld = rgMapWorld(modelMatrix * rgWorld).xyz;'));
+ assert.ok(compile(soil).vertexShader.includes('vWorld = (modelMatrix * rgWorld).xyz;'));
+ assert.ok(compile(grass).fragmentShader.includes('float macro = rgFine('), 'grass noise must fade out with distance');
+ kit.dispose();
+});
 
 test('fit shader preserves original material coordinates while fitting positions, normals and shadow coordinates',()=>{
  const shader={uniforms:{},vertexShader:'void main(){\n#include <begin_vertex>\nvWorld = (modelMatrix * vec4(transformed,1.0)).xyz;\n#include <defaultnormal_vertex>\n#include <project_vertex>\n#include <worldpos_vertex>\n}'};

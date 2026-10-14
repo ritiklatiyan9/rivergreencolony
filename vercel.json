@@ -6,8 +6,12 @@
   "functions": {
     "api/booking/[...path].js": { "maxDuration": 60 }
   },
+  "headers": [
+    { "source": "/plot-manager", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    { "source": "/plot-manager/:path*", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }
+  ],
   "rewrites": [
     { "source": "/login", "destination": "/index.html" },
-    { "source": "/plot-manager", "destination": "/index.html" }
+    { "source": "/plot-manager", "destination": "/plot-manager/index.html" }
   ]
 }

@@ -126,21 +126,23 @@ export function proceduralMaterial(kit, { uniforms = {}, attributes = '', varyin
 }
 export const uniform = (type, value) => ({ type, value });
 
-// Green landscaping for parks, garden pockets and the fountain island.
-export function lawnMaterial(kit) {
-  // Lawn: sunny yellow-green with mown patches, drier tufts and fine blade detail.
-  // Tuned to the reference photo's olive-tinged lawns (about sRGB 150,148,75 in sun).
-  const lawnUniforms = { uLawnDark: uniform('vec3', new THREE.Color('#5e752d')), uLawnLight: uniform('vec3', new THREE.Color('#a1ab4e')), uLawnDry: uniform('vec3', new THREE.Color('#b2a95a')) };
+// Green landscaping for parks, garden pockets, villa lawns and the fountain island.
+export function lawnMaterial(kit, { dark = '#5e752d', light = '#a1ab4e', dry = '#b2a95a' } = {}) {
+  // Soft grass variation with filtered detail that stays stable as the map moves.
+  const lawnUniforms = { uLawnDark: uniform('vec3', new THREE.Color(dark)), uLawnLight: uniform('vec3', new THREE.Color(light)), uLawnDry: uniform('vec3', new THREE.Color(dry)) };
   const lawnSurface = `
     vec2 p = vWorld.xz;
-    float macro = rgFbm(p * 0.33), mid = rgFbm(p * 2.1 + 7.3);
-    vec3 grass = mix(uLawnDark, uLawnLight, smoothstep(0.2, 0.8, macro * 0.5 + mid * 0.5));
-    grass = mix(grass, uLawnDry, smoothstep(0.58, 0.8, rgFbm(p * 0.8 + 3.1)) * 0.5);
+    float macro = rgFine(p * 0.33), mid = rgFine(p * 2.1 + 7.3);
+    vec3 grass = mix(uLawnDark, uLawnLight, 0.45 + 0.15 * (macro + mid) * 0.5);
+    grass = mix(grass, uLawnDry, smoothstep(0.58, 0.8, rgFine(p * 0.8 + 3.1)) * 0.08);
     float clumps = rgFine(p * 9.0) * 0.5 + rgFine(p * 19.0 + 4.0) * 0.5;
     float blades = rgFine(p * 52.0) * 0.5 + rgFine(p * vec2(150.0, 124.0)) * 0.5;
-    grass *= (0.78 + 0.34 * clumps) * (0.84 + 0.3 * blades);
+    grass *= (0.97 + 0.06 * clumps) * (0.98 + 0.04 * blades);
     diffuseColor.rgb = grass;`;
-  return proceduralMaterial(kit, { uniforms: lawnUniforms, surface: lawnSurface });
+  const material = proceduralMaterial(kit, { uniforms: lawnUniforms, surface: lawnSurface });
+  // Grass follows the fitted ground, preventing seams across its source triangles.
+  material.userData.colonyMapTextureSpace = 'fitted';
+  return material;
 }
 
 // Undeveloped plots are compacted earth, separate from the landscaped parks.

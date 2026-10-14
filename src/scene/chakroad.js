@@ -33,7 +33,7 @@ export default function buildChakroad(ctx) {
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3)); geometry.setAttribute('aAcross', new THREE.Float32BufferAttribute(offsets, 1));
   geometry.setIndex(index); geometry.computeVertexNormals();
   const material = proceduralMaterial(kit, {
-    uniforms: { uAsphalt: uniform('vec3', new THREE.Color('#5d5c58')), uGravel: uniform('vec3', new THREE.Color('#a59a83')), uHalf: uniform('float', half * SCALE) },
+    uniforms: { uAsphalt: uniform('vec3', new THREE.Color('#202326')), uGravel: uniform('vec3', new THREE.Color('#a59a83')), uHalf: uniform('float', half * SCALE) },
     attributes: 'attribute float aAcross;', varyings: 'varying float vAcross;', vertex: 'vAcross = aAcross;',
     surface: `
       vec2 p = vWorld.xz; float e = abs(vAcross) - uHalf + (rgFbm(p * 9.0) - 0.5) * 0.05;

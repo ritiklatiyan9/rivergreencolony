@@ -138,8 +138,13 @@ export function applyColonyMapFit(model, fit) {
     if (descriptor.anchor) uniforms.uColonyMapAnchor = { value: new THREE.Vector2(...descriptor.anchor) };
     // ShaderMaterial uniforms are owned by the model's animation clocks.
     if (value.isShaderMaterial) value.uniforms = original.uniforms;
-    value.onBeforeCompile = function(shader, renderer) { hook.call(original, shader, renderer); patchColonyFitShader(shader, descriptor.mode, uniforms); };
-    value.customProgramCacheKey = () => `${cacheKey}|site-fit-v1|${descriptor.mode}`;
+    const fittedTexture = original.userData.colonyMapTextureSpace === 'fitted';
+    value.onBeforeCompile = function(shader, renderer) {
+      hook.call(original, shader, renderer); patchColonyFitShader(shader, descriptor.mode, uniforms);
+      if (fittedTexture) shader.vertexShader = shader.vertexShader.replace(
+        'vWorld = (modelMatrix * rgWorld).xyz;', 'vWorld = rgMapWorld(modelMatrix * rgWorld).xyz;');
+    };
+    value.customProgramCacheKey = () => `${cacheKey}|site-fit-v2|${descriptor.mode}|${fittedTexture}`;
     variants.set(key, value); return value;
   };
   const visit = (object, inherited) => {

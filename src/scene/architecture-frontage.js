@@ -8,7 +8,7 @@ import { buildArch } from './architecture-arch.js';
 import { buildShops } from './architecture-shops.js';
 
 export function buildFrontage(ctx, mat) {
-  const { THREE, kit, root, world, HEIGHTS, frontage, SCALE } = ctx;
+  const { THREE, kit, root, world, HEIGHTS, frontage } = ctx;
   const siteFit = ctx.baseSiteFit || ctx.siteFit;
   const group = new THREE.Group(); group.name = 'Entrance frontage';
   group.userData.colonyMapFit = { siteFit, clipBoundary: frontage.forecourtTargetBoundary || frontage.targetBoundary };
@@ -28,51 +28,11 @@ export function buildFrontage(ctx, mat) {
   const forecourt = kit.flatPolygon(frontage.forecourtBoundary || frontage.boundary, paving, HEIGHTS.forecourt, group);
   forecourt.name = 'Entrance forecourt';
 
-  // Carry the boulevard to the outer gate. Along/across attributes follow the
-  // four approach corners and keep its brick bands attached to both edges.
+  // Carry the full-width black boulevard through the outer entrance gate.
   const approach = frontage.approach.polygon || frontage.approach;
-  const points = approach.map(world), entry = world(frontage.entry), gate = world(frontage.gate);
-  const length = Math.hypot((points[2][0] + points[3][0]) / 2 - entry[0], (points[2][1] + points[3][1]) / 2 - entry[1]);
-  const boulevard = ctx.plan.roads.find(road => road.kind === 'boulevard');
-  const startAlong = ctx.baseSiteFit && ctx.baseSiteFit !== ctx.siteFit
-    ? world([0, Math.max(...boulevard.polygon.map(point => point[1]))])[1] : entry[1];
-  const half = ctx.plan.entrance.roadWidth * SCALE / 2;
-  const geometry = kit.geometry(new THREE.ShapeGeometry(kit.shapeFromPolygon(approach)));
-  geometry.rotateX(-Math.PI / 2);
-  const positions = geometry.getAttribute('position'), params = [];
-  const cornerParams = [[startAlong, -half, half], [startAlong, half, half], [startAlong + length, half, half], [startAlong + length, -half, half]];
-  for (let i = 0; i < positions.count; i += 1) {
-    let nearest = 0, distance = Infinity;
-    points.forEach(([x, z], j) => {
-      const d = Math.hypot(x - positions.getX(i), z - positions.getZ(i));
-      if (d < distance) { distance = d; nearest = j; }
-    });
-    params.push(...cornerParams[nearest]);
-  }
-  geometry.setAttribute('aRoad', new THREE.Float32BufferAttribute(params, 3));
-  const road = proceduralMaterial(kit, {
-    uniforms: { uConcrete: uniform('vec3', colour('#d6d2c9')), uBrick: uniform('vec3', colour('#b4523c')), uBrickAlt: uniform('vec3', colour('#c96b50')), uCurb: uniform('vec3', colour('#ece9e1')) },
-    attributes: 'attribute vec3 aRoad;', varyings: 'varying vec3 vRoad;', vertex: 'vRoad = aRoad;',
-    surface: `
-      float along = vRoad.x, across = vRoad.y, edge = vRoad.z - abs(across);
-      vec2 p = vWorld.xz;
-      vec3 concrete = uConcrete * (0.9 + 0.12 * rgFbm(p * 2.6)) * (0.96 + 0.08 * rgFine(p * 75.0));
-      concrete *= 1.0 - 0.07 * smoothstep(0.55, 0.8, rgFbm(p * 0.9 + 11.0));
-      float joints = max(rgLine(along, 0.36, 0.0022), rgLine(across, 1000.0, 0.0018));
-      vec3 c = concrete * (1.0 - 0.38 * joints);
-      float band = 0.042 + 0.01 * rgTri(along / 0.038);
-      if (edge < band) {
-        vec2 brick = vec2(along / 0.022 + (fract(floor(edge / 0.011) * 0.5) * 0.5) * 2.0, edge / 0.011);
-        vec3 b = mix(uBrick, uBrickAlt, rgHash(floor(brick))) * (0.86 + 0.18 * rgFine(p * 60.0));
-        float mortar = max(rgLine(brick.x, 1.0, 0.04), rgLine(brick.y, 1.0, 0.06));
-        c = mix(b, uCurb * 0.8, mortar * 0.55);
-        if (edge < 0.007) c = uCurb * (0.92 + 0.08 * rgFine(p * 90.0));
-      }
-      float dashAA = fwidth(across) + 0.0005, dash = 1.0 - smoothstep(0.0065 - dashAA, 0.0065 + dashAA, abs(across));
-      dash *= smoothstep(0.0, 0.02, fract(along / 0.34)) * (1.0 - smoothstep(0.17, 0.19, fract(along / 0.34)));
-      diffuseColor.rgb = mix(c, vec3(0.93, 0.93, 0.9) * (0.92 + 0.08 * rgFine(p * 90.0)), dash);`, roughness: .92,
-  });
-  const roadMesh = kit.mesh(geometry, road, group, { cast: false }); roadMesh.position.y = HEIGHTS.road;
+  const gate = world(frontage.gate);
+  const road = kit.material('#17191b', { roughness: 1 });
+  const roadMesh = kit.flatPolygon(approach, road, HEIGHTS.road, group);
   roadMesh.name = 'Outer gate approach';
   if (frontage.shopRows?.length) roadMesh.userData.colonyMapFit = { clipBoundary: frontage.shopRows[0].clipBoundary };
 

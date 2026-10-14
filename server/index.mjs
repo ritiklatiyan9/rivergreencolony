@@ -12,8 +12,11 @@ const api = await createPlotApi();
 const bookingProxy = createBookingProxy(bookingDeploymentOptions(process.env, { production: process.env.NODE_ENV === 'production' }));
 const dist = resolve(PROJECT_ROOT, 'dist');
 await access(join(dist, 'index.html')).catch(() => { throw new Error('Build the website with npm run build before npm start.'); });
+const origin = siteOrigin();
+const builtOrigin = (await readFile(join(dist, 'index.html'), 'utf8')).match(/data-seo-origin="([^"]+)"/)?.[1];
+if (builtOrigin && builtOrigin !== origin) throw new Error('The build and server have different public origins. Rebuild with the same SITE_URL used by this server.');
 const realDist = await realpath(dist);
-const mime = { '.html': 'text/html; charset=utf-8', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.mp4': 'video/mp4', '.woff2': 'font/woff2', '.ico': 'image/x-icon' };
+const mime = { '.html': 'text/html; charset=utf-8', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.mp4': 'video/mp4', '.woff2': 'font/woff2', '.ico': 'image/x-icon' };
 
 async function staticFile(req, res) {
   if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405, { Allow: 'GET, HEAD' }); res.end(); return; }
@@ -22,7 +25,7 @@ async function staticFile(req, res) {
   if (pathname.split('/').some((part) => part.startsWith('.'))) { res.writeHead(403); res.end(); return; }
   // robots.txt, sitemap.xml and llms.txt are generated for this site's origin.
   if (SEO_TYPES[pathname]) {
-    const body = seoFiles(siteOrigin(req), (await stat(join(dist, 'index.html'))).mtime)[pathname];
+    const body = seoFiles(origin)[pathname];
     res.writeHead(200, { 'Content-Type': SEO_TYPES[pathname], 'Content-Length': Buffer.byteLength(body), 'Cache-Control': 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff' });
     res.end(req.method === 'HEAD' ? undefined : body); return;
   }
@@ -32,13 +35,13 @@ async function staticFile(req, res) {
     if ((await stat(path)).isDirectory()) path = join(path, 'index.html');
     await access(path);
   } catch {
-    if (extname(pathname)) { res.writeHead(404); res.end(); return; }
+    if (!['/', '/index.html', '/login', '/login/'].includes(pathname)) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); res.end('Page not found.'); return; }
     path = join(dist, 'index.html');
   }
   const resolved = await realpath(path);
   if (!resolved.startsWith(`${realDist}${sep}`)) { res.writeHead(403); res.end(); return; }
   // HTML carries __SITE_URL__ where absolute URLs are needed (canonical, Open Graph, JSON-LD).
-  const html = extname(path) === '.html' ? withOrigin(await readFile(resolved, 'utf8'), siteOrigin(req)) : null;
+  const html = extname(path) === '.html' ? withOrigin(await readFile(resolved, 'utf8'), origin) : null;
   const file = await stat(resolved);
   res.writeHead(200, {
     'Content-Type': mime[extname(path)] || 'application/octet-stream',
@@ -47,7 +50,7 @@ async function staticFile(req, res) {
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'X-Frame-Options': 'SAMEORIGIN',
-    ...(pathname.replace(/\/+$/, '') === '/plot-manager' ? { 'X-Robots-Tag': 'noindex, nofollow' } : {}),
+    ...(/^\/plot-manager(?:\/|$)/.test(pathname) ? { 'X-Robots-Tag': 'noindex, nofollow' } : {}),
   });
   if (req.method === 'HEAD') res.end();
   else if (html !== null) res.end(html);
