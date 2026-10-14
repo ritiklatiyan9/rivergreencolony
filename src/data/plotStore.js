@@ -4,15 +4,15 @@ import planGeometry from './threePlotGeometry.json';
 import { bookingAvailabilityRecord } from './bookingAvailability';
 
 export const PLOT_STATUSES = {
-  AVAILABLE: { label: 'Company', color: '#0b9d58' },
-  RESERVED: { label: 'Booked', color: '#f5c518' },
-  SOLD: { label: 'Registry', color: '#d33a2f' },
+  AVAILABLE: { label: 'Available', color: '#009933' },
+  RESERVED: { label: 'Booked', color: '#cc0000' },
+  SOLD: { label: 'Registry', color: '#cc0000' },
   UNKNOWN: { label: 'Confirm availability', color: '#788f77' },
 };
 export const PLOT_FIELDS = ['status', 'dimensions', 'area_sqft', 'area_sqm', 'facing', 'block', 'plot_type', 'total_price', 'price_per_sqft', 'notes'];
 export const normalizePlotNumber = (value = '') => String(value).replace(/[()\s.\-]/g, '').toUpperCase();
 const numbers = new Map(manifest.plotIds.map((number) => [normalizePlotNumber(number), number]));
-const publicFields = [...PLOT_FIELDS.filter((field) => field !== 'notes'), 'bookable', 'held', 'accounting_status', 'area_sqyd'];
+const publicFields = [...PLOT_FIELDS.filter((field) => field !== 'notes'), 'bookable', 'held', 'accounting_status', 'area_sqyd', 'mapping_conflict'];
 const numericFields = ['area_sqft', 'area_sqm', 'total_price', 'price_per_sqft'];
 const fieldLimits = { dimensions: 120, facing: 80, block: 40, plot_type: 80, notes: 1000 };
 const listeners = new Set();

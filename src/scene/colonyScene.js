@@ -6,6 +6,7 @@ import { createKit, HEIGHTS, M, SCALE } from './kit.js';
 import { buildLandscape } from '../data/sceneLandscape.js';
 import { createPlotClickGesture, createPlotSurfaces, pickPlotRay } from './colonyPlotPicker.js';
 import { observePageScroll } from './pageScrollActivity.js';
+import { createDroneTourRoute, createDroneTourPlayer, droneOrbitDistance } from './droneTour.js';
 
 // Build order matters: sky sets the lights and fog the others are lit by.
 const MODULES = [
@@ -61,7 +62,7 @@ function detectQuality() {
   };
 }
 
-export async function createColonyScene({ host, plan, statusColours, records = [], view = 'community', reducedMotion = false, onDragChange = () => {}, onFail = () => {}, onHint = () => {}, onPlotSelect = () => {} }) {
+export async function createColonyScene({ host, plan, statusColours, records = [], view = 'community', reducedMotion = false, onDragChange = () => {}, onFail = () => {}, onHint = () => {}, onPlotSelect = () => {}, onTourChange = () => {} }) {
   const quality = detectQuality();
   const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'default', stencil: false });
   renderer.setPixelRatio(quality.pixelRatio);
@@ -75,9 +76,10 @@ export async function createColonyScene({ host, plan, statusColours, records = [
   const camera = new THREE.PerspectiveCamera(38, 1.6, .05, 4000);
   const updates = []; const painters = []; const parts = {};
   let disposed = false, failed = false, frame = 0, visible = true, lastTime = 0, lastRendered = 0, gesture = null, aspect = 1.6, motionOff = reducedMotion, post = null, statuses = new Map();
+  let tour;
   const requestRender = () => { if (!frame && visible && !document.hidden && !failed && !disposed && !pageScroll.active) frame = requestAnimationFrame(render); };
   const pageScroll = observePageScroll({ isVisible: () => visible && !disposed,
-    pause: () => { cancelAnimationFrame(frame); frame = 0; },
+    pause: () => { tour?.suspend(); cancelAnimationFrame(frame); frame = 0; },
     resume: () => { lastTime = 0; lastRendered = 0; requestRender(); },
   });
   const ctx = { THREE, renderer, scene, camera, root, plan, kit, world: kit.world, SCALE, M, HEIGHTS, quality, statusColours, landscape: buildLandscape(plan), wind: { value: 0 }, sun: null, requestRender };
@@ -114,6 +116,17 @@ export async function createColonyScene({ host, plan, statusColours, records = [
   const fitPlan = (fov) => { const tan = Math.tan(THREE.MathUtils.degToRad(fov) / 2); return Math.max(14.6 / (tan * aspect), 13.9 / tan); };
   const resolve = (name) => { const v = VIEWS[name] || VIEWS.nature; return { azimuth: v.azimuth, elevation: v.elevation, x: v.x, z: v.z, fov: v.fov, distance: v.distance ?? (v.fit === 'plan' ? fitPlan(v.fov) : fit(v.fov) / v.zoom) }; };
   const current = resolve(view), target = { ...current };
+  const overviewDistance = () => droneOrbitDistance({ radius: Math.hypot(15.5, 13.7), aspect, fov: 52 });
+  const readTourCamera = () => ({ center: [current.x, current.z], zoom: Math.log2(overviewDistance() / current.distance), pitch: 90 - THREE.MathUtils.radToDeg(current.elevation), bearing: -THREE.MathUtils.radToDeg(current.azimuth) });
+  const applyTourCamera = value => {
+    if (!value) return;
+    Object.assign(target, { x: value.center[0], z: value.center[1], distance: overviewDistance() / 2 ** value.zoom,
+      elevation: THREE.MathUtils.degToRad(90 - value.pitch), azimuth: -THREE.MathUtils.degToRad(value.bearing), fov: 52 });
+    Object.assign(current, target);
+  };
+  tour = createDroneTourPlayer(createDroneTourRoute({ plan, project: kit.world,
+    overview: { center: kit.world([plan.width / 2, plan.height / 2]), zoom: 0, pitch: 50, bearing: 0 } }), onTourChange);
+  const startTour = () => { const value = tour.start(readTourCamera(), motionOff); if (motionOff) applyTourCamera(value); requestRender(); };
   const lookAt = new THREE.Vector3();
   const placeCamera = () => {
     lookAt.set(current.x, .1, current.z);
@@ -136,6 +149,7 @@ export async function createColonyScene({ host, plan, statusColours, records = [
   function render(time = 0) {
     frame = 0; if (failed || disposed || !visible || document.hidden || pageScroll.active) return;
     const interval = lastTime ? time - lastTime : 16; const delta = Math.min(interval / 1000, .05); lastTime = time;
+    applyTourCamera(tour.tick(time));
     const easing = motionOff ? 1 : 1 - Math.exp(-delta * 6); let settling = false;
     for (const key of Object.keys(current)) { current[key] += (target[key] - current[key]) * easing; if (Math.abs(target[key] - current[key]) > .0005 * (key === 'distance' ? current.distance : 1)) settling = true; }
     // Ambient-only animation is capped near 30 fps; interaction runs at full rate.
@@ -152,7 +166,7 @@ export async function createColonyScene({ host, plan, statusColours, records = [
     camera.aspect = aspect; renderer.setSize(w, h, false); post?.setSize(w, h);
     requestRender();
   }
-  const preset = (name) => { Object.assign(target, resolve(name)); requestRender(); };
+  const preset = (name) => { if (name === 'nature') { startTour(); return; } tour.stop(); Object.assign(target, resolve(name)); requestRender(); };
 
   const canvas = renderer.domElement;
   const plotSurfaces = createPlotSurfaces(plan, { groundHeight: HEIGHTS.lawn, shopHeight: HEIGHTS.shopRoof });
@@ -213,6 +227,7 @@ export async function createColonyScene({ host, plan, statusColours, records = [
   };
   const pointerDown = (event) => {
     if (event.pointerType === 'mouse' && event.button > 2) return;
+    tour.pause(); Object.assign(target, current);
     plotClick.begin(event);
     pointers.set(event.pointerId, { x: event.clientX, y: event.clientY, touch: event.pointerType === 'touch', pan: event.button === 1 || event.button === 2 || event.shiftKey });
     startGesture(); requestRender();
@@ -256,20 +271,22 @@ export async function createColonyScene({ host, plan, statusColours, records = [
   // keeps scrolling the page (and shows a one-line hint over the map).
   const wheel = (event) => {
     if (!(event.ctrlKey || event.metaKey)) { onHint('wheel'); return; }
+    tour.pause();
     event.preventDefault(); zoomAt(Math.exp(-event.deltaY * .0025), event.clientX, event.clientY);
   };
-  const doubleClick = (event) => { if (!pickPlot(event) && performance.now() - lastFly > 500) flyTo(event.clientX, event.clientY); }; // a double-tap may also fire dblclick
+  const doubleClick = (event) => { tour.pause(); if (!pickPlot(event) && performance.now() - lastFly > 500) flyTo(event.clientX, event.clientY); }; // a double-tap may also fire dblclick
   const noMenu = (event) => event.preventDefault();
   const lost = event => { event.preventDefault(); fail(); };
-  const visibilityChange = () => { if (document.hidden) { cancelAnimationFrame(frame); frame = 0; } else { lastTime = 0; requestRender(); } };
+  const visibilityChange = () => { tour.suspend(); if (document.hidden) { cancelAnimationFrame(frame); frame = 0; } else { lastTime = 0; requestRender(); } };
   const listeners = [['pointerdown', pointerDown], ['pointermove', pointerMove], ['pointerup', pointerUp], ['pointercancel', pointerUp], ['lostpointercapture', pointerUp], ['webglcontextlost', lost], ['dblclick', doubleClick], ['contextmenu', noMenu]];
   listeners.forEach(([type, handler]) => canvas.addEventListener(type, handler));
   canvas.addEventListener('wheel', wheel, { passive: false });
   window.addEventListener('pointerup', pointerUp); document.addEventListener('visibilitychange', visibilityChange);
   const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(host);
-  const intersectionObserver = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; if (visible) { lastTime = 0; requestRender(); } else { cancelAnimationFrame(frame); frame = 0; } }); intersectionObserver.observe(host);
+  const intersectionObserver = new IntersectionObserver(([entry]) => { tour.suspend(); visible = entry.isIntersecting; if (visible) { lastTime = 0; requestRender(); } else { cancelAnimationFrame(frame); frame = 0; } }); intersectionObserver.observe(host);
 
   resize(); Object.assign(target, resolve(view)); Object.assign(current, target); paintPlots(records);
+  if (view === 'nature') startTour();
   // Development-only hooks for the screenshot harness: jump the camera, read render stats.
   if (import.meta.env?.DEV) {
     window.__colonyCamera = (next) => { Object.assign(target, next); Object.assign(current, target); requestRender(); };
@@ -280,12 +297,15 @@ export async function createColonyScene({ host, plan, statusColours, records = [
 
   return {
     requestRender, preset, paintPlots,
-    rotate: (amount, vertical = false) => { if (vertical) target.elevation = THREE.MathUtils.clamp(target.elevation + amount, ...ELEVATION); else target.azimuth += amount; requestRender(); },
-    zoom: zoomBy,
-    pan: (dx, dy) => { panBy(dx, dy); requestRender(); },
-    setReducedMotion: (flag) => { motionOff = flag; requestRender(); },
+    pauseTour: () => tour.pause(),
+    resumeTour: () => { if (motionOff) return; tour.resume(readTourCamera()); requestRender(); },
+    nextTourStop: () => { applyTourCamera(tour.next(readTourCamera())); requestRender(); },
+    rotate: (amount, vertical = false) => { tour.pause(); if (vertical) target.elevation = THREE.MathUtils.clamp(target.elevation + amount, ...ELEVATION); else target.azimuth += amount; requestRender(); },
+    zoom: factor => { tour.pause(); zoomBy(factor); },
+    pan: (dx, dy) => { tour.pause(); panBy(dx, dy); requestRender(); },
+    setReducedMotion: (flag) => { motionOff = flag; if (flag) tour.pause(); tour.suspend(); requestRender(); },
     dispose: () => {
-      disposed = true; cancelAnimationFrame(frame); resizeObserver.disconnect(); intersectionObserver.disconnect();
+      disposed = true; tour.stop(); cancelAnimationFrame(frame); resizeObserver.disconnect(); intersectionObserver.disconnect();
       pageScroll.dispose();
       plotClick.reset();
       listeners.forEach(([type, handler]) => canvas.removeEventListener(type, handler)); canvas.removeEventListener('wheel', wheel);

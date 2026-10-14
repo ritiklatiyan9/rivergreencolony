@@ -11,7 +11,8 @@ import { villaSites } from './sitePlots.js';
 import buildGround from './ground.js';
 import { applyColonyMapFit } from './colonyMapFit.js';
 import { getColonyMapConfig, getColonySiteFit } from '../data/colonyLocation.js';
-import { fitAssetPoint, prepareMapPlan, siteAssetFrame, siteBoundaryEdges } from '../data/colonySiteFit.js';
+import { fitAssetPoint, fitSitePoint, prepareMapPlan, siteAssetFrame, siteBoundaryEdges } from '../data/colonySiteFit.js';
+import { pointInPolygon } from '../data/sceneLandscape.js';
 
 const plan = JSON.parse(readFileSync(new URL('../data/threePlotGeometry.json', import.meta.url)));
 const near = (a, b) => Math.abs(a - b) < 1e-5;
@@ -80,6 +81,39 @@ test('shop roofs share their unit pivot and every villa assembly shares its hous
   ctx.kit.dispose();
 });
 
+test('every rendered villa, compound wall and pillar cap stays in its assigned plots in both views', () => {
+  for (const mapView of [false, true]) {
+    const ctx = fixture(mapView ? prepareMapPlan(plan) : plan);
+    buildVillas(ctx, ctx.mat);
+    const fit = mapView ? getColonySiteFit(plan, getColonyMapConfig()) : null;
+    if (fit) applyColonyMapFit({ root: ctx.root, ctx }, fit);
+    ctx.root.updateMatrixWorld(true);
+    const gpuMatrix = fit?.matrix.map(Math.fround), instance = new THREE.Matrix4(), point = new THREE.Vector3();
+    const owners = new Set();
+    for (const mesh of ctx.root.children) {
+      if (!mesh.userData.villaPlots) continue;
+      const positions = mesh.geometry.getAttribute('position'), metadata = mesh.userData.colonyMapFit;
+      for (let i = 0; i < mesh.count; i++) {
+        const numbers = mesh.userData.villaPlots[i]; owners.add(numbers.join('+'));
+        const polygons = numbers.map(number => ctx.plan.plots.find(plot => plot.number === number).geometry.polygon.map(ctx.world))
+          .map(polygon => fit ? polygon.map(p => fitSitePoint(p, gpuMatrix)) : polygon);
+        const frame = metadata.mode === 'rigid' && fit
+          ? siteAssetFrame([metadata.anchors[i * 2], metadata.anchors[i * 2 + 1]], gpuMatrix) : null;
+        mesh.getMatrixAt(i, instance); instance.premultiply(mesh.matrixWorld);
+        for (let j = 0; j < positions.count; j++) {
+          point.fromBufferAttribute(positions, j).applyMatrix4(instance);
+          const projected = frame ? fitAssetPoint(point.toArray(), frame)
+            : fit ? [fitSitePoint([point.x, point.z], gpuMatrix)[0], point.y, fitSitePoint([point.x, point.z], gpuMatrix)[1]] : point.toArray();
+          assert.ok(polygons.some(polygon => pointInPolygon([projected[0], projected[2]], polygon)),
+            `${mapView ? 'satellite' : 'model'} ${numbers.join('+')}: ${mesh.name} vertex crosses the plot boundary`);
+        }
+      }
+    }
+    assert.equal(owners.size, 13, 'check all thirteen house compounds');
+    ctx.kit.dispose();
+  }
+});
+
 test('perimeter wall faces and pillar caps remain inside the original boundary', () => {
   const ctx = fixture(), batch = createBatch(THREE, ctx.kit, ctx.root);
   buildWall(ctx, batch, ctx.mat); batch.build();
@@ -106,7 +140,7 @@ test('tapered eastern shop stays inside the site without separating its body, ro
   const xs = shop.geometry.polygon.map(point => point[0]), ys = shop.geometry.polygon.map(point => point[1]);
   const sourceAnchor = ctx.world([(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2]).map(Math.fround);
   const shopIndex = ctx.plan.plots.findIndex(plot => plot.number === 'S1');
-  const labels = ctx.root.children.find(mesh => mesh.material.isMeshBasicMaterial && mesh.geometry.getAttribute('aColonyMapRigid'));
+  const labels = ctx.root.getObjectByName('Plot numbers');
   const labelAnchor = labels.geometry.getAttribute('aColonyMapAnchor');
   assert.ok(near(labelAnchor.getX(shopIndex * 4), sourceAnchor[0]));
   assert.ok(near(labelAnchor.getY(shopIndex * 4), sourceAnchor[1]));

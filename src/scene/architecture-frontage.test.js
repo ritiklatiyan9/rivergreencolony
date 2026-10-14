@@ -185,7 +185,7 @@ test('expanded interior keeps fixed perimeter walls and a clear straight gate ap
 
 test('attached commercial rows keep bodies, parapets, roofs and numbers together without unit offsets', () => {
   const ctx = fixture(), fit = getColonySiteFit(plan, getColonyMapConfig());
-  ctx.plan = prepareMapPlan(plan); ctx.siteFit = fit; ctx.statusColours = { AVAILABLE: '#10b981' };
+  ctx.plan = prepareMapPlan(plan); ctx.siteFit = fit; ctx.statusColours = { AVAILABLE: '#009933', RESERVED: '#2563eb', SOLD: '#2563eb' };
   ctx.frontage = createColonyFrontage(plan, fit, RIVER_GREEN_FRONTAGE);
   const placement = createFrontageShopPlacement(ctx.plan, fit, ctx.frontage);
   ctx.frontage.shopRows = placement.rows;
@@ -200,9 +200,23 @@ test('attached commercial rows keep bodies, parapets, roofs and numbers together
   });
   paint(new Map(expectedShops.map(plot => [plot.number, 'AVAILABLE'])));
   rows.forEach(group => {
-    const roof = group.children.find(mesh => mesh.material.vertexColors), colours = roof.geometry.getAttribute('color'), expected = new THREE.Color(ctx.statusColours.AVAILABLE);
-    let live = 0; for (let i = 0; i < colours.count; i += 1) if (Math.abs(colours.getX(i) - expected.r) < 1e-6) live += 1;
-    assert.ok(live > 0, 'relocated roofs must retain availability paint');
+    const roof = group.getObjectByName('Shop availability roofs'), grass = roof.geometry.getAttribute('aPlotAvailable');
+    let live = 0; for (let i = 0; i < grass.count; i += 1) if (grass.getX(i) === 1) live += 1;
+    assert.ok(live > 0, 'available roofs must use the park grass material');
+  });
+  // All registered roofs, including the tapered S1 and neighboring S2/S3,
+  // must become blue rather than reverting to a neutral concrete finish.
+  paint(new Map(expectedShops.map(plot => [plot.number, 'SOLD'])));
+  rows.forEach(group => {
+    const roof = group.getObjectByName('Shop availability roofs'), colours = roof.geometry.getAttribute('color'), normals = roof.geometry.getAttribute('normal');
+    const expected = new THREE.Color(ctx.statusColours.SOLD);
+    assert.ok([...roof.geometry.getAttribute('aPlotAvailable').array].every(value => value === 0), 'registry roofs must stop using the park grass material');
+    let tops = 0;
+    for (let i=0;i<colours.count;i++) if (normals.getY(i)>.5) {
+      tops++;
+      assert.ok(Math.abs(colours.getX(i)-expected.r)<1e-6 && Math.abs(colours.getY(i)-expected.g)<1e-6 && Math.abs(colours.getZ(i)-expected.b)<1e-6, 'every registry roof vertex must receive blue');
+    }
+    assert.ok(tops>0);
   });
   applyColonyMapFit({ root: ctx.root, ctx }, fit);
   rows.forEach((group, j) => {

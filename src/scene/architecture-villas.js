@@ -44,13 +44,15 @@ export function buildVillas(ctx, mat) {
   };
   const shapes = { box: kit.geometry(new THREE.BoxGeometry(1, 1, 1)), cyl: kit.geometry(new THREE.CylinderGeometry(.5, .5, 1, 20)), ball: kit.geometry(new THREE.IcosahedronGeometry(.5, 2)) };
   const bins = new Map(), part = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), p = new THREE.Vector3(), s = new THREE.Vector3();
+  let plotNumbers;
   const add = (basis, key, size, pos, shape = 'box', rot, anchor) => {
     const bin = `${key}|${shape}|${anchor ? 'rigid' : 'surface'}`; if (!bins.has(bin)) bins.set(bin, []);
     q.setFromEuler(rot ? e.set(...rot) : e.set(0, 0, 0)); part.compose(p.set(...pos), q, s.set(...size));
-    bins.get(bin).push({ matrix: new THREE.Matrix4().multiplyMatrices(basis, part), anchor });
+    bins.get(bin).push({ matrix: new THREE.Matrix4().multiplyMatrices(basis, part), anchor, plotNumbers });
   };
   const cars = [];
   villaSites(plan).forEach((site) => {
+    plotNumbers = site.numbers;
     const [ox, oz] = world(site.mid), front = new THREE.Matrix4();
     // Site basis: x along the road-facing side, y up, +z toward the road.
     const ex = new THREE.Vector3(site.u[0], 0, site.u[1]), ey = new THREE.Vector3(0, 1, 0), ez = new THREE.Vector3(-site.v[0], 0, -site.v[1]);
@@ -90,6 +92,8 @@ export function buildVillas(ctx, mat) {
   });
   bins.forEach((items, key) => {
     const [name, shape, mode] = key.split('|'), mesh = new THREE.InstancedMesh(shapes[shape], finishes[name], items.length);
+    mesh.name = `Villa ${name} ${mode}`;
+    mesh.userData.villaPlots = items.map(item => item.plotNumbers);
     items.forEach(({ matrix }, i) => mesh.setMatrixAt(i, matrix));
     mesh.userData.colonyMapFit = mode === 'rigid'
       ? { mode, anchors: new Float32Array(items.flatMap(item => item.anchor)) }

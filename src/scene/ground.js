@@ -1,11 +1,13 @@
-// Colony ground: solid black roads and circular roundabout, the paved shop
+// Colony ground: black roads with white centre stripes and circular roundabout, the paved shop
 // forecourt, soil plots and green gardens, plot edging, live availability
 // (a coloured outline and light wash; unconfirmed plots stay natural soil) and plot
 // numbers. Surfaces are shaded procedurally in world space, so nothing tiles.
 // Shops are built by architecture.js.
 import { lawnMaterial, soilMaterial, proceduralMaterial, uniform } from './kit.js';
 import { isPlazaGarden, plazaLayout } from './plazaLayout.js';
-import { builtPlotNumbers, villaSites } from './sitePlots.js';
+import { builtPlotNumbers, villaSites, VILLA_SITES } from './sitePlots.js';
+import { availabilityMaterial } from './availabilityMaterial.js';
+import { pointInPolygon } from '../data/sceneLandscape.js';
 
 export default function buildGround(ctx) {
   const { THREE, plan, kit, world, SCALE, HEIGHTS, root, statusColours } = ctx;
@@ -59,6 +61,33 @@ export default function buildGround(ctx) {
   ring.userData.colonyMapFit = { mode: 'rigid', anchor: [fx, fz] };
   ring.rotation.x = -Math.PI / 2; ring.position.set(fx, HEIGHTS.road + .004, fz);
 
+  // Dashed centre lines stop at junctions and leave the fountain approach clear.
+  // Merge the paint into one surface so the markings add only one draw call.
+  const stripes = [], dashLength = 14, dashGap = 12, halfWidth = .8;
+  [...boulevard, ...crossroads].forEach(({ polygon, kind }) => {
+    const vertical = kind === 'boulevard';
+    const xs = polygon.map(point => point[0]), ys = polygon.map(point => point[1]);
+    const centre = vertical ? (Math.min(...xs) + Math.max(...xs)) / 2 : (Math.min(...ys) + Math.max(...ys)) / 2;
+    const axis = vertical ? ys : xs, start = Math.min(...axis) + 8, end = Math.max(...axis) - 8;
+    for (let along = start; along + dashLength <= end; along += dashLength + dashGap) {
+      const corners = [[along, -halfWidth], [along + dashLength, -halfWidth], [along + dashLength, halfWidth], [along, halfWidth]]
+        .map(([distance, offset]) => vertical ? [centre + offset, distance] : [distance, centre + offset]);
+      const clear = corners.every(point => pointInPolygon(point, polygon)
+        && Math.hypot(point[0] - plan.roundabout.center[0], point[1] - plan.roundabout.center[1]) > plan.roundabout.width / 2 + 4
+        && (!vertical || crossroads.every(road => !pointInPolygon(point, road.polygon))));
+      // Also reject a dash spanning a junction between its endpoints.
+      const crossesJunction = vertical && crossroads.some(road => {
+        const y = road.polygon.map(point => point[1]);
+        return along < Math.max(...y) + 4 && along + dashLength > Math.min(...y) - 4;
+      });
+      if (clear && !crossesJunction) stripes.push({ polygon: corners });
+    }
+  });
+  const stripeMaterial = kit.track(new THREE.MeshBasicMaterial({ color: '#ffffff', toneMapped: false }));
+  const centreStripes = addRoad(roadGeometry(stripes), stripeMaterial, HEIGHTS.road + .006);
+  centreStripes.name = 'White road centre stripes';
+  centreStripes.receiveShadow = false;
+
   // Bare ground stays earthy; landscaped parks and house gardens receive grass.
   const base = kit.flatPolygon(plan.boundary, soil, HEIGHTS.ground + .002, root); base.name = 'Colony soil base';
   // Plaza gardens lose a concave arc to the roundabout, as on the printed plan.
@@ -66,9 +95,12 @@ export default function buildGround(ctx) {
   plan.landscaping.forEach((garden) => kit.flatPolygon(isPlazaGarden(plan, garden.polygon) ? plazaGardens.find(item => item.polygon === garden.polygon).outline : garden.polygon, lawn, HEIGHTS.garden, root));
 
   // Residential plots: soil on vacant plots and grass around built houses,
-  // with concrete kerb sides and fine stone edging between plots.
+  // with concrete kerb sides and thick white separators between plots.
   const residential = plan.plots.filter(plot => !plot.number.startsWith('S'));
   const tops = [], lawnTops = [], sides = [], edging = [];
+  // A twin villa (A-41+A-42, B-61+B-62) is one compound: no white line or wash gap through it.
+  const twinVertices = plot => new Set(VILLA_SITES.find(numbers => numbers.length > 1 && numbers.includes(plot.number))?.filter(number => number !== plot.number)
+    .flatMap(number => residential.find(other => other.number === number).geometry.polygon.map(String)));
   residential.forEach((plot) => {
     const shape = new THREE.ExtrudeGeometry(kit.shapeFromPolygon(plot.geometry.polygon), { depth: HEIGHTS.lawn - .004, bevelEnabled: false, curveSegments: 1 });
     shape.rotateX(-Math.PI / 2); shape.translate(0, .004, 0);
@@ -79,9 +111,11 @@ export default function buildGround(ctx) {
     }
     shape.dispose();
     const polygon = plot.geometry.polygon;
+    const twin = twinVertices(plot);
     polygon.forEach((a, i) => {
+      if (twin.has(String(a)) && twin.has(String(polygon[(i + 1) % polygon.length]))) return;
       const [ax, az] = world(a), [bx, bz] = world(polygon[(i + 1) % polygon.length]), dx = bx - ax, dz = bz - az;
-      edging.push([[Math.hypot(dx, dz) + .006, .0016, .014], [(ax + bx) / 2, HEIGHTS.lawn + .0008, (az + bz) / 2], -Math.atan2(dz, dx)]);
+      edging.push([[Math.hypot(dx, dz) + .006, .003, .05], [(ax + bx) / 2, HEIGHTS.lawn + .003, (az + bz) / 2], -Math.atan2(dz, dx)]);
     });
   });
   const interleaved = (data) => {
@@ -94,12 +128,13 @@ export default function buildGround(ctx) {
   const plots = kit.mesh(interleaved(tops), soil, root, { cast: false }); plots.name = 'Residential soil plots';
   const gardens = kit.mesh(interleaved(lawnTops), villaLawn, root, { cast: false }); gardens.name = 'Villa grass gardens';
   kit.mesh(interleaved(sides), kit.material('#d9d5cb', { roughness: .9 }), root, { cast: false });
-  const plotEdging = kit.boxes(kit.track(new THREE.MeshBasicMaterial({ color: '#111111' })), edging, root);
+  const plotEdging = kit.boxes(kit.track(new THREE.MeshBasicMaterial({ color: '#ffffff', toneMapped: false, depthWrite: false })), edging, root);
+  plotEdging.name = 'White plot boundaries'; plotEdging.renderOrder = 2;
   plotEdging.castShadow = false; plotEdging.userData.colonyMapFit = { mode: 'surface' };
 
-  // Live availability: a translucent wash inside each black plot boundary,
+  // Live availability: a solid colour inside each white plot boundary,
   // merged into one mesh whose vertex alpha paintPlots switches on and off.
-  const RING = .014, FILL = .16;
+  const RING = .014, FILL = 1;
   const overlayPositions = [], overlayColours = [], overlayIndex = [], overlaySlots = new Map();
   const inset = (points, width) => points.map((point, i) => {
     const prev = points[(i + points.length - 1) % points.length], next = points[(i + 1) % points.length];
@@ -112,7 +147,8 @@ export default function buildGround(ctx) {
     return [point[0] + m[0] * k, point[1] + m[1] * k];
   });
   residential.forEach((plot) => {
-    const outer = plot.geometry.polygon.map(world), inner = inset(outer, RING), start = overlayPositions.length / 3, count = outer.length, y = HEIGHTS.lawn + .0012;
+    const twin = twinVertices(plot), outer = plot.geometry.polygon.map(world);
+    const inner = inset(outer, RING).map((point, i) => twin.has(String(plot.geometry.polygon[i])) ? outer[i] : point), start = overlayPositions.length / 3, count = outer.length, y = HEIGHTS.lawn + .0012;
     // Vertex sets: outline outer edge, outline inner edge, then the wash (same points as the inner edge).
     [...outer, ...inner, ...inner].forEach(([x, z]) => { overlayPositions.push(x, y, z); overlayColours.push(1, 1, 1, 0); });
     for (let i = 0; i < count; i += 1) { const j = (i + 1) % count; overlayIndex.push(start + i, start + count + j, start + j, start + i, start + count + i, start + count + j); }
@@ -121,10 +157,13 @@ export default function buildGround(ctx) {
   });
   const overlayGeometry = kit.geometry(new THREE.BufferGeometry());
   overlayGeometry.setAttribute('position', new THREE.Float32BufferAttribute(overlayPositions, 3)); overlayGeometry.setAttribute('color', new THREE.Float32BufferAttribute(overlayColours, 4));
+  overlayGeometry.setAttribute('aPlotAvailable', new THREE.Float32BufferAttribute(new Float32Array(overlayPositions.length / 3), 1));
   overlayGeometry.setAttribute('normal', new THREE.Float32BufferAttribute(overlayPositions.map((_, i) => (i % 3 === 1 ? 1 : 0)), 3)); overlayGeometry.setIndex(overlayIndex);
-  const overlay = kit.mesh(overlayGeometry, kit.material('#ffffff', { vertexColors: true, transparent: true, depthWrite: false, roughness: 1, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }), root, { cast: false });
+  const overlay = kit.mesh(overlayGeometry, availabilityMaterial(kit, { transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }), root, { cast: false });
+  overlay.name = 'Plot availability colours';
   overlay.renderOrder = 1;
   const overlayColour = overlayGeometry.getAttribute('color');
+  const available = overlayGeometry.getAttribute('aPlotAvailable');
   const palette = Object.fromEntries(Object.entries(statusColours).map(([status, hex]) => [status, linear(hex)]));
 
   // Plot numbers: one atlas, one mesh, one draw call. Painted-on white numerals.
@@ -155,6 +194,7 @@ export default function buildGround(ctx) {
   labelGeometry.setAttribute('aColonyMapAnchor', new THREE.Float32BufferAttribute(labelAnchors, 2));
   labelGeometry.setAttribute('aColonyMapRigid', new THREE.Float32BufferAttribute(labelRigid, 1));
   const labels = kit.mesh(labelGeometry, kit.track(new THREE.MeshBasicMaterial({ map: atlas, transparent: true, depthWrite: false, alphaTest: .02, toneMapped: false })), root, { cast: false, receive: false });
+  labels.name = 'Plot numbers';
   labels.renderOrder = 2;
 
   return {
@@ -162,10 +202,15 @@ export default function buildGround(ctx) {
       overlaySlots.forEach(({ start, count }, number) => {
         const status = statuses.get(number), colour = palette[status], shown = colour && status !== 'UNKNOWN';
         // Keep the black edging visible; availability colours only tint the interior.
-        const fill = builtPlotNumbers.has(number) ? 0 : FILL;
-        for (let i = 0; i < count * 3; i += 1) overlayColour.setXYZW(start + i, colour?.r ?? 1, colour?.g ?? 1, colour?.b ?? 1, shown && i >= count * 2 ? fill : 0);
+        const fill = FILL;
+        for (let i = 0; i < count * 3; i += 1) {
+          const grass = status === 'AVAILABLE';
+          overlayColour.setXYZW(start + i, grass ? 1 : colour?.r ?? 1, grass ? 1 : colour?.g ?? 1, grass ? 1 : colour?.b ?? 1, shown && i >= count * 2 ? fill : 0);
+          available.setX(start + i, grass ? 1 : 0);
+        }
       });
       overlayColour.needsUpdate = true;
+      available.needsUpdate = true;
     },
   };
 }

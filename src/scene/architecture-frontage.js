@@ -1,11 +1,12 @@
 // The entrance keeps its own registration. Paving, corners, shops and the
 // outer gate stay on the marked frontage while the interior can fill the
 // space behind the commercial row.
-import { lawnMaterial, proceduralMaterial, uniform } from './kit.js';
+import { lawnMaterial } from './kit.js';
 import { createBatch } from './architecture-common.js';
 import { buildWallSegments, buildCurbSegments } from './architecture-wall.js';
 import { buildArch } from './architecture-arch.js';
 import { buildShops } from './architecture-shops.js';
+import { frontPavingMaterial } from './architecture-commercial-apron.js';
 
 export function buildFrontage(ctx, mat) {
   const { THREE, kit, root, world, HEIGHTS, frontage } = ctx;
@@ -13,18 +14,7 @@ export function buildFrontage(ctx, mat) {
   const group = new THREE.Group(); group.name = 'Entrance frontage';
   group.userData.colonyMapFit = { siteFit, clipBoundary: frontage.forecourtTargetBoundary || frontage.targetBoundary };
   root.add(group);
-  const colour = hex => new THREE.Color(hex);
-  // Match the existing shop forecourt's pavers, using source coordinates to
-  // keep their pattern stable while the satellite view rotates.
-  const paving = proceduralMaterial(kit, {
-    uniforms: { uPaver: uniform('vec3', colour('#cfc9bd')), uPaverAlt: uniform('vec3', colour('#bdb5a6')) },
-    surface: `
-      vec2 p = vWorld.xz; vec2 q = p / vec2(0.024, 0.012); q.x += step(1.0, mod(floor(q.y), 2.0)) * 0.5;
-      float id = rgHash(floor(q));
-      vec3 c = mix(uPaver, uPaverAlt, id * 0.7) * (0.92 + 0.1 * rgFbm(p * 3.0)) * (0.95 + 0.08 * rgFine(p * 90.0));
-      c *= 1.0 - 0.3 * max(rgLine(q.x, 1.0, 0.04), rgLine(q.y, 1.0, 0.06));
-      diffuseColor.rgb = c;`, roughness: .95,
-  });
+  const paving = frontPavingMaterial(THREE, kit);
   const forecourt = kit.flatPolygon(frontage.forecourtBoundary || frontage.boundary, paving, HEIGHTS.forecourt, group);
   forecourt.name = 'Entrance forecourt';
 

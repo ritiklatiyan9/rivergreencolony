@@ -20,7 +20,7 @@ export function palm(o) {
     for (let s = 0; s <= steps; s += 1) {
       const t = s / steps, p = crown.clone().addScaledVector(dir, length * t).add(v3(0, -droop * t * t * length, 0));
       const width = o.width * length * Math.sin(Math.PI * Math.min(1, .12 + t * .95)), lift = v3(0, width * .32, 0);
-      const out = p.clone().sub(crown).setY(Math.max(p.y - crown.y, 0) + .15).normalize(), shade = .55 + .45 * Math.min(1, t * 1.6);
+      const out = p.clone().sub(crown).setY(Math.max(p.y - crown.y, 0) + .15).normalize(), shade = .8 + .2 * Math.min(1, t * 1.6);
       const u = u0 + (u1 - u0) * (.02 + t * .96);
       rows.push([-1, 0, 1].map(k => b.vertex(p.clone().addScaledVector(side, k * width).add(k ? lift : v3()), out, [u, v0 + (v1 - v0) * (.5 + k * .5)], shade, 1)));
     }

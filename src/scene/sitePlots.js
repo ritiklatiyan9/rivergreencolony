@@ -11,9 +11,27 @@ export const VILLA_SITES = [['A-15'], ['A-47'], ['B-58'], ['B-38'], ['B-24'], ['
 export const CARS = { bmw: { length: .41, width: .165 }, rangerover: { length: .42, width: .175 }, scorpio: { length: .39, width: .165 } };
 const MODELS = ['rangerover', 'bmw', 'scorpio'];
 const S = .02; // world units per plan unit (kit.js SCALE)
-export const FORECOURT = .53, WALL_INSET = .012, CAR_GAP = .075, CAR_BACK = .06;
+// Keep the full .032-wide pillar caps inside, with clearance to the plot edge.
+export const FORECOURT = .53, WALL_INSET = .022, CAR_GAP = .075, CAR_BACK = .06;
 
-const rectOf = (polygons) => { const xs = polygons.flat().map(p => p[0]), ys = polygons.flat().map(p => p[1]); return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]; };
+// x-extent of the plots along the line y (edges touching it count).
+const spanAt = (polygons, y) => {
+  const xs = polygons.flatMap(polygon => polygon.flatMap((a, i) => {
+    const b = polygon[(i + 1) % polygon.length];
+    if (a[1] === b[1] || y < Math.min(a[1], b[1]) - 1e-9 || y > Math.max(a[1], b[1]) + 1e-9) return [];
+    return [a[0] + (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1])];
+  }));
+  return [Math.min(...xs), Math.max(...xs)];
+};
+// Largest upright rectangle inside the plots, not their bounding box: the map
+// view widens the east bank into trapezoids, and a bounding box there pushes
+// the compound wall into the neighbouring plots.
+// ponytail: assumes level front/back edges (true for every surveyed plot).
+const rectOf = (polygons) => {
+  const ys = polygons.flat().map(p => p[1]), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const [a0, a1] = spanAt(polygons, y0), [b0, b1] = spanAt(polygons, y1);
+  return [Math.max(a0, b0), y0, Math.min(a1, b1), y1];
+};
 
 export function siteLayout(plan, numbers, index, roads = roadPolygons(plan)) {
   const plots = numbers.map(n => plan.plots.find(p => p.number === n));

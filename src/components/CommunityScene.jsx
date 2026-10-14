@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, ChevronDown, MapPin, MousePointer2, Search, X } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, MapPin, MousePointer2, Pause, Play, RotateCcw, Search, SkipForward, X } from 'lucide-react';
 import plan from '../data/threePlotGeometry.json';
 import { normalizePlotNumber, PLOT_STATUSES, usePlotRecords, usePlotStoreState } from '../data/plotStore';
 import { getColonyMapConfig, GOOGLE_MAPS_URL, GOOGLE_MAPS_EMBED_URL } from '../data/colonyLocation';
@@ -14,7 +14,7 @@ export const preloadCommunityScene = () => loadMapScene().then(module => module.
 
 // Live plot availability from the records the 2D map uses (RESERVED = booked).
 // Unconfirmed plots keep the soil appearance while live ledger states add colour.
-const STATUS_COLOURS = { AVAILABLE: '#0b9d58', RESERVED: '#f5c518', SOLD: '#d33a2f', UNKNOWN: '#b79a70' };
+const STATUS_COLOURS = Object.fromEntries(Object.entries(PLOT_STATUSES).map(([status, value]) => [status, value.color]));
 const VIEW_LABELS = [['booking', 'Choose a plot'], ['nature', 'Aerial view'], ['plan', 'Plan view'], ['community', 'Interior plaza'], ['connection', 'Entrance']];
 // Start with the colony and nearby surroundings; Reset restores this view.
 const DEFAULT_VIEW = 'booking';
@@ -41,9 +41,10 @@ export default function CommunityScene({ activeFeature = DEFAULT_VIEW, reducedMo
   const [source, setSource] = useState('map');
   const [mapUnavailable, setMapUnavailable] = useState(false);
   const [viewName, setViewName] = useState(activeFeature);
+  const [tour, setTour] = useState({ active: false, running: false, label: '', index: 0, count: 0 });
   const [tip, setTip] = useState({ text: '', visible: false });
   const [selectedPlot, setSelectedPlot] = useState(null);
-  const [showBookingGuide, setShowBookingGuide] = useState(true);
+  const [showBookingGuide, setShowBookingGuide] = useState(activeFeature === 'booking');
   const handledBookingRequest = useRef(0);
   const bookingFocusRef = useRef(onBookingFocus); bookingFocusRef.current = onBookingFocus;
   const [plotQuery, setPlotQuery] = useState('');
@@ -76,6 +77,7 @@ export default function CommunityScene({ activeFeature = DEFAULT_VIEW, reducedMo
   useEffect(() => { const changed = featureRef.current !== activeFeature; featureRef.current = activeFeature; setViewName(activeFeature); if (changed && !(activeFeature === 'booking' && bookingRequest) && !(activeFeature === 'nearby' && selectedPlaceRef.current)) apiRef.current?.preset(activeFeature); }, [activeFeature, bookingRequest]);
   useEffect(() => { placesVisibleRef.current = placesVisible; apiRef.current?.setPlacesVisible?.(placesVisible); }, [placesVisible]);
   useEffect(() => { motionRef.current = reducedMotion; apiRef.current?.setReducedMotion(reducedMotion); }, [reducedMotion]);
+  useEffect(() => { if (selectedPlot) apiRef.current?.pauseTour?.(); }, [selectedPlot]);
   useEffect(() => {
     if (!bookingRequest || handledBookingRequest.current === bookingRequest) return;
     setShowBookingGuide(true);
@@ -93,7 +95,7 @@ export default function CommunityScene({ activeFeature = DEFAULT_VIEW, reducedMo
     if (!host || source === 'satellite') return undefined;
     let cancelled = false; let api = null;
     const controller = new AbortController();
-    setReady(false); setFallback(false); setDragging(false);
+    setReady(false); setFallback(false); setDragging(false); setTour({ active: false, running: false, label: '', index: 0, count: 0 });
     const failed = error => {
       if (cancelled) return;
       console.error(`[River Green ${source} view]`, error);
@@ -107,7 +109,7 @@ export default function CommunityScene({ activeFeature = DEFAULT_VIEW, reducedMo
     const options = { host, plan, statusColours: STATUS_COLOURS, records: recordsRef.current, view: featureRef.current, reducedMotion: motionRef.current, onPlotSelect: number => { if (!cancelled) { setShowBookingGuide(false); setSelectedPlot(number); } }, onPlaceSelect: id => {
       if (cancelled) return;
       featureRef.current = 'nearby'; selectedPlaceRef.current = id; setSelectedPlace(id); setOpenPanel('places'); setPlacesVisible(true); setViewName('nearby'); featureChangeRef.current?.('nearby');
-    }, onDragChange: flag => { if (!cancelled) setDragging(flag); }, onFail: failed, onHint: kind => showTipRef.current(kind) };
+    }, onDragChange: flag => { if (!cancelled) setDragging(flag); }, onTourChange: value => { if (!cancelled) setTour(value); }, onFail: failed, onHint: kind => showTipRef.current(kind) };
     (source === 'map' ? loadMapScene() : import('../scene/colonyScene.js'))
       .then(module => cancelled ? null : source === 'map'
         ? module.createColonyMapScene({ ...options, config: MAP_CONFIG, signal: controller.signal })
@@ -151,6 +153,11 @@ export default function CommunityScene({ activeFeature = DEFAULT_VIEW, reducedMo
         {!fallback && source !== 'satellite' && <div className="community-scene__views" role="group" aria-label="Camera views">
           {VIEW_LABELS.map(([key, label], index) => <button key={key} type="button" aria-pressed={viewName === key} onClick={() => choose(key)}><span aria-hidden="true">0{index + 1}</span>{label}<ArrowUpRight size={16} aria-hidden="true" /></button>)}
         </div>}
+        {viewName === 'nature' && !fallback && source !== 'satellite' && <div className="community-scene__tour-panel">
+          <span>DRONE TOUR</span>
+          <p>{reducedMotion ? 'Explore each stop with Next stop.' : 'A 360° flight through the colony, its roads and gardens.'}</p>
+          <small>Drag or zoom to pause and look around.</small>
+        </div>}
         {viewName === 'booking' && store.statusDisplayEnabled && <div className="community-scene__booking-key"><span>Plot availability</span><div className="community-scene__legend" aria-label="Plot availability colours">{Object.entries(STATUS_COLOURS).map(([status, colour]) => <span key={status}><i style={{ background: colour }} />{PLOT_STATUSES[status].label}</span>)}</div></div>}
         <div className="community-scene__disclosure">
           <button type="button" className="community-scene__disclosure-toggle" aria-expanded={openPanel === 'plot'} aria-controls="scene-plot-panel" onClick={() => setOpenPanel(value => value === 'plot' ? null : 'plot')}><Search size={16} aria-hidden="true" />Find a plot<ChevronDown size={15} aria-hidden="true" /></button>
@@ -189,6 +196,14 @@ export default function CommunityScene({ activeFeature = DEFAULT_VIEW, reducedMo
         <a className="community-scene__directions" href={GOOGLE_MAPS_URL} target="_blank" rel="noreferrer"><MapPin size={15} aria-hidden="true" />Directions to River Green<ArrowUpRight size={15} aria-hidden="true" /></a>
       </aside>
       <div className="community-scene__viewport" id="plot-booking-map">
+        {!fallback && source !== 'satellite' && ready && tour.active && <div className="community-scene__tour" aria-label="Drone tour controls">
+          <div className="community-scene__tour-caption" aria-live="polite" aria-atomic="true"><span>{tour.running ? 'DRONE TOUR' : 'TOUR PAUSED'} · {String(tour.index + 1).padStart(2, '0')} / {String(tour.count).padStart(2, '0')}</span><strong>{tour.label}</strong></div>
+          <div className="community-scene__tour-actions">
+            <button type="button" disabled={reducedMotion} onClick={() => tour.running ? apiRef.current?.pauseTour?.() : apiRef.current?.resumeTour?.()} aria-label={tour.running ? 'Pause drone tour' : 'Resume drone tour'}>{tour.running ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}<span>{tour.running ? 'Pause' : 'Resume'}</span></button>
+            <button type="button" onClick={() => apiRef.current?.nextTourStop?.()} aria-label="Next tour stop"><SkipForward size={16} aria-hidden="true" /><span>Next stop</span></button>
+            <button type="button" onClick={() => choose('nature')} aria-label="Restart drone tour"><RotateCcw size={16} aria-hidden="true" /></button>
+          </div>
+        </div>}
         {!fallback && source !== 'satellite' && showBookingGuide && <div className="community-scene__booking-guide" role="status">
           <span className="community-scene__booking-guide-icon"><MousePointer2 size={22} aria-hidden="true" /></span>
           <div><strong>{ready ? 'Click a plot to book your plot now.' : 'Your plot journey starts here.'}</strong><p>{ready ? 'Select a numbered plot to view details and booking options.' : 'Preparing the interactive plots…'}</p></div>

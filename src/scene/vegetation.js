@@ -81,7 +81,7 @@ export default function buildVegetation(ctx) {
   plant(broadleaf({ seed: 41, tiles: [TILE.bloom, TILE.bloom, TILE.mango], rx: .55, ry: .45, lift: .02, clumps: 5, cards: 160, card: .14, coreDetail: 0 }), layout.blooms, { brightness: 1.1 });
 
   // Garden palms: tall and slender, fronds well inside the tested radius.
-  plant(palm({ seed: 7, trunk: .82, fronds: 16, length: .36, droop: .5, width: .22, tile: TILE.frond }), layout.palms, { min: .82, max: .98 });
+  plant(palm({ seed: 7, trunk: 1.08, fronds: 18, length: .4, droop: .5, width: .25, tile: TILE.frond }), layout.palms, { brightness: 1.15, min: .95, max: 1.15 });
 
   // Clipped boxwood hedges (merged; world-space leaf texture so sizes never stretch it).
   const noise = kit.makeNoise(17);

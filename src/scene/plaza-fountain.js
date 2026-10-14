@@ -4,6 +4,7 @@
 // blue-and-white mosaic pool, a broad dome of stacked dark slate with a misty
 // central plume, and a ring of foaming jets around the dome's foot.
 import { GLSL_NOISE, proceduralMaterial, uniform } from './kit.js';
+import { fountainDropLanding } from './fountainFlow.js';
 
 export function buildFountain(ctx, [fx, base, fz], R, parent) {
   const { THREE, kit, renderer, camera, mapMode } = ctx;
@@ -34,7 +35,7 @@ export function buildFountain(ctx, [fx, base, fz], R, parent) {
       diffuseColor.rgb = c * (0.75 + 0.35 * smoothstep(0.55, 0.95, f)) * (1.0 - 0.5 * step(f, 0.12)) * (0.9 + 0.2 * rgNoise(vWorld.xz * 600.0));`,
     roughness: .8,
   });
-  const rim = R - .04, wallTop = .05, waterY = .038, dome = R * .71;
+  const rim = R - .04, wallTop = .05, waterY = .038, dome = R * .65;
   // Pool wall: tiled outer face, flat dark coping with a small lip, mosaic inside.
   lathe([[rim, 0], [R, 0], [R, wallTop - .004], [R + .004, wallTop], [rim - .002, wallTop], [rim, wallTop - .006]], granite);
   lathe([[rim - .001, wallTop - .006], [rim - .001, .008], [0.001, .008]], mosaic);
@@ -48,7 +49,7 @@ export function buildFountain(ctx, [fx, base, fz], R, parent) {
   const profile = [[dome, waterY + .012], [dome * .93, .08], [dome * .82, .125], [dome * .68, .17], [dome * .52, .21], [dome * .36, .238], [dome * .2, .256], [dome * .1, .262], [.02, .264]];
   lathe(profile, slate);
   // Water: a tinted, rippling surface over the mosaic.
-  const water = kit.material('#3e95bd', { roughness: .03, metalness: 0, envMapIntensity: 1.6, transparent: true, opacity: .55, depthWrite: false });
+  const water = kit.material('#39b8e5', { emissive: '#147ca5', emissiveIntensity: .25, roughness: .03, metalness: 0, envMapIntensity: 1.6, transparent: true, opacity: .78, depthWrite: false });
   water.onBeforeCompile = (shader) => {
     shader.uniforms.uTime = time;
     shader.vertexShader = 'varying vec3 vWorld;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;');
@@ -58,6 +59,7 @@ export function buildFountain(ctx, [fx, base, fz], R, parent) {
   };
   const surface = kit.mesh(kit.geometry(new THREE.RingGeometry(dome, rim - .001, 128)), water, group, { cast: false, receive: false });
   surface.rotation.x = -Math.PI / 2; surface.position.y = waterY; surface.renderOrder = 2;
+  surface.name = 'Fountain water surface';
   // Moving water: foaming jets around the dome and a slender misty plume from its cap.
   const flow = (opacity, speed) => kit.track(new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, side: THREE.DoubleSide, uniforms: { uTime: time },
@@ -65,54 +67,70 @@ export function buildFountain(ctx, [fx, base, fz], R, parent) {
     vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; vec4 p = vec4(position, 1.0);\n#ifdef USE_INSTANCING\np = instanceMatrix * p;\n#endif\ngl_Position = projectionMatrix * modelViewMatrix * p; }',
     fragmentShader: `${GLSL_NOISE} uniform float uTime; varying vec2 vUv;
       void main(){ float s = rgNoise(vec2(vUv.x * 24.0, vUv.y * 6.0 - uTime * ${speed.toFixed(1)})) * 0.7 + rgNoise(vec2(vUv.x * 70.0, vUv.y * 12.0 - uTime * ${(speed * 1.6).toFixed(1)})) * 0.3;
-        float a = (0.45 + 0.55 * s) * smoothstep(1.0, 0.7, vUv.y) * smoothstep(0.0, 0.05, vUv.y);
+        float a = (0.45 + 0.55 * s) * (1.0 - smoothstep(0.7, 1.0, vUv.y)) * smoothstep(0.0, 0.05, vUv.y);
         gl_FragColor = vec4(mix(vec3(0.85, 0.93, 1.0), vec3(1.0), s), a * ${opacity.toFixed(2)}); }`,
   }));
-  const jets = 22, jetMaterial = flow(1, 6), jet = kit.geometry(new THREE.CylinderGeometry(.009, .017, 1, 12, 1, true));
+  // A thin moving film carries the falling water down the slate into the pool.
+  const cascade = lathe(profile.map(([radius, height]) => [radius + .002, height + .002]), flow(.28, -3));
+  cascade.name = 'Water flowing over fountain dome'; cascade.renderOrder = 3;
+  cascade.castShadow = false; cascade.receiveShadow = false;
+  const jets = 22, jetMaterial = flow(1, 6), jet = kit.geometry(new THREE.CylinderGeometry(.02, .034, 1, 12, 1, true));
   const jetMesh = new THREE.InstancedMesh(jet, jetMaterial, jets), dummy = new THREE.Object3D(), jetR = (dome + rim) / 2;
   for (let i = 0; i < jets; i += 1) {
-    const a = i / jets * Math.PI * 2, h = .085 + random() * .03;
+    const a = i / jets * Math.PI * 2, h = .15 + random() * .045;
     dummy.position.set(Math.cos(a) * jetR, waterY + h / 2, Math.sin(a) * jetR); dummy.scale.set(1, h, 1); dummy.updateMatrix(); jetMesh.setMatrixAt(i, dummy.matrix);
   }
   jetMesh.renderOrder = 3; group.add(jetMesh);
-  const plume = kit.mesh(kit.geometry(new THREE.CylinderGeometry(.01, .022, .46, 20, 1, true)), flow(.7, 8), group, { cast: false, receive: false });
-  plume.position.y = .264 + .23; plume.renderOrder = 3;
+  const plumeHeight = .62;
+  const plume = kit.mesh(kit.geometry(new THREE.CylinderGeometry(.025, .047, plumeHeight, 20, 1, true)), flow(.9, 8), group, { cast: false, receive: false });
+  plume.position.y = .264 + plumeHeight / 2; plume.renderOrder = 3;
   // Spray: drops off the plume's crown falling onto the dome, and foam above each jet.
-  const starts = [], velocities = [], phases = [], floors = [];
+  const starts = [], velocities = [], phases = [], landings = [], durations = [];
   for (let i = 0; i < 900; i += 1) {
     const a = random() * Math.PI * 2, crown = i < 520;
-    if (crown) { const speed = .05 + random() * .14; starts.push(0, .7 + random() * .05, 0); velocities.push(Math.cos(a) * speed, .04 + random() * .1, Math.sin(a) * speed); floors.push(0); }
-    else { const j = Math.floor(random() * jets) / jets * Math.PI * 2; starts.push(Math.cos(j) * jetR, waterY + .06, Math.sin(j) * jetR); velocities.push(Math.cos(a) * .03, .08 + random() * .1, Math.sin(a) * .03); floors.push(waterY); }
+    if (crown) { const speed = .085 + random() * .235; starts.push(0, .264 + plumeHeight - .024 + random() * .05, 0); velocities.push(Math.cos(a) * speed, .04 + random() * .1, Math.sin(a) * speed); }
+    else { const j = Math.floor(random() * jets) / jets * Math.PI * 2; starts.push(Math.cos(j) * jetR, waterY + .12, Math.sin(j) * jetR); velocities.push(Math.cos(a) * .052, .1 + random() * .1, Math.sin(a) * .052); }
+    const hit = fountainDropLanding(starts.slice(-3), velocities.slice(-3), profile, waterY);
+    landings.push(...hit.landing); durations.push(hit.duration);
     phases.push(random());
   }
   const spray = kit.geometry(new THREE.BufferGeometry());
   spray.setAttribute('position', new THREE.Float32BufferAttribute(starts, 3)); spray.setAttribute('aVelocity', new THREE.Float32BufferAttribute(velocities, 3));
-  spray.setAttribute('aPhase', new THREE.Float32BufferAttribute(phases, 1)); spray.setAttribute('aFloor', new THREE.Float32BufferAttribute(floors, 1));
+  spray.setAttribute('aPhase', new THREE.Float32BufferAttribute(phases, 1));
+  spray.setAttribute('aLanding', new THREE.Float32BufferAttribute(landings, 3)); spray.setAttribute('aDuration', new THREE.Float32BufferAttribute(durations, 1));
   const sprayMaterial = kit.track(new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, uniforms: { uTime: time, uScale: { value: 400 }, uViewport: { value: size }, uDome: { value: dome } },
-    vertexShader: `attribute vec3 aVelocity; attribute float aPhase, aFloor; uniform float uTime, uScale, uDome; uniform vec2 uViewport; varying float vAlpha;
+    vertexShader: `attribute vec3 aVelocity, aLanding; attribute float aPhase, aDuration; uniform float uTime, uScale, uDome; uniform vec2 uViewport; varying float vAlpha;
       ${mapMode ? `
       float rgProjectedDrop(vec4 centre, vec3 point) {
         vec4 edge = projectionMatrix * modelViewMatrix * vec4(point, 1.0);
         vec2 delta = edge.xy / max(abs(edge.w), 0.0001) - centre.xy / max(abs(centre.w), 0.0001);
         return length(delta * uViewport) * 0.5;
       }` : ''}
-      void main(){ float t = fract(aPhase + uTime * 0.85) * 0.75; vec3 p = position + aVelocity * t; p.y -= 1.5 * t * t;
-        float r = length(p.xz), ground = aFloor > 0.0 ? aFloor : 0.264 * clamp(1.0 - pow(r / uDome, 1.6), 0.0, 1.0) + 0.04;
-        vAlpha = step(ground, p.y) * (1.0 - t / 0.75) * 0.8;
+      void main(){ float cycle = aDuration + 0.18;
+        float t = fract(aPhase + uTime / cycle) * cycle;
+        vec3 p = position + aVelocity * t; p.y -= 1.5 * t * t;
+        // Keep drops visible through the fall, then bounce into a brief splash
+        // at the actual slate or pool surface instead of disappearing in midair.
+        vAlpha = 0.9 * smoothstep(0.0, 0.025, t);
+        if (t >= aDuration) {
+          float splash = t - aDuration;
+          p = aLanding + vec3(aVelocity.x * splash * 0.3, 0.24 * splash - 1.3 * splash * splash, aVelocity.z * splash * 0.3);
+          vAlpha = 0.95 * (1.0 - smoothstep(0.07, 0.18, splash));
+        }
         vec4 mv = modelViewMatrix * vec4(p, 1.0); gl_Position = projectionMatrix * mv;
         ${mapMode ? `
         // The map supplies a combined map camera matrix, so project the drop's
         // local diameter rather than assuming mv.z is camera-space depth.
-        float drop = max(rgProjectedDrop(gl_Position, p + vec3(0.005, 0.0, 0.0)),
-          max(rgProjectedDrop(gl_Position, p + vec3(0.0, 0.005, 0.0)), rgProjectedDrop(gl_Position, p + vec3(0.0, 0.0, 0.005))));
-        gl_PointSize = clamp(drop, 1.0, 6.0);` : 'gl_PointSize = clamp(uScale * 0.005 / -mv.z, 1.0, 10.0);'} }`,
+        float drop = max(rgProjectedDrop(gl_Position, p + vec3(0.0065, 0.0, 0.0)),
+          max(rgProjectedDrop(gl_Position, p + vec3(0.0, 0.0065, 0.0)), rgProjectedDrop(gl_Position, p + vec3(0.0, 0.0, 0.0065))));
+        gl_PointSize = clamp(drop, 1.5, 6.0);` : 'gl_PointSize = clamp(uScale * 0.0065 / -mv.z, 1.5, 10.0);'} }`,
     fragmentShader: 'varying float vAlpha; void main(){ float d = length(gl_PointCoord - 0.5); if (d > 0.5) discard; gl_FragColor = vec4(0.92, 0.97, 1.0, vAlpha * (1.0 - smoothstep(0.1, 0.5, d))); }',
   }));
   const points = new THREE.Points(spray, sprayMaterial); points.frustumCulled = false; points.renderOrder = 4; group.add(points);
   // Ripples spreading from the jets across the pool.
   const ripple = kit.geometry(new THREE.RingGeometry(.97, 1, 128));
-  const rings = [0, 1, 2].map(() => {
+  const rings = [0, 1, 2, 3].map(() => {
     const value = kit.mesh(ripple, kit.track(new THREE.MeshBasicMaterial({ color: '#e8f6ff', transparent: true, opacity: 0, depthWrite: false })), group, { cast: false, receive: false });
     value.rotation.x = -Math.PI / 2; value.position.y = waterY + .0008; value.renderOrder = 3; return value;
   });
@@ -122,7 +140,7 @@ export function buildFountain(ctx, [fx, base, fz], R, parent) {
       if (mapMode) size.set(renderer.domElement.width, renderer.domElement.height);
       else renderer.getDrawingBufferSize(size);
       if (!mapMode) sprayMaterial.uniforms.uScale.value = size.y * camera.projectionMatrix.elements[5] * .5;
-      rings.forEach((ring, i) => { const t = (seconds * .3 + i / 3) % 1; ring.scale.setScalar(dome + .01 + t * (rim - dome - .02)); ring.material.opacity = (1 - t) * .4 * (seconds ? 1 : 0); });
+      rings.forEach((ring, i) => { const t = (seconds * .4 + i / rings.length) % 1; ring.scale.setScalar(dome + .01 + t * (rim - dome - .02)); ring.material.opacity = (1 - t) * .55; });
     },
   };
 }

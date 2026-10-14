@@ -9,6 +9,8 @@ import { buildArch } from './architecture-arch.js';
 import { buildVillas } from './architecture-villas.js';
 import { buildLamps } from './architecture-lamps.js';
 import { buildFrontage, buildFrontageShops } from './architecture-frontage.js';
+import { buildCommercialApron } from './architecture-commercial-apron.js';
+import { buildHShops } from './architecture-h-shops.js';
 
 export default function buildArchitecture(ctx) {
   const { THREE, kit, root } = ctx;
@@ -27,6 +29,7 @@ export default function buildArchitecture(ctx) {
   buildLamps(ctx, batch, mat);
   batch.build();
   if (ctx.frontage) buildFrontage(ctx, mat);
+  if (ctx.frontage?.commercialApron) { buildCommercialApron(ctx); buildHShops(ctx, mat); }
   buildVillas(ctx, mat);
 
   return {

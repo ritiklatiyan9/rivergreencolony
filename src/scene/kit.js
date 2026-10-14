@@ -127,7 +127,7 @@ export function proceduralMaterial(kit, { uniforms = {}, attributes = '', varyin
 export const uniform = (type, value) => ({ type, value });
 
 // Green landscaping for parks, garden pockets, villa lawns and the fountain island.
-export function lawnMaterial(kit, { dark = '#5e752d', light = '#a1ab4e', dry = '#b2a95a' } = {}) {
+export function lawnMaterial(kit, { dark = '#009933', light = dark, dry = dark } = {}) {
   // Soft grass variation with filtered detail that stays stable as the map moves.
   const lawnUniforms = { uLawnDark: uniform('vec3', new THREE.Color(dark)), uLawnLight: uniform('vec3', new THREE.Color(light)), uLawnDry: uniform('vec3', new THREE.Color(dry)) };
   const lawnSurface = `
@@ -140,6 +140,15 @@ export function lawnMaterial(kit, { dark = '#5e752d', light = '#a1ab4e', dry = '
     grass *= (0.97 + 0.06 * clumps) * (0.98 + 0.04 * blades);
     diffuseColor.rgb = grass;`;
   const material = proceduralMaterial(kit, { uniforms: lawnUniforms, surface: lawnSurface });
+  if (dark === light && light === dry) {
+    // Keep the requested park colour exact rather than shifting it with sunlight.
+    const drawGrass = material.onBeforeCompile, grassKey = material.customProgramCacheKey();
+    material.onBeforeCompile = shader => {
+      drawGrass(shader);
+      shader.fragmentShader = shader.fragmentShader.replace('#include <tonemapping_fragment>', '#include <tonemapping_fragment>\ngl_FragColor.rgb = uLawnDark;');
+    };
+    material.customProgramCacheKey = () => `${grassKey}|exact-park-colour`;
+  }
   // Grass follows the fitted ground, preventing seams across its source triangles.
   material.userData.colonyMapTextureSpace = 'fitted';
   return material;

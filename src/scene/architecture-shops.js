@@ -2,6 +2,8 @@
 // units, signboard band, rolling shutters (some up, lit inside), canopy, front
 // step, parapet, and tanks/AC units at the back edge of the roofs. Roof tops sit
 // exactly at HEIGHTS.shopRoof and carry the live availability colour.
+import { availabilityMaterial } from './availabilityMaterial.js';
+
 const SIGNS = ['RIVER GREEN SALES OFFICE', 'SHARMA GENERAL STORE', 'GUPTA MEDICAL HALL', 'KRISHNA SWEETS', 'MOBILE POINT', 'AGARWAL HARDWARE',
   'DAIRY FRESH', 'NEW STYLE SALON', 'PHOTOSTAT & CYBER', 'KIRANA STORE', '', '', '', '', '', ''];
 const SIGN_COLOURS = [['#1f5f3a', '#f5f1e4'], ['#b3261e', '#fff6e0'], ['#0f4c81', '#ffffff'], ['#f2b705', '#3a2a10'], ['#2b2b2b', '#ffd34d'], ['#e8e4da', '#2f3a30']];
@@ -35,6 +37,7 @@ export function buildShops({ THREE, plan, kit, world, SCALE, HEIGHTS, root, stat
   const interior = kit.material('#ffffff', { map: interiorMap, emissive: '#ffffff', emissiveMap: interiorMap, emissiveIntensity: .32, roughness: .8 });
 
   const shops = plan.plots.filter(plot => plot.number.startsWith('S'));
+  const roofBorder = kit.track(new THREE.MeshBasicMaterial({ color: '#ffffff', toneMapped: false }));
   const plane = new THREE.PlaneGeometry(1, 1), tank = new THREE.CylinderGeometry(.036, .036, .07, 14);
   shops.forEach((plot) => {
     const polygon = plot.geometry.polygon, xs = polygon.map(p => p[0]), ys = polygon.map(p => p[1]);
@@ -44,6 +47,14 @@ export function buildShops({ THREE, plan, kit, world, SCALE, HEIGHTS, root, stat
     const width = x1 - x0, depth = front - back, cx = (x0 + x1) / 2;
     const [anchorX] = world([(Math.min(...xs) + Math.max(...xs)) / 2, 0]);
     batch.withAsset([anchorX, (front + back) / 2], () => {
+      // A thick white inset line separates every unit, including the tapered S1 roof.
+      const outline = polygon.map(world), centre = outline.reduce((sum, p) => [sum[0] + p[0] / outline.length, sum[1] + p[1] / outline.length], [0, 0]);
+      outline.forEach((a, i) => {
+        const b = outline[(i + 1) % outline.length], dx = b[0] - a[0], dz = b[1] - a[1], length = Math.hypot(dx, dz);
+        let nx = -dz / length, nz = dx / length;
+        if ((centre[0] - (a[0] + b[0]) / 2) * nx + (centre[1] - (a[1] + b[1]) / 2) * nz < 0) { nx = -nx; nz = -nz; }
+        batch.addBox(roofBorder, [length - .024, .003, .024], [(a[0] + b[0]) / 2 + nx * .012, top + .003, (a[1] + b[1]) / 2 + nz * .012], -Math.atan2(dz, dx));
+      });
       if (plot.cornerShop) {
         // S1 follows the actual tapered corner: body and roof use the same
         // polygon, while its shutter faces the row's straight front edge.
@@ -113,12 +124,6 @@ function buildParapets({ world, top }, batch, mat, shops) {
 
 // Roof slabs: one merged mesh; each unit's top face carries its status colour.
 function buildRoofs({ THREE, kit, root, top, statusColours }, shops) {
-  const random = kit.rng(5150);
-  const roofMap = kit.canvasTexture(256, 256, (c, size) => {
-    c.fillStyle = '#e6e3dc'; c.fillRect(0, 0, size, size);
-    kit.blobs(c, size, 26, ['rgba(60,55,45,.08)', 'rgba(255,255,255,.18)'], 18, 60, random);
-    kit.speckle(c, size, 5000, ['rgba(0,0,0,.12)', 'rgba(255,255,255,.2)'], random, 1, 1);
-  }, { repeat: 2 });
   const natural = new THREE.Color('#cdc8bd'), side = new THREE.Color('#d9d4c8');
   const palette = Object.fromEntries(Object.entries(statusColours).map(([status, hex]) => [status, new THREE.Color(hex)]));
   const positions = [], normals = [], uvs = [], colours = [], anchors = [], rigid = [], tops = new Map();
@@ -138,12 +143,21 @@ function buildRoofs({ THREE, kit, root, top, statusColours }, shops) {
   const geometry = kit.geometry(new THREE.BufferGeometry());
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3)); geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
   geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2)); geometry.setAttribute('color', new THREE.Float32BufferAttribute(colours, 3));
+  geometry.setAttribute('aPlotAvailable', new THREE.Float32BufferAttribute(new Float32Array(positions.length / 3), 1));
   geometry.setAttribute('aColonyMapAnchor', new THREE.Float32BufferAttribute(anchors, 2));
   geometry.setAttribute('aColonyMapRigid', new THREE.Float32BufferAttribute(rigid, 1));
-  kit.mesh(geometry, kit.material('#ffffff', { map: roofMap, vertexColors: true, roughness: .9 }), root);
+  // Painted status colour stays readable across the complete shop row, including
+  // Registry shops S1–S3, without grey texture or lighting darkening the finish.
+  const roofs = kit.mesh(geometry, availabilityMaterial(kit), root, { cast: false });
+  roofs.name = 'Shop availability roofs';
   const colour = geometry.getAttribute('color');
+  const available = geometry.getAttribute('aPlotAvailable');
   return (statuses) => {
-    tops.forEach((list, number) => { const status = statuses.get(number), { r, g, b } = status !== 'UNKNOWN' && palette[status] || natural; list.forEach(i => colour.setXYZ(i, r, g, b)); });
+    tops.forEach((list, number) => {
+      const status = statuses.get(number), grass = status === 'AVAILABLE', { r, g, b } = status !== 'UNKNOWN' && palette[status] || natural;
+      list.forEach(i => { colour.setXYZ(i, grass ? 1 : r, grass ? 1 : g, grass ? 1 : b); available.setX(i, grass ? 1 : 0); });
+    });
     colour.needsUpdate = true;
+    available.needsUpdate = true;
   };
 }

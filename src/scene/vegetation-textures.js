@@ -75,7 +75,7 @@ function bark(c, r, rings) {
 export function makeFoliageTextures(kit) {
   const random = kit.rng(31337);
   const atlas = kit.canvasTexture(1024, 512, (c) => {
-    const painters = [mango, neem, bloom, mat, (cc, r) => frond(cc, r, ['#4f7f2c', '#5f8f34', '#6f9c3c', '#86a845'], false), (cc, r) => bark(cc, r, false), (cc, r) => bark(cc, r, true), (cc, r) => frond(cc, r, ['#2f5a22', '#3c6a28', '#46742c'], true)];
+    const painters = [mango, neem, bloom, mat, (cc, r) => frond(cc, r, ['#8acb58', '#9bd86b', '#ace47c', '#b9eb8b'], false), (cc, r) => bark(cc, r, false), (cc, r) => bark(cc, r, true), (cc, r) => frond(cc, r, ['#2f5a22', '#3c6a28', '#46742c'], true)];
     painters.forEach((paint, i) => { c.save(); c.translate((i % 4) * 256, Math.floor(i / 4) * 256); c.beginPath(); c.rect(0, 0, 256, 256); c.clip(); paint(c, random); c.restore(); });
   }, { wrap: false });
   const hedgeMap = kit.canvasTexture(256, 256, (c, size) => {
