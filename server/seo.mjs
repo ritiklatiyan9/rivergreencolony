@@ -3,6 +3,7 @@
 // index.html carries the token __SITE_URL__ wherever an absolute URL is needed
 // (canonical, Open Graph, JSON-LD); it is replaced with the site's origin.
 import gallery from '../src/data/gallery.js';
+import { riverGreenMedia } from '../src/data/latestMedia.js';
 import { SITE, llmsText } from '../src/data/seo.js';
 
 export const SITE_TOKEN = '__SITE_URL__';
@@ -67,7 +68,7 @@ export function managerHtml(html, origin) {
 export function seoFiles(origin, lastModified) {
   // A deployment/crawl date is not a meaningful content modification date.
   const lastmod = lastModified ? `<lastmod>${new Date(lastModified).toISOString().slice(0, 10)}</lastmod>` : '';
-  const images = [...new Set(['/og-image.jpg', '/images/editorial-hero/open-landscape-3840.webp', '/images/fountain-evening/fountain-families.webp', ...gallery.map(({ src }) => src)])];
+  const images = [...new Set([riverGreenMedia.og, ...gallery.map(({ src }) => src)])];
   return {
     // Keep the manager crawlable so search engines can read its noindex rule.
     '/robots.txt': ['User-agent: *', 'Allow: /', 'Disallow: /api/', '', `Sitemap: ${origin}/sitemap.xml`, ''].join('\n'),

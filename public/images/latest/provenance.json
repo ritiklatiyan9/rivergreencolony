@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "community": "River Green Society",
+  "sourceVideos": {
+    "riverGreen": "a7026072-bc48-4d48-9358-21ae1faf0f17-CV Shubham Ch...mp4",
+    "brand": "3-defence-garden-brand-film.mp4"
+  },
+  "presentation": {
+    "kind": "Latest video stills and illustrative landscape visualisations",
+    "userRequested": true,
+    "description": "Four daylight stills are user-requested AI landscape visualisations derived from the latest supplied footage. Visible construction and materials are removed, unfinished surfaces are finished, and open plots are shown with realistic even grass. The night frame is an original video still. Full film and loop preserve the supplied footage."
+  },
+  "stills": [
+    {
+      "asset": "/images/latest/river-green-fountain.webp",
+      "sourceVideo": "3-defence-garden-brand-film.mp4",
+      "timestampSeconds": 12.5,
+      "aiEnhanced": true,
+      "enhancement": "User-requested illustrative landscape edit: remove visible ongoing construction and debris, finish incomplete building surfaces, and add realistic even grass to open plots while retaining the overall road and entrance layout.",
+      "illustrative": true,
+      "userRequested": true,
+      "responsiveWidths": [
+        640,
+        960,
+        1280,
+        1920
+      ]
+    },
+    {
+      "asset": "/images/latest/river-green-avenue.webp",
+      "sourceVideo": "3-defence-garden-brand-film.mp4",
+      "timestampSeconds": 14.7,
+      "aiEnhanced": true,
+      "enhancement": "User-requested illustrative landscape edit: remove visible ongoing construction and debris, finish incomplete building surfaces, and add realistic even grass to open plots while retaining the overall road and entrance layout.",
+      "illustrative": true,
+      "userRequested": true,
+      "responsiveWidths": [
+        640,
+        960,
+        1280,
+        1920
+      ]
+    },
+    {
+      "asset": "/images/latest/river-green-aerial.webp",
+      "sourceVideo": "a7026072-bc48-4d48-9358-21ae1faf0f17-CV Shubham Ch...mp4",
+      "timestampSeconds": 7.2,
+      "aiEnhanced": true,
+      "enhancement": "User-requested illustrative landscape edit: remove visible ongoing construction and debris, finish incomplete building surfaces, and add realistic even grass to open plots while retaining the overall road and entrance layout.",
+      "illustrative": true,
+      "userRequested": true,
+      "responsiveWidths": [
+        640,
+        960,
+        1280,
+        1920
+      ]
+    },
+    {
+      "asset": "/images/latest/river-green-gate.webp",
+      "sourceVideo": "3-defence-garden-brand-film.mp4",
+      "timestampSeconds": 10.8,
+      "aiEnhanced": true,
+      "enhancement": "User-requested illustrative landscape edit: remove visible ongoing construction and debris, finish incomplete building surfaces, and add realistic even grass to open plots while retaining the overall road and entrance layout.",
+      "illustrative": true,
+      "userRequested": true,
+      "responsiveWidths": [
+        640,
+        960,
+        1280,
+        1920
+      ]
+    },
+    {
+      "asset": "/images/latest/river-green-night.webp",
+      "sourceVideo": "3-defence-garden-brand-film.mp4",
+      "timestampSeconds": 17.4,
+      "aiEnhanced": false,
+      "enhancement": "Original video frame converted to WebP without AI edits.",
+      "responsiveWidths": [
+        640,
+        960,
+        1280,
+        1920
+      ]
+    }
+  ],
+  "videos": [
+    {
+      "asset": "/videos/river-green-film.mp4",
+      "sourceVideo": "a7026072-bc48-4d48-9358-21ae1faf0f17-CV Shubham Ch...mp4",
+      "durationSeconds": 63,
+      "aiEnhanced": false
+    },
+    {
+      "asset": "/videos/river-green-loop.mp4",
+      "sourceVideo": "3-defence-garden-brand-film.mp4",
+      "startSeconds": 11.7,
+      "durationSeconds": 6.8,
+      "aiEnhanced": false
+    }
+  ],
+  "poster": "/images/latest/river-green-fountain.webp",
+  "socialPreview": {
+    "asset": "/images/latest/river-green-og.jpg",
+    "alias": "/og-image.jpg",
+    "sourceAsset": "/images/latest/river-green-fountain.webp",
+    "width": 1200,
+    "height": 630,
+    "aiEnhanced": true,
+    "illustrative": true
+  },
+  "finalAerialCleanup": {
+    "asset": "river-green-aerial.webp",
+    "aiEnhanced": true,
+    "illustrative": true,
+    "edits": "Finished remaining exposed house facades and roof edges while keeping building footprints, roads and natural grass plots."
+  },
+  "hero": {
+    "asset": "/images/latest/river-green-hero-v1.webp",
+    "portrait": "/images/latest/river-green-hero-portrait-v1.webp",
+    "aiEnhanced": true,
+    "illustrative": true,
+    "source": "Latest River Green avenue video frame; landscaped avenue still",
+    "edits": "Removed parked car and utility wires, refined paving and landscape, subtle fountain flow, restrained warm architectural photography."
+  }
+}

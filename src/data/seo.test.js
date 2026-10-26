@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { FACTS, FAQS, SITE, llmsText, structuredData } from './seo.js';
+import { riverGreenMedia } from './latestMedia.js';
 import { managerHtml, seoFiles, siteOrigin, withOrigin } from '../../server/seo.mjs';
 
 const origin = 'https://example.com';
@@ -57,14 +58,15 @@ test('the XML sitemap lists only the canonical public page and existing unique i
   const pages = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
   assert.deepEqual(pages, [`${origin}/`], 'aliases, sections and the manager must not be separate indexable URLs');
   const images = [...sitemap.matchAll(/<image:loc>([^<]+)<\/image:loc>/g)].map((match) => match[1]);
-  assert.equal(images.length, 14);
+  assert.equal(images.length, 6, 'the five latest project views and the social preview are indexed');
   assert.equal(new Set(images).size, images.length);
   for (const url of images) {
     assert.equal(new URL(url).origin, origin);
     assert.ok(readFileSync(publicFile(new URL(url).pathname)).length > 0, `${url} must exist`);
   }
-  assert.ok(images.includes(`${origin}/images/editorial-hero/open-landscape-3840.webp`));
-  assert.ok(images.includes(`${origin}/images/fountain-evening/fountain-families.webp`));
+  assert.ok(images.includes(`${origin}${riverGreenMedia.og}`));
+  assert.ok(images.includes(`${origin}/images/latest/river-green-aerial.webp`));
+  assert.doesNotMatch(sitemap, /editorial-hero|fountain-families|\/images\/hd\//);
   assert.doesNotMatch(sitemap, /<(?:lastmod|changefreq|priority|image:title|image:caption)>/);
   assert.ok(seoFiles(origin, '2026-10-08T00:00:00Z')['/sitemap.xml'].includes('<lastmod>2026-10-08</lastmod>'));
 });
@@ -105,7 +107,7 @@ test('configured origins agree across page metadata, structured data and crawl f
   const files = seoFiles(configured);
   assert.ok(html.includes(`<link rel="canonical" href="${configured}/" />`));
   assert.ok(html.includes(`<meta property="og:url" content="${configured}/" />`));
-  assert.ok(html.includes(`<meta property="og:image" content="${configured}/og-image.jpg" />`));
+  assert.ok(html.includes(`<meta property="og:image" content="${configured}/images/latest/river-green-og.jpg" />`));
   assert.ok(files['/robots.txt'].includes(`Sitemap: ${configured}/sitemap.xml`));
   assert.ok(files['/sitemap.xml'].includes(`<loc>${configured}/</loc>`));
   const graph = structuredData(configured)['@graph'];

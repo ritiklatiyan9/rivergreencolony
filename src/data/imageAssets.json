@@ -496,5 +496,155 @@
         "width": 1440
       }
     ]
+  },
+  "/images/latest/river-green-fountain.webp": {
+    "width": 1920,
+    "height": 1081,
+    "sources": [
+      {
+        "src": "/images/latest/river-green-fountain-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/latest/river-green-fountain-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/latest/river-green-fountain-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/latest/river-green-fountain.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/latest/river-green-avenue.webp": {
+    "width": 1920,
+    "height": 1081,
+    "sources": [
+      {
+        "src": "/images/latest/river-green-avenue-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/latest/river-green-avenue-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/latest/river-green-avenue-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/latest/river-green-avenue.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/latest/river-green-aerial.webp": {
+    "width": 1920,
+    "height": 1081,
+    "sources": [
+      {
+        "src": "/images/latest/river-green-aerial-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/latest/river-green-aerial-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/latest/river-green-aerial-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/latest/river-green-aerial.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/latest/river-green-gate.webp": {
+    "width": 1920,
+    "height": 1081,
+    "sources": [
+      {
+        "src": "/images/latest/river-green-gate-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/latest/river-green-gate-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/latest/river-green-gate-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/latest/river-green-gate.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/latest/river-green-night.webp": {
+    "width": 1920,
+    "height": 1080,
+    "sources": [
+      {
+        "src": "/images/latest/river-green-night-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/latest/river-green-night-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/latest/river-green-night-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/latest/river-green-night.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/latest/river-green-hero-v1.webp": {
+    "width": 1920,
+    "height": 1080,
+    "sources": [
+      {
+        "src": "/images/latest/river-green-hero-v1-640.webp",
+        "width": 640
+      },
+      {
+        "src": "/images/latest/river-green-hero-v1-960.webp",
+        "width": 960
+      },
+      {
+        "src": "/images/latest/river-green-hero-v1-1280.webp",
+        "width": 1280
+      },
+      {
+        "src": "/images/latest/river-green-hero-v1.webp",
+        "width": 1920
+      }
+    ]
+  },
+  "/images/latest/river-green-hero-portrait-v1.webp": {
+    "width": 1080,
+    "height": 1920,
+    "sources": [
+      {
+        "src": "/images/latest/river-green-hero-portrait-v1-480.webp",
+        "width": 480
+      },
+      {
+        "src": "/images/latest/river-green-hero-portrait-v1-720.webp",
+        "width": 720
+      },
+      {
+        "src": "/images/latest/river-green-hero-portrait-v1.webp",
+        "width": 1080
+      }
+    ]
   }
 }

@@ -226,3 +226,28 @@ p { font-size: 15px; line-height: 1.7; }
 .experience-copy { grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: end; }
 .experience-copy > .text-link, .experience-copy .chapter-content { grid-column: auto; grid-row: auto; }
 .experience-copy .chapter-content { min-height: 0; }
+
+/* A quiet cinematic photograph retains the established hero and booking composition. */
+.hero.hero--latest .hero-shade { background: linear-gradient(180deg, #16161587 0%, #1616154d 38%, #16161508 64%, #16161578 100%); }
+.hero.hero--latest .hero-depth-layer img { object-position: 50% 52%; }
+.hero-film-action { display: grid; justify-items: end; gap: 8px; flex: none; }
+.hero-watch-film { display: inline-flex; align-items: center; gap: 11px; min-height: 44px; color: #fffdf6; padding: 0; border: 0; background: none; font-family: var(--body); font-size: 11px; font-weight: 500; letter-spacing: .02em; cursor: pointer; }
+.hero-watch-film > span { display: grid; place-items: center; width: 35px; height: 35px; border: 1px solid #fffdf680; border-radius: 50%; transition: background .3s ease; }
+.hero-watch-film:hover > span, .hero-watch-film:focus-visible > span { background: #fffdf624; }
+.hero-watch-film:focus-visible { outline: 2px solid #fffdf6; outline-offset: 5px; }
+.hero-film-action > small { color: #e2e9dc; font-family: var(--body); font-size: 9px; letter-spacing: .015em; line-height: 1.5; }
+.latest-imagery-note { max-width: 74ch; margin: 30px 0 0; color: var(--muted); font-family: var(--body); font-size: 11px; line-height: 1.8; }
+@media (max-width: 700px) {
+  .hero.hero--latest .hero-depth-layer img { object-position: 50% 50%; }
+  .hero-film-action { gap: 5px; }
+  .hero-watch-film { font-size: 10px; gap: 8px; }
+  .hero-watch-film > span { width: 30px; height: 30px; }
+  .hero-film-action > small { font-size: 8px; }
+  .hero.hero--latest .hero-bottom { align-items: center; gap: 12px; }
+  .hero.hero--latest .hero-discover { font-size: 9px; gap: 8px; }
+  .latest-imagery-note { font-size: 11px; margin-top: 24px; }
+}
+@media (max-width: 360px) {
+  .hero-film-action > small { max-width: 110px; text-align: right; }
+}
+@media (prefers-reduced-motion: reduce) { .hero-watch-film > span { transition: none; } }
